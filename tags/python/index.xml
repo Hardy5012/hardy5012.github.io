@@ -2,48 +2,48 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on Learning Hardy</title>
-    <link>http://example.org/tags/python/</link>
+    <link>https://hardy5012.github.io/tags/python/</link>
     <description>Recent content in python on Learning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hardy5012.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>super 没那么简单</title>
-      <link>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</link>
+      <link>https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</guid>
+      <guid>https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</guid>
       <description>大家都知道使用 super 来调用父类了方法，但如何正确使用 super 普遍知之甚少。 为了弄清它的原理，我们需要花点时间解释下 Python 是如何实现继承的。 对于你定义的每一个类，Python 会计算出一个所谓的方法解析顺序(MRO)列表。 这个 MRO 列表就是一个简单的所有基类的线性顺序表。 MRO(Method Resolution Order)   Python 中是使用 C3 算法来确定 MRO 的。可通过 mro()函数来获取每个类的 MRO。  首先了解 C3 的一些基本定义： C1C2...CN   表示一个包含多个类的列表 [C1,C2,…,CN]  例表的第一个元素定义为 head: head = C1   剩余的为 tail: tail = C2...CN   例表相加 [C] + [C1,C2,…,CN]: C + (C1C2...CN) = CC1C2...CN   考虑我们有个多继承的类 C，基类为 B1,B2,…,BN.现在要计算类 C 的线性顺序表 L[C].规则为    C 的线性顺序表为 C 加上 父类的线性顺序表 和 父类例表的 merge.</description>
     </item>
     
     <item>
       <title>python 协程</title>
-      <link>http://example.org/post/python%E5%8D%8F%E7%A8%8B/</link>
+      <link>https://hardy5012.github.io/post/python%E5%8D%8F%E7%A8%8B/</link>
       <pubDate>Sun, 26 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/python%E5%8D%8F%E7%A8%8B/</guid>
+      <guid>https://hardy5012.github.io/post/python%E5%8D%8F%E7%A8%8B/</guid>
       <description>协程     协程是一种用户态的轻量级线程，因为是非抢占式的，所以协程的调度完全由用户控制。协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈，直接操作栈则基本没有内核切换的开销，可以不加锁的访问全局变量，所以上下文的切换非常快。    协程的本质上是：allowing multiple entry points for suspending and resuming execution at certain locations.允许多个入口对程序进行挂起、继续执行等操作   yield     带有 yield 的函数不再是一个普通函数，而是一个生成器 generator.    调用生成器得到一个迭代器，利用 next()或 send(msg)不断获取数据.    调用者使用 send 方法传给 yield 表达式一个值，并从下一个 yield 表达式获取一个值.   def jump_range(upper): index = 0 while index &amp;lt; upper: jump = yield index if jump is None: jump = 1 index += jump jump = jump_range(5) print(jump) print(jump.</description>
     </item>
     
     <item>
       <title>Python 虚拟环境</title>
-      <link>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <link>https://hardy5012.github.io/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
       <pubDate>Tue, 06 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <guid>https://hardy5012.github.io/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
       <description>Virtualenv  Introduction   virtualenv is a tool to create isolated Python environments. Installation  sudo pip install virtualenv   {{{more}}} Usage   1.为一个工程创建一个虚拟环境： cd my_project_folder virtualenv venv   virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，以及 pip 库的一份拷贝，这样就能安装其他包了。虚拟环境的名字（此例中是 venv）可以是任意的；若省略名字将会把文件均放在当前目录。  在任何你运行命令的目录中，这会创建 Python 的拷贝，并将之放在叫做 venv 的文件中。  你可以选择使用一个 Python 解释器： virtualenv -p /usr/bin/python2.7 venv   这将会使用 /usr/bin/python2.7 中的 Python 解释器。 2.要开始使用虚拟环境，其需要被激活： source venv/bin/activate   从现在起，任何你使用 pip 安装的包将会放在 ``venv 文件夹中，与全局安装的 Python 隔绝开 3.</description>
     </item>
     
     <item>
       <title>python notes</title>
-      <link>http://example.org/post/2016-11-16-python-notes/</link>
+      <link>https://hardy5012.github.io/post/2016-11-16-python-notes/</link>
       <pubDate>Wed, 16 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-11-16-python-notes/</guid>
+      <guid>https://hardy5012.github.io/post/2016-11-16-python-notes/</guid>
       <description>yield  yield 为生成器，有调用 next 或 send 来取值（只有调用这两个函数才会运行）  在 yield 处返回数据，用 send 来发送数据到程序内  def h(): print &amp;#39;Wen Chuan&amp;#39;, m = yield 5 # Fighting! print m d = yield 12 print &amp;#39;We are together!&amp;#39; if __name__ == &amp;#39;__main__&amp;#39;: c = h() m = c.next() #m 获取了 yield 5 的参数值 5 d = c.send(&amp;#39;Fighting!&amp;#39;) #d 获取了 yield 12 的参数值 12 print &amp;#39;We will never forget the date&amp;#39;, m, &amp;#39;.</description>
     </item>
     

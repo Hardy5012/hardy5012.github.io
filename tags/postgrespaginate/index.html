@@ -16,13 +16,13 @@
     <meta name="description" content="Postgres,Paginate">
         
     <meta name="author" content="">
-    <meta property="og:url" content="http://example.org/tags/postgrespaginate/">
+    <meta property="og:url" content="https://hardy5012.github.io/tags/postgrespaginate/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="http://example.org/tags/postgrespaginate/index.xml" title="Learning Hardy" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://hardy5012.github.io/tags/postgrespaginate/index.xml" title="Learning Hardy" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -39,7 +39,7 @@
         <div class="col-group">
             <div class="site-name ">
                 
-                    <a id="logo" href="http://example.org/">
+                    <a id="logo" href="https://hardy5012.github.io/">
                         Learning Hardy
                     </a>
                 
@@ -47,11 +47,11 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="http://example.org/">首页</a>
+                    <a class="" href="https://hardy5012.github.io/">首页</a>
                     
-                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
                     
-                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
                     
                 </nav>
             </div>
@@ -78,7 +78,7 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">Postgres 中的五种分页方式</a>
+                                    <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">Postgres 中的五种分页方式</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -88,13 +88,13 @@
                             <div class="post-meta meta-category">
                                 |
                                 
-                                    <a href="http://example.org/categories/date">date</a>
+                                    <a href="https://hardy5012.github.io/categories/date">date</a>
                                 
                             </div>
                             
                             <div class="post-content">
                                 任意查询分页  limit-offset   limit-offset 是最简单，也是最危险的分页方式。不幸的是，它是 Web 应用程序开发教程的主要内容。对象关系映射（ORM）库使它变得简单而诱人，从 SQLAlchemy 的.slice（1，3）到 ActiveRecord 的.limit（1）.offset（3）到 Sequelize 的.findAll（{offset：3，limit：1}） 。它们最后生成的 SQL 都是以 LIMIT 1 OFFSET3 结束。limit-offset 的使用非常普遍，并非巧合，您可以将其应用于任何查询而无需进一步修改。  这个技术有两个大总是，结果不一致和偏移(offset)效率低下。一致性是指遍历结果集的意图应该检索每个项目一次，没有遗漏或重复。 偏移效率是指将结果转移大量偏移所导致的延迟。  这里有个 limit-offse 分页结果不一致的例子。假设从第 n 页跳到 n+1 页时，同时一个新的元素插入到第 n 页。 这将同时导致重复（第 n 页的先前最后一个元素被推入第 n + 1 页）和一个省略（新元素）。 或者考虑从用户移动到页面 n + 1 时从页面 n 中删除的元素。 页面 n + 1 的先前初始元素将被移动到页面 n 并被省略。  现在分析低效率。大的偏移本质上就是昂贵的，即使存在索引，数据库也必须通过存储进行扫描，对行进行计数。 为了利用索引，我们必须通过一个值过滤一列，但在这种情况下，我们需要一定数量的行，而不管它们的列值如何。 此外，这些行的存储空间不需要具有相同的大小，有些可能存在于磁盘上，但标记为已删除，因此数据库无法使用简单的算术在磁盘上查找位置以开始读取结果。 我们来衡量有多少慢。 -- Create table with random strings of various lengths  CREATE TABLE medley AS SELECT generate_series(1,10000000) AS n, substr(concat(md5(random()::text), md5(random()::text)), 1, (random() * 64)::integer + 1) AS description; -- Notify query planner of drastically changed table size  VACUUM ANALYZE; -- Low offsets are refreshingly fast  EXPLAIN ANALYZE SELECT * FROM medley LIMIT 100;   估计成本相当低： QUERY PLAN -------------------------------------------------------------------------------------------------------------------- 	Limit (cost=0.……
-                                <p class="readmore"><a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">阅读全文</a></p>
+                                <p class="readmore"><a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">阅读全文</a></p>
                             </div>
                         </article>
                     
@@ -113,7 +113,7 @@
         <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -123,43 +123,43 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
     </li>
     
 </ul>
@@ -172,31 +172,31 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/categories/ai/">ai(5)</a>
+        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/date/">date(1)</a>
+        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/modern/">modern(16)</a>
+        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/notes/">notes(10)</a>
+        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/summary/">summary(5)</a>
+        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
     </li>
     
 </ul>
@@ -206,49 +206,49 @@
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="http://example.org/tags/boost/">boost</a>
+    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
     
-    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
     
-    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
     
-    <a href="http://example.org/tags/docker/">docker</a>
+    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
     
-    <a href="http://example.org/tags/etf/">etf</a>
+    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
     
-    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
     
-    <a href="http://example.org/tags/git/">git</a>
+    <a href="https://hardy5012.github.io/tags/git/">git</a>
     
-    <a href="http://example.org/tags/gprof/">gprof</a>
+    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
     
-    <a href="http://example.org/tags/heroku/">heroku</a>
+    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
     
-    <a href="http://example.org/tags/linear/">linear</a>
+    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
     
-    <a href="http://example.org/tags/linux/">linux</a>
+    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
     
-    <a href="http://example.org/tags/logistic/">logistic</a>
+    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
     
-    <a href="http://example.org/tags/makefile/">makefile</a>
+    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
     
-    <a href="http://example.org/tags/neural/">neural</a>
+    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
     
-    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
     
-    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
     
-    <a href="http://example.org/tags/python/">python</a>
+    <a href="https://hardy5012.github.io/tags/python/">python</a>
     
-    <a href="http://example.org/tags/regression/">regression</a>
+    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
     
-    <a href="http://example.org/tags/regularization/">regularization</a>
+    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
     
-    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
     
-    <a href="http://example.org/tags/static/">static</a>
+    <a href="https://hardy5012.github.io/tags/static/">static</a>
     
-    <a href="http://example.org/tags/template/">template</a>
+    <a href="https://hardy5012.github.io/tags/template/">template</a>
     
 </div>
     </section>
@@ -258,7 +258,7 @@
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>
@@ -267,7 +267,7 @@
 </div>
 <footer id="footer">
     <div class="container">
-        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
         <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         

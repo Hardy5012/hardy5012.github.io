@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>boost on Learning Hardy</title>
-    <link>http://example.org/tags/boost/</link>
+    <link>https://hardy5012.github.io/tags/boost/</link>
     <description>Recent content in boost on Learning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 03 Nov 2016 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/boost/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hardy5012.github.io/tags/boost/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>learning boost</title>
-      <link>http://example.org/post/2016-11-03-learning-boost/</link>
+      <link>https://hardy5012.github.io/post/2016-11-03-learning-boost/</link>
       <pubDate>Thu, 03 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-11-03-learning-boost/</guid>
+      <guid>https://hardy5012.github.io/post/2016-11-03-learning-boost/</guid>
       <description> MSM  执行顺序: start state on_exit -&amp;gt; action -&amp;gt; next state on_entry  状态转换判断顺序： 按转表换插入的反序来判断，即在从转换表后面开始判断,同样满足条件的，执行后面  事件只能激活子状态中每组状态机中的一个状态，即显示的激活了一个状态，则对应的默认状态不被激活  转发的事件必须在退出点定义中命名,例 event6 需要在退出状态中定义  struct PseudoExit1 : public msm::front::exit_pseudo_state&amp;lt;event6&amp;gt;    {{{more}}} </description>
     </item>
     

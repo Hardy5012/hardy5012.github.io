@@ -2,210 +2,210 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Learning Hardy</title>
-    <link>http://example.org/tags/</link>
+    <link>https://hardy5012.github.io/tags/</link>
     <description>Recent content in Tags on Learning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hardy5012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Docker</title>
-      <link>http://example.org/tags/docker/</link>
+      <link>https://hardy5012.github.io/tags/docker/</link>
       <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/docker/</guid>
+      <guid>https://hardy5012.github.io/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>python</title>
-      <link>http://example.org/tags/python/</link>
+      <link>https://hardy5012.github.io/tags/python/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/python/</guid>
+      <guid>https://hardy5012.github.io/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Postgres,Paginate</title>
-      <link>http://example.org/tags/postgrespaginate/</link>
+      <link>https://hardy5012.github.io/tags/postgrespaginate/</link>
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/postgrespaginate/</guid>
+      <guid>https://hardy5012.github.io/tags/postgrespaginate/</guid>
       <description></description>
     </item>
     
     <item>
       <title>constexpr</title>
-      <link>http://example.org/tags/constexpr/</link>
+      <link>https://hardy5012.github.io/tags/constexpr/</link>
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/constexpr/</guid>
+      <guid>https://hardy5012.github.io/tags/constexpr/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fibonacci</title>
-      <link>http://example.org/tags/fibonacci/</link>
+      <link>https://hardy5012.github.io/tags/fibonacci/</link>
       <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/fibonacci/</guid>
+      <guid>https://hardy5012.github.io/tags/fibonacci/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Template</title>
-      <link>http://example.org/tags/template/</link>
+      <link>https://hardy5012.github.io/tags/template/</link>
       <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/template/</guid>
+      <guid>https://hardy5012.github.io/tags/template/</guid>
       <description></description>
     </item>
     
     <item>
       <title>static</title>
-      <link>http://example.org/tags/static/</link>
+      <link>https://hardy5012.github.io/tags/static/</link>
       <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/static/</guid>
+      <guid>https://hardy5012.github.io/tags/static/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C&#43;&#43;</title>
-      <link>http://example.org/tags/c&#43;&#43;/</link>
+      <link>https://hardy5012.github.io/tags/c&#43;&#43;/</link>
       <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/c&#43;&#43;/</guid>
+      <guid>https://hardy5012.github.io/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
-      <link>http://example.org/tags/linux/</link>
+      <link>https://hardy5012.github.io/tags/linux/</link>
       <pubDate>Thu, 07 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/linux/</guid>
+      <guid>https://hardy5012.github.io/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>HeroKu</title>
-      <link>http://example.org/tags/heroku/</link>
+      <link>https://hardy5012.github.io/tags/heroku/</link>
       <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/heroku/</guid>
+      <guid>https://hardy5012.github.io/tags/heroku/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Regularization</title>
-      <link>http://example.org/tags/regularization/</link>
+      <link>https://hardy5012.github.io/tags/regularization/</link>
       <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/regularization/</guid>
+      <guid>https://hardy5012.github.io/tags/regularization/</guid>
       <description></description>
     </item>
     
     <item>
       <title>neural</title>
-      <link>http://example.org/tags/neural/</link>
+      <link>https://hardy5012.github.io/tags/neural/</link>
       <pubDate>Sun, 07 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/neural/</guid>
+      <guid>https://hardy5012.github.io/tags/neural/</guid>
       <description></description>
     </item>
     
     <item>
       <title>logistic</title>
-      <link>http://example.org/tags/logistic/</link>
+      <link>https://hardy5012.github.io/tags/logistic/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/logistic/</guid>
+      <guid>https://hardy5012.github.io/tags/logistic/</guid>
       <description></description>
     </item>
     
     <item>
       <title>regression</title>
-      <link>http://example.org/tags/regression/</link>
+      <link>https://hardy5012.github.io/tags/regression/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/regression/</guid>
+      <guid>https://hardy5012.github.io/tags/regression/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linear</title>
-      <link>http://example.org/tags/linear/</link>
+      <link>https://hardy5012.github.io/tags/linear/</link>
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/linear/</guid>
+      <guid>https://hardy5012.github.io/tags/linear/</guid>
       <description></description>
     </item>
     
     <item>
       <title>makefile</title>
-      <link>http://example.org/tags/makefile/</link>
+      <link>https://hardy5012.github.io/tags/makefile/</link>
       <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/makefile/</guid>
+      <guid>https://hardy5012.github.io/tags/makefile/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ETF</title>
-      <link>http://example.org/tags/etf/</link>
+      <link>https://hardy5012.github.io/tags/etf/</link>
       <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/etf/</guid>
+      <guid>https://hardy5012.github.io/tags/etf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>boost</title>
-      <link>http://example.org/tags/boost/</link>
+      <link>https://hardy5012.github.io/tags/boost/</link>
       <pubDate>Thu, 03 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/boost/</guid>
+      <guid>https://hardy5012.github.io/tags/boost/</guid>
       <description></description>
     </item>
     
     <item>
       <title>gprof</title>
-      <link>http://example.org/tags/gprof/</link>
+      <link>https://hardy5012.github.io/tags/gprof/</link>
       <pubDate>Mon, 05 Sep 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/gprof/</guid>
+      <guid>https://hardy5012.github.io/tags/gprof/</guid>
       <description></description>
     </item>
     
     <item>
       <title>protobuf</title>
-      <link>http://example.org/tags/protobuf/</link>
+      <link>https://hardy5012.github.io/tags/protobuf/</link>
       <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/protobuf/</guid>
+      <guid>https://hardy5012.github.io/tags/protobuf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>git</title>
-      <link>http://example.org/tags/git/</link>
+      <link>https://hardy5012.github.io/tags/git/</link>
       <pubDate>Tue, 26 Jul 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/git/</guid>
+      <guid>https://hardy5012.github.io/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>spacemacs</title>
-      <link>http://example.org/tags/spacemacs/</link>
+      <link>https://hardy5012.github.io/tags/spacemacs/</link>
       <pubDate>Fri, 22 Jul 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/spacemacs/</guid>
+      <guid>https://hardy5012.github.io/tags/spacemacs/</guid>
       <description></description>
     </item>
     

@@ -1,96 +1,141 @@
-<!doctype html>
-<html lang="zh-CN">
+
+
+There are two possible situations that led to this error:
+  1. You haven&#39;t copied the config.toml yet. See https://github.com/olOwOlo/hugo-theme-even#installation 
+  2. You have an incompatible update. See https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
+
+有两种可能的情况会导致这个错误发生:
+  1. 你还没有复制 config.toml 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation 
+  2. 你进行了一次不兼容的更新 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep16:The Concurrency API(1) - Learning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep16:The Concurrency API(1) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep16:The Concurrency API(1) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2018-01-15T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2018-01-15T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep16:The Concurrency API(1)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep16the-concurrency-api1/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="" /><meta name="description" content="Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &amp;#34;fut&amp;#34; for &amp;#34;future&amp;#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C&#43;&#43;并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C&#43;&#43;进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C&#43;&#43;标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C&#43;&#43;标准库没有要求线程池或者工作窃取算法，而且，实话说，C&#43;&#43;11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C&#43;&#43;并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C&#43;&#43;并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C&#43;&#43;提供的要多（例如，C&#43;&#43;没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C&#43;&#43;并发 API 之上实现线程技术。例如，实现一个 C&#43;&#43;不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C&#43;&#43;14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut." />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+
+
+<meta property="og:title" content="C&#43;&#43; Ep16:The Concurrency API(1)" />
+<meta property="og:description" content="Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &#34;fut&#34; for &#34;future&#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C&#43;&#43;并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C&#43;&#43;进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C&#43;&#43;标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C&#43;&#43;标准库没有要求线程池或者工作窃取算法，而且，实话说，C&#43;&#43;11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C&#43;&#43;并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C&#43;&#43;并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C&#43;&#43;提供的要多（例如，C&#43;&#43;没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C&#43;&#43;并发 API 之上实现线程技术。例如，实现一个 C&#43;&#43;不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C&#43;&#43;14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/" />
+<meta property="article:published_time" content="2018-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-15T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep16:The Concurrency API(1)">
+<meta itemprop="description" content="Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &#34;fut&#34; for &#34;future&#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C&#43;&#43;并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C&#43;&#43;进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C&#43;&#43;标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C&#43;&#43;标准库没有要求线程池或者工作窃取算法，而且，实话说，C&#43;&#43;11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C&#43;&#43;并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C&#43;&#43;并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C&#43;&#43;提供的要多（例如，C&#43;&#43;没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C&#43;&#43;并发 API 之上实现线程技术。例如，实现一个 C&#43;&#43;不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C&#43;&#43;14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut.">
+
+
+<meta itemprop="datePublished" content="2018-01-15T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-15T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="759">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep16:The Concurrency API(1)"/>
+<meta name="twitter:description" content="Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &#34;fut&#34; for &#34;future&#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C&#43;&#43;并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C&#43;&#43;进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C&#43;&#43;标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C&#43;&#43;标准库没有要求线程池或者工作窃取算法，而且，实话说，C&#43;&#43;11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C&#43;&#43;并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C&#43;&#43;并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C&#43;&#43;提供的要多（例如，C&#43;&#43;没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C&#43;&#43;并发 API 之上实现线程技术。例如，实现一个 C&#43;&#43;不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C&#43;&#43;14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="http://example.org/">
-                        Learning Hardy
-                    </a>
-                
-                
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning Hardy</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/archives/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning Hardy</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/archives/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep16:The Concurrency API(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-15 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="http://example.org/">首页</a>
-                    
-                    <a  href="http://example.org/archives/" title="归档">归档</a>
-                    
-                    <a  href="http://example.org/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        
+      </div>
+    </header>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep16:The Concurrency API(1)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2018年1月15日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
-                            
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                            
-                        </div>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+    
+    <div class="post-content">
+      
 <h1 id="headline-1">
 Item 35:优先考虑基于任务编程，而不是线程编程
 </h1>
@@ -481,233 +526,76 @@ std::async 的默认发射策略既允许任务异步执行，又允许任务同
 翻译：<a href="http://blog.csdn.net/big_yellow_duck/article/category/635234">http://blog.csdn.net/big_yellow_duck/article/category/635234</a>
 </p>
 
-                        </div>
-
-                        
-
-
-                        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/c&#43;&#43;-ep15lambda-epressions2/">C&#43;&#43; Ep15:Lambda Epressions(2)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep14lambda-epressions1/">C&#43;&#43; Ep14:Lambda Epressions(1)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a></li>
-        
-    </ul>
-</div>
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="http://example.org/tags/c&#43;&#43;">C&#43;&#43;</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
-    
+    </div>
 
     
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://example.org/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="http://example.org/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="http://example.org/tags/boost/">boost</a>
-    
-    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="http://example.org/tags/constexpr/">constexpr</a>
-    
-    <a href="http://example.org/tags/docker/">docker</a>
-    
-    <a href="http://example.org/tags/etf/">etf</a>
-    
-    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
-    
-    <a href="http://example.org/tags/git/">git</a>
-    
-    <a href="http://example.org/tags/gprof/">gprof</a>
-    
-    <a href="http://example.org/tags/heroku/">heroku</a>
-    
-    <a href="http://example.org/tags/linear/">linear</a>
-    
-    <a href="http://example.org/tags/linux/">linux</a>
-    
-    <a href="http://example.org/tags/logistic/">logistic</a>
-    
-    <a href="http://example.org/tags/makefile/">makefile</a>
-    
-    <a href="http://example.org/tags/neural/">neural</a>
-    
-    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="http://example.org/tags/protobuf/">protobuf</a>
-    
-    <a href="http://example.org/tags/python/">python</a>
-    
-    <a href="http://example.org/tags/regression/">regression</a>
-    
-    <a href="http://example.org/tags/regularization/">regularization</a>
-    
-    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
-    
-    <a href="http://example.org/tags/static/">static</a>
-    
-    <a href="http://example.org/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/c&#43;&#43;-ep17the-concurrency-api2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep17:The Concurrency API(2)</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep15lambda-epressions2/">
+            <span class="next-text nav-default">C&#43;&#43; Ep15:Lambda Epressions(2)</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+     - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"></span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
+  </div>
+  <script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+  
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
 
 
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
 
 

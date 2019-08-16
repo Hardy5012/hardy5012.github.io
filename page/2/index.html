@@ -12,13 +12,13 @@
     <meta property="og:type" content="website">
     <meta name="Keywords" content="">
     <meta name="description" content="">
-    <meta property="og:url" content="http://example.org/">
+    <meta property="og:url" content="https://hardy5012.github.io/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="http://example.org/index.xml" title="Learning Hardy" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://hardy5012.github.io/index.xml" title="Learning Hardy" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -36,7 +36,7 @@
             <div class="site-name ">
                 
                     <h1>
-                        <a id="logo" href="http://example.org/">
+                        <a id="logo" href="https://hardy5012.github.io/">
                             Learning Hardy
                         </a>
                     </h1>
@@ -45,11 +45,11 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="http://example.org/">首页</a>
+                    <a class="current" href="https://hardy5012.github.io/">首页</a>
                     
-                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
                     
-                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
                     
                 </nav>
             </div>
@@ -68,7 +68,7 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep18the-concurrency-api3/" title="C&#43;&#43; Ep18:The Concurrency API(3)" >C&#43;&#43; Ep18:The Concurrency API(3)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep18the-concurrency-api3/" title="C&#43;&#43; Ep18:The Concurrency API(3)" >C&#43;&#43; Ep18:The Concurrency API(3)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -78,13 +78,13 @@
                             <div class="post-content">
                                 Item39:考虑使用 void futures 一次性事件通信   ​有的时候对于一个任务来说，希望有一种机制可以和另外一个任务进行通信，尤其是那种异步运行的任务，并且会出现一种特定事件的任务， 另外一个任务需要等到这个事件的发生才能继续运行，典型的，可以是等待一个重要的数据结构进行初始化，或者是等待一个计算阶段完成，又或者是检测一个重要的值。 那么什么样的方式可以处理好这种线程间的通信呢？  一个很明显的方法就是使用 条件变量 （ condvar ） 。如果我把检测条件的任务叫做检测任务，响应条件的任务叫响应任务，那么这个策略简单：响应任务等待条件变量，当事件 发生时，检测线程通知条件变量。 std::condition_variable cv; // condvar for event  std::mutex m; // mutex for use with cv    检测任务中的代码非常简单： … // detect event  cv.notify_one(); // tell reacting task    如果有多个响应任务需要通知，则可以用 notify_all 替换 notify_one.  响应任务中的代码有点复杂，因为在调用 wait 这个条件变量之前，需要通过 std::unique_lock 来互斥锁住。 … // prepare to react  { // open critical section 	std::unique_lock&lt;std::mutex&gt; lk(m); // lock mutex 	cv.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep18the-concurrency-api3/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep18the-concurrency-api3/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep17the-concurrency-api2/" title="C&#43;&#43; Ep17:The Concurrency API(2)" >C&#43;&#43; Ep17:The Concurrency API(2)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/" title="C&#43;&#43; Ep17:The Concurrency API(2)" >C&#43;&#43; Ep17:The Concurrency API(2)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -94,22 +94,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 37:让 std::thread 对象在所有路径都无法连接   每个 std::thread 对象的状态都是这两种中的一种：joinable（可连接的）或 unjoinable（不可连接的）。一个可连接的 std::thread 对应一个底层异步执行线程， 例如，一个 std::thread 对应的一个底层线程，它会被阻塞或等待被调度， 那么这个 std::thread 就是可连接的。std::thread 对象对应的底层线程可以将代码运行至结束，也可将其视为可连接的。  不可连接的 std::thread 的意思就如你想象那样：std::thread 不是可连接的。不可连接的 std::thread 对象包括：    默认构造的 std::thread。这种 std::thread 没有函数可以执行，因此没有对应的底层执行线程。    被移动过的 std::thread。移动的结果是，一个 std::thread 对应的底层执行线程被对应到另一个 std::thread。    被连接过（调用了 join）的 std::thread。在调用了 join 之后，std::thread 对应的底层执行线程结束运行，就没有对应的底层线程了    被分离（detach）的 std::thread。detach 把 std::thread 对象与它对应的底层执行线程分离开。    std::thread 的连接性是很重要的，其中一个原因是：如果一个可连接的线程对象执行了析构操作，那么程序会被终止。 例如，假设我们有一个函数 doWork，它的参数包含过滤器函数 filter、一个最大值 maxVal。doWork 把 0 到 maxVal 之间值传给过滤器， 然后满足特定条件就对满足过滤器的值进行计算。如果执行过滤器函数是费时的，而检查条件也是费时的，那么并发做这两件事是合理的。  我们其实会更偏向于使用基于任务的设计（看条款 35），但是让我们假定我们想要设置执行过滤器线程的优先级。 条款 35 解释过请求使用线程的本机句柄（native handle）时，只能通过 std::thread 的 API；基于任务的 API 没有提供这个功能。 因此我们的方法是基于线程，而不是基于任务。  我们可以提出这样的代码： constexpr auto tenMillion = 10000000; // see Item 15  // for constexpr  bool doWork(std::function&lt;bool(int)&gt; filter, // returns whether 	int maxVal = tenMillion) // computation was  { // performed; see  // Item 2 for  // std::function 	std::vector&lt;int&gt; goodVals; // values that  // satisfy filter 	std::thread t([&amp;filter, maxVal, &amp;goodVals] // populate 	{ // goodVals 	for (auto i = 0; i &lt;= maxVal; ++i) { if (filter(i)) goodVals.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep17the-concurrency-api2/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep16the-concurrency-api1/" title="C&#43;&#43; Ep16:The Concurrency API(1)" >C&#43;&#43; Ep16:The Concurrency API(1)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/" title="C&#43;&#43; Ep16:The Concurrency API(1)" >C&#43;&#43; Ep16:The Concurrency API(1)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -119,22 +119,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &#34;fut&#34; for &#34;future&#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C++并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C++进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C++标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C++标准库没有要求线程池或者工作窃取算法，而且，实话说，C++11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C++并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C++并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C++提供的要多（例如，C++没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C++并发 API 之上实现线程技术。例如，实现一个 C++不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C++14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep16the-concurrency-api1/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep15lambda-epressions2/" title="C&#43;&#43; Ep15:Lambda Epressions(2)" >C&#43;&#43; Ep15:Lambda Epressions(2)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/" title="C&#43;&#43; Ep15:Lambda Epressions(2)" >C&#43;&#43; Ep15:Lambda Epressions(2)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -144,22 +144,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype   泛型 lambda(generic lambda)是 C++14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 auto。这个特性的实现很直截了当： 闭包类中的 operator() 函数是一个模板。例如，给定这个 lambda， auto f = [](auto x) { return func(normalize(x)); };    闭包类的函数调用操作符看起来是这样的： classSomeCompilerGeneratedClassName { public: template&lt;typename T&gt; // see Item 3 for 	auto operator()(T x) const // auto return type 	{ return func(normalize(x)); } … // other closure class  }; // functionality    在这个例子中，lambda 对 x 做的唯一的一件事就是把它转发给 normalized。如果 normalized 区别对待左值和右值，这个 lambda 这样写是不合适的， 因为即使传递给 lambda 的实参是个右值，lambda 总是传一个左值（形参 x）给 normalized。  写这个 lambda 的正确方式是把 x 完美转发给 normalized，这样做需要在代码中修改两个地方。第一，x 要改成通用引用（看条款 24）， 第二，借助 std::forward（看条款 25）把 x 转发到 normalized。在概念上，修改成这样： auto f = [](auto&amp;&amp; x) { return func(normalize(std::forward&lt;?……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep15lambda-epressions2/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep14lambda-epressions1/" title="C&#43;&#43; Ep14:Lambda Epressions(1)" >C&#43;&#43; Ep14:Lambda Epressions(1)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/" title="C&#43;&#43; Ep14:Lambda Epressions(1)" >C&#43;&#43; Ep14:Lambda Epressions(1)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -169,22 +169,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item31:对于 lambda 表达式，避免使用默认捕获模式   C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获模式诱骗你——让你认为你可以免疫刚说的问题（事实上没有免疫）， 然后它又骗你——让你认为你的闭包是独立的（事实上它们可能不是独立的）  那就是本条款的总纲。如果你是工程师，你会想要更具体的内容，所以让我们从默认捕获模式的危害开始说起吧。  引用捕获会导致闭包包含一个局部变量的引用或者一个形参的引用（在定义 lamda 的作用域）。如果一个由 lambda 创建的闭包的生命期超过了局部变量或者形参的生命期， 那么闭包的引用将会空悬。例如，我们有一个容器，它的元素是过滤函数，这种过滤函数接受一个 int，返回 bool 表示传入的值是否可以满足过滤条件： using FilterContainer = // see Item 9 for 	std::vector&lt;std::function&lt;bool(int)&gt;&gt;; // &#34;using&#34;, Item 2  // for std::function  FilterContainer filters; // filtering funcs    我们可以通过添加一个过滤器，过滤掉 5 的倍数，像这样： filters.emplace_back( // see Item 42 for 	[](int value) { return value % 5 == 0; } // info on 	); // emplace_back    但是，我们可能需要在运行期间计算被除数，而不是直接把硬编码 5 写到 lambda 中，所以添加过滤器的代码可能是这样的： void addDivisorFilter() { auto calc1 = computeSomeValue1(); auto calc2 = computeSomeValue2(); auto divisor = computeDivisor(calc1, calc2); filters.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep14lambda-epressions1/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/" title="C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)" >C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/" title="C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)" >C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -194,22 +194,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 30:熟悉完美转发失败的情况   完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现实中的“完美”有点出入。 C++11 的完美转发非常棒，但当且仅当你愿意忽略一两个特殊情况，才能真正得到完美。该条款就是为了让你熟悉那些特殊情况。  在着手探索我们的特殊情况之前，值得回顾一下“完美转发”的意思。“转发”的意思是一个函数传递——转发——它的参数到另一个函数， 目的是为了让第二个函数（被转发参数的函数）收到第一个函数（进行转发的函数）接受到的对象。这个规则排除值语义的形参， 因为它们只是拷贝原始调用者传递的参数，我们想要的是，接受转发参数的函数能够处理最开始传递进来的对象。指针形参也排除在外， 因为我们不想强迫调用者传递指针。通常，当发生有目的的转发时，我们都是处理形参为引用的参数。  完美转发意思是：我们不单单转发对象，我们还转发它们重要的特性：它们的类型，它们是右值还是左值，它们是否是 const 或者 volation 修饰的。 配合我们观察到的我们一般处理引用参数，这暗示着我们会把完美转发用到通用引用（看条款 24）上， 因为只有通用引用形参才会把传递给它们的实参的左值或右值信息进行编码。  假设我们有一些函数 f，然后我们写了个函数（事实上是模板函数），这个函数把参数转发到函数 f。我们需要的关键代码是这样的： template&lt;typename T&gt; void fwd(T&amp;&amp; param) // accept any argument  { f(std::forward&lt;T&gt;(param)); // forward it to f  }    按照本性，进行转发的函数是通用的。例如，fwd 模板，应该可以接受一些类型不同的参数，然后转发它所得到的。对于这种通用性的一种有逻辑的扩展是， fwd 不应该只是个模板，而是个可变参数模板，因此可以接受任意数目的参数，可变参数模板 fwd 看起来应该是这样的： template&lt;typename... Ts&gt; void fwd(Ts&amp;&amp;... params) // accept any arguments  { f(std::forward&lt;Ts&gt;(params)...); // forward them to f  }    这种形式的模板你能在其它地方见到，例如标准库容器的 emplace 函数（看条款 42），和智能指针工厂函数——std::make_shared 和 std::make_unique （看条款 21）。  给定我们的目标函数 f 和进行转发的函数 fwd，如果用某个实参调用 f 会做某件事，然后用同样的实参调用 fwd，但 fwd 里的 f 行为和前面那种情况不一样， 那么完美转发是失败的： f( expression ); // if this does one thing,  fwd( expression ); // but this does something else, fwd fails  // to perfectly forward expression to f    几种类型的实参会导致这种失败，知道它们是什么和如何工作是很重要的，让我们来观察这几种不能完美转发的类型吧。 大括号初始值   假如 f 的声明是这样的： void f(const std::vector&lt;int&gt;&amp; v);    这种情况，用大括号初始值调用 f 是可以通过编译的： f({ 1, 2, 3 }); // fine, &#34;{1, 2, 3}&#34; implicitly  // converted to std::vector&lt;int&gt;    但如果把大括号初始值传递给 fwd 就不能通过编译： fwd({ 1, 2, 3 }); // error!……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/" title="C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)" >C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/" title="C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)" >C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -219,22 +219,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 28:理解引用折叠   Item 23 说过，当一个参数被传给模板函数时，不管这个参数是左值还是右值，模板参数的类型推导都会对参数进行编码。 那个 Item 没有解释这样的情况只在实参被用在初始化一个 universal 引用类型的型参时才会发生， 但是它没有解释是有理由的：universal 引用在 Item24 之前没有被介绍过。 同时，这些关于 universal 引用以及左右值编码的观察报告说明了对于这个模板： template&lt;typename T&gt; void func(T&amp;&amp; param);    无论传给 param 的参数是左值还是右值，被推导出来的模板参数 T 将会被编码。  编码的机制很简单。 当一个左值做为一个参数传入时，T 被推导为一个左值引用。当一个右值被传入时，T 被推导为没有引用 。 （记住这种不对称：左值被编码成左值引用，但是右值被编码成没有引用。）因此： Widget widgetFactory(); // function returning rvalue  Widget w; // a variable (an lvalue)  func(w); // call func with lvalue; T deduced  // to be Widget&amp;  func(widgetFactory()); // call func with rvalue; T deduced  // to be Widget    两个对 func 的调用中，Widget 都被传入了，但是因为一个 Widget 是左值，一个是右值，模板参数 T 被推导成了不同的类型 。就像我们马上要看到的一样，这个特性就是能决定 universal 引用成为右值引用或左值引用的关键，它同时也是 std::forward 能完成其工作的底层机制。  在我们进一步观察 std::forward 和 universal 引用之前，我们必须注意到，在 C++中对引用进行引用是非法的。也许你应该尝试去声明一个，你的编译器会谴责你： int x; … auto&amp; &amp; rx = x; // error!……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/" title="C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)" >C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/" title="C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)" >C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -244,22 +244,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 27:明白什么时候选择重载，什么时候选择 universal 引用   Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系列的问题。 到目前为止，我也已经给出了好几个例子，如果它能表现得和我们期待的一样，这种重载也能很实用。 此 Item 会探索如何让这种重载能实现我们所需求的行为。我们可以设计出避免对 universal 引用进行重载的实现， 也可以通过限制参数的类型，来使得它们能够匹配。 抛弃重载   Item 26 中的第一个例子（logAndAdd）就是一个典型的例子，很多这样的函数如果想要避免对 universal 引用进行重载， 那只要简单地对即将重载的函数进行不同的命名即可。举个例子，两个 logAndAdd 重载能被分割成 logAndAddName 和 logAndAddNameIdx。可惜的是，这个方法不能在第二个例子（Person 构造函数）中工作，因为构造函数的名字是由语言固定的。 再说了，谁又想放弃重载呢？ 通过 const T&amp;传参数   另一个选择是回到 C++98，并且把 pass-by-universal-reference（通过 universal 引用传参数） 替换成 pass-by-lvalue-reference-to-const（通过 const 左值引用传参数）。事实上，这是 Item 26 考虑的第一个方法。 这个办法的缺点是它的效率无法达到最优。要知道，对于我们现在所知道的 universal 引用和重载来说， 牺牲一些效率来保持事情的简单性可能是一个很有吸引力的方案。 传值   一个常常能让你提升效率并且不增加复杂性的办法是把传引用的参数替换成传值的参数。虽然这很不直观， 但这个设计遵守了 Item 41 的建议（当知道你需要拷贝一个对象时，直接通过传值来传递它）。 所以，对于它们怎么工作以及它们有多高效的细节部分，我会推迟到 Item 41 再讨论。 在这，我只是给你看一下这个技术怎么用在 Person 例子中去： classPerson { public: explicit Person(std::string n) // replaces T&amp;&amp; ctor; see 	: name(std::move(n)) {} // Item 41 for use of std::move 	explicit Person(int idx) // as before 	: name(nameFromIdx(idx)) {} … private: std::string name; };    因为 std::string 的构造函数接受类型为整型的参数，所以所有传给 Person 构造函数的 int 及类 int （比如，std::size_t, short, long）的参数讲调用 int 版本的重载。相似的，所有的 std::string 类型 （以及那些可以用来创建一个 std::string 的参数，比如字符串&#34;Ruth&#34;）会被传给以 std::string 为参数的构造函数。 因此对于调用者来说，这里没有意外发生。你能争论说“我觉得有些人还是会感到奇怪，他们使用 0 或 NULL 来代表 null 指针， 所以这会掉用 int 版本的重载”，但是这些人应该回到 Item 8，然后再读一次，直到他们觉得使用 0 或 NULL 来表示 null 指针会让他们觉得可怕。 使用 Tag dispatch（标签分发）   不管是通过 lvalue-reference-to-const 传递还是传值的方式来支持完美转发。如果使用 universal 引用的动机是完美转发的话， 我们没有其他的选择。我们还是不想抛弃重载。所以如果我们不想抛弃重载，也不想抛弃 universal 引用的话， 我们怎么才能避免对 universal 引用进行重载呢？  事实上没有这么困难。重载函数的调用是这样的：依次查看每个重载函数的参数（形参）以及调用点的参数（实参）， 然后选择最匹配的重载函数（匹配上所有的形参和实参）。一个 universal 引用参数通常提供一个格外的匹配，使得不管传入的是什么， 都能匹配上，但是如果 universal 引用只是参数列表的一部分，这个参数列表还包含其他不是 universal 引用的参数，那么， 即使不考虑 universal 引用，非 universal 引用参数就足够我们造成不匹配了。这就是 tag dispatch 方法背后的基础， 一个例子会让之前的描述更加好理解。  我们把 tag dispatch 永在 logAndAdd177 页的例子上去。为了避免你分神去找，这里给出那个例子的代码： std::multiset&lt;std::string&gt; names; // global data structure  template&lt;typename T&gt; // make log entry and add  void logAndAdd(T&amp;&amp; name) // name to data structure  { auto now = std::chrono::system_clock::now(); log(now, &#34;logAndAdd&#34;); names.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/" title="C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)" >C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/" title="C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)" >C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -269,22 +269,22 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward   右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道这个被绑定的对象可以被 move： classWidget { Widget(Widget&amp;&amp; rhs); // rhs definitely refers to an 	… // object eligible for moving  };    在这种情况下，你会想传这样一个对象给其他函数，来允许这些函数能利用对象的右值属性。为了达到这样的目的，需要把绑定到这些对象的参数转换成右值。 就像 Item 23 解释的那样，std::move 不仅是这么做了，它就是为了这个目的而被创造出来的： classWidget { public: Widget(Widget&amp;&amp; rhs) // rhs is rvalue reference 	: name(std::move(rhs.name)), p(std::move(rhs.p)) { … } … private: std::string name; std::shared_ptr&lt;SomeDataStructure&gt; p; };    在另一方面，一个 universal 引用可能被绑定到一个有资格被 move 的对象上去。universal 引用只在它由右值初始化的时候需要被转换成一个右值。 Item 23 解释了这就是 std::forward 具体做的事情： classWidget { public: template&lt;typename T&gt; void setName(T&amp;&amp; newName) // newName is 	{ name = std::forward&lt;T&gt;(newName); } // universal reference 	… };    总之，因为右值引用总是被绑定到右值，所以当它们被转发给别的函数的时候，应该被无条件地转换成右值（通过 std::move）， 而 universal 引用由于只是不定时地被绑定到右值，所以当转发它们时，它们应该被有条件地转换成右值（通过 std::forward）。  Item 23 解释了对右值引用使用 std::forward 能让它显示出正确的行为，但是源代码会因此变得冗长、易错、不符合习惯的， 所以你应该避免对右值引用使用 std::forward。对 universal 引用使用 std::move 是更加糟糕的想法，因为这样会对左值（比如，局部变量）产生非预期的修改： classWidget { public: template&lt;typename T&gt; void setName(T&amp;&amp; newName) // universal reference 	{ name = std::move(newName); } // compiles, but is 	… // bad, bad, bad!……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">阅读全文</a></p>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/c&#43;&#43;-ep08smart-pointers3/" title="C&#43;&#43; Ep08:Smart Pointers(3)" >C&#43;&#43; Ep08:Smart Pointers(3)</a>
+                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/" title="C&#43;&#43; Ep08:Smart Pointers(3)" >C&#43;&#43; Ep08:Smart Pointers(3)</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -294,16 +294,16 @@
                             <div class="post-meta">
                                 <span>|</span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
                                 
-                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
                                 
                             </div>
                             
                             <div class="post-content">
                                 Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现   如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to implementation&#34;,指向实现）机制很熟悉了。这种技术让你把类的数据成员替换成指向一个实现类（或结构）的指针， 把曾经放在主类中的数据成员放到实现类中去，然后通过指针间接地访问那些数据成员。举个例子，假设 Widget 看起来像这个样子： classWidget { // in header &#34;widget.h&#34;  public: Widget(); … private: std::string name; std::vector&lt;double&gt; data; Gadget g1, g2, g3; // Gadget is some user-  };    因为 Widget 的数据成员包含 std::string，std::vector 和 Gadget 类型，这些类型的头文件必须出现在 Widget 的编译中， 这就意味着 Widget 的客户必须#include &lt;string&gt;,&lt;vector&gt;,和 gadget.h。这些头文件增加了 Widget 客户的编译时间， 加上它们使得这些客户依赖于头文件的内容。如果头文件的内容改变了，Widget 的客户必须重编译。标准头文件&lt;string&gt;和&lt;vector&gt;不会经常改变， 但是 gadget.h 有频繁更替版本的倾向。  在 C++98 中应用 Pimpl 机制需要在 Widget 中把它的数据成员替换成一个原始指针，指向一个已经被声明却还没有定义的结构： classWidget { // still in header &#34;widget.……
                             </div>
-                            <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep08smart-pointers3/">阅读全文</a></p>
+                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/">阅读全文</a></p>
                         </article>
                     
                     
@@ -313,35 +313,35 @@
 <ol class="page-navigator">
     
     <li class="prev">
-        <a href="http://example.org/">上一页</a>
+        <a href="https://hardy5012.github.io/">上一页</a>
     </li>
     
 
     
     <li >
-        <a href="http://example.org/">1</a>
+        <a href="https://hardy5012.github.io/">1</a>
     </li>
     
     <li  class="current">
-        <a href="http://example.org/page/2/">2</a>
+        <a href="https://hardy5012.github.io/page/2/">2</a>
     </li>
     
     <li >
-        <a href="http://example.org/page/3/">3</a>
+        <a href="https://hardy5012.github.io/page/3/">3</a>
     </li>
     
     <li >
-        <a href="http://example.org/page/4/">4</a>
+        <a href="https://hardy5012.github.io/page/4/">4</a>
     </li>
     
     <li >
-        <a href="http://example.org/page/5/">5</a>
+        <a href="https://hardy5012.github.io/page/5/">5</a>
     </li>
     
 
     
     <li class="next">
-        <a href="http://example.org/page/3/">下一页</a>
+        <a href="https://hardy5012.github.io/page/3/">下一页</a>
     </li>
     
 </ol>
@@ -356,7 +356,7 @@
         <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -366,43 +366,43 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
     </li>
     
 </ul>
@@ -415,31 +415,31 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/categories/ai/">ai(5)</a>
+        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/date/">date(1)</a>
+        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/modern/">modern(16)</a>
+        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/notes/">notes(10)</a>
+        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/summary/">summary(5)</a>
+        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
     </li>
     
 </ul>
@@ -449,49 +449,49 @@
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="http://example.org/tags/boost/">boost</a>
+    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
     
-    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
     
-    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
     
-    <a href="http://example.org/tags/docker/">docker</a>
+    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
     
-    <a href="http://example.org/tags/etf/">etf</a>
+    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
     
-    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
     
-    <a href="http://example.org/tags/git/">git</a>
+    <a href="https://hardy5012.github.io/tags/git/">git</a>
     
-    <a href="http://example.org/tags/gprof/">gprof</a>
+    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
     
-    <a href="http://example.org/tags/heroku/">heroku</a>
+    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
     
-    <a href="http://example.org/tags/linear/">linear</a>
+    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
     
-    <a href="http://example.org/tags/linux/">linux</a>
+    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
     
-    <a href="http://example.org/tags/logistic/">logistic</a>
+    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
     
-    <a href="http://example.org/tags/makefile/">makefile</a>
+    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
     
-    <a href="http://example.org/tags/neural/">neural</a>
+    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
     
-    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
     
-    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
     
-    <a href="http://example.org/tags/python/">python</a>
+    <a href="https://hardy5012.github.io/tags/python/">python</a>
     
-    <a href="http://example.org/tags/regression/">regression</a>
+    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
     
-    <a href="http://example.org/tags/regularization/">regularization</a>
+    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
     
-    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
     
-    <a href="http://example.org/tags/static/">static</a>
+    <a href="https://hardy5012.github.io/tags/static/">static</a>
     
-    <a href="http://example.org/tags/template/">template</a>
+    <a href="https://hardy5012.github.io/tags/template/">template</a>
     
 </div>
     </section>
@@ -501,7 +501,7 @@
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>
@@ -510,7 +510,7 @@
 </div>
 <footer id="footer">
     <div class="container">
-        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
         <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         

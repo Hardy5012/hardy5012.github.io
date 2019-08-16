@@ -16,13 +16,13 @@
     <meta name="description" content="regression">
         
     <meta name="author" content="">
-    <meta property="og:url" content="http://example.org/tags/regression/">
+    <meta property="og:url" content="https://hardy5012.github.io/tags/regression/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="http://example.org/tags/regression/index.xml" title="Learning Hardy" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://hardy5012.github.io/tags/regression/index.xml" title="Learning Hardy" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -39,7 +39,7 @@
         <div class="col-group">
             <div class="site-name ">
                 
-                    <a id="logo" href="http://example.org/">
+                    <a id="logo" href="https://hardy5012.github.io/">
                         Learning Hardy
                     </a>
                 
@@ -47,11 +47,11 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="http://example.org/">首页</a>
+                    <a class="" href="https://hardy5012.github.io/">首页</a>
                     
-                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
                     
-                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
                     
                 </nav>
             </div>
@@ -78,7 +78,7 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/">Machine Learning(2）Logistic Regression</a>
+                                    <a href="https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/">Machine Learning(2）Logistic Regression</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -88,20 +88,20 @@
                             <div class="post-meta meta-category">
                                 |
                                 
-                                    <a href="http://example.org/categories/ai">ai</a>
+                                    <a href="https://hardy5012.github.io/categories/ai">ai</a>
                                 
                             </div>
                             
                             <div class="post-content">
                                  Decision Boundary   决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集属性”，这是因为能作出“划清”类间界限的只有$h_θ(x)$ ，而训练集只是用来训练和调节参数的。 Hypothesis   在逻辑回归中，定义预测函数为: $$h_θ (x) = g(z)$$ 其中，$z=θ^Tx$ 是分类边界，且 $g(z)=\frac{1}{1+e-z}$ Cost Function   \begin{gather*} &amp; J(θ) = \dfrac{1}{m} ∑i=1^m \mathrm{Cost}(h_θ(x(i)),y(i)) ≠wline &amp; \mathrm{Cost}(h_θ(x),y) = -log(h_θ(x)) \; &amp; \text{if y = 1} ≠wline &amp; \mathrm{Cost}(h_θ(x),y) = -log(1-h_θ(x)) \; &amp; \text{if y = 0} \end{gather*}  \begin{gather*} &amp; \mathrm{Cost}(h_θ(x),y) = 0 \text{ if } h_θ(x) = y ≠wline &amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 0 \; \mathrm{and} \; h_θ(x) → 1 ≠wline &amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 1 \; \mathrm{and} \; h_θ(x) → 0 ≠wline \end{gather*} Simplified Cost Function   $$\mathrm{Cost}(h_θ(x),y) = - y \; log(h_θ(x)) - (1 - y) log(1 - h_θ(x))$$ $$J(θ) = - \frac{1}{m} \displaystyle ∑i=1^m [y(i)log (h_θ (x(i))) + (1 - y(i))log (1 - h_θ(x(i)))]$$ \begin{gather*} &amp; h = g(Xθ)≠wline &amp; J(θ) = \frac{1}{m} ⋅ ≤ft(-yTlog(h)-(1-y)Tlog(1-h)\right) \end{gather*} Gradient Descent   \begin{gather*}&amp; Repeat \; \lbrace ≠wline &amp; \; θ_j := θ_j - α \dfrac{∂}{∂ θ_j}J(θ) ≠wline &amp; \rbrace\end{gather*} \begin{gather*} &amp; Repeat \; \lbrace ≠wline &amp; \; θ_j := θ_j - \frac{α}{m} ∑i=1^m (h_θ(x(i)) - y(i)) x_j(i) ≠wline &amp; \rbrace \end{gather*} A vectorized implementation is: $$θ := θ - \frac{α}{m} XT (g(X θ ) - \vec{y})$$ Multi-class classification   多分类问题通常采用 One-vs-All ，亦称 One-vs-the Rest 方法来实现多分类，其将多分类问题转化为了多次二分类问题 overfitting   过拟合：如果太多的特征时，预测函数能拟合训练集，即代价函数的值非常小，但无法正确预测新的新的样本。 解决方案：    减少特征    正规化   ……
-                                <p class="readmore"><a href="http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/">阅读全文</a></p>
+                                <p class="readmore"><a href="https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/">阅读全文</a></p>
                             </div>
                         </article>
                     
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="http://example.org/post/2017-04-21-maching-learing-normal-equation/">Machine Learning(1)Linear Regression</a>
+                                    <a href="https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/">Machine Learning(1)Linear Regression</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
@@ -111,13 +111,13 @@
                             <div class="post-meta meta-category">
                                 |
                                 
-                                    <a href="http://example.org/categories/ai">ai</a>
+                                    <a href="https://hardy5012.github.io/categories/ai">ai</a>
                                 
                             </div>
                             
                             <div class="post-content">
                                  Hypothesis   $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function   $$ J(θ)=\frac{1}{2m}∑limitsi=1m(h_θ(x(i))-y(i))^2,\quad \mbox{$m$ 为样本数} $$ Normal Equation   $$ θ = (X^TX)-1X^Ty $$ 在特征值少于 1w 时则可以使用标准方程一次得解，但如果特征值过多时，需要使用梯度下降方程进行求解. 标准方程的复杂度为$\mathrm{O}(n^3)$, 梯度下降为$\mathrm{O}(n^2)$  $(X^TX)-1$ 不可逆的情况：    冗余的特征，如线性依赖    太多特征，样本小于特征   ……
-                                <p class="readmore"><a href="http://example.org/post/2017-04-21-maching-learing-normal-equation/">阅读全文</a></p>
+                                <p class="readmore"><a href="https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/">阅读全文</a></p>
                             </div>
                         </article>
                     
@@ -136,7 +136,7 @@
         <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -146,43 +146,43 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
     </li>
     
 </ul>
@@ -195,31 +195,31 @@
 <ul class="widget-list">
     
     <li>
-        <a href="http://example.org/categories/ai/">ai(5)</a>
+        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/date/">date(1)</a>
+        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/modern/">modern(16)</a>
+        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/notes/">notes(10)</a>
+        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/summary/">summary(5)</a>
+        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
     </li>
     
     <li>
-        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
     </li>
     
 </ul>
@@ -229,49 +229,49 @@
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="http://example.org/tags/boost/">boost</a>
+    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
     
-    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
     
-    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
     
-    <a href="http://example.org/tags/docker/">docker</a>
+    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
     
-    <a href="http://example.org/tags/etf/">etf</a>
+    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
     
-    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
     
-    <a href="http://example.org/tags/git/">git</a>
+    <a href="https://hardy5012.github.io/tags/git/">git</a>
     
-    <a href="http://example.org/tags/gprof/">gprof</a>
+    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
     
-    <a href="http://example.org/tags/heroku/">heroku</a>
+    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
     
-    <a href="http://example.org/tags/linear/">linear</a>
+    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
     
-    <a href="http://example.org/tags/linux/">linux</a>
+    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
     
-    <a href="http://example.org/tags/logistic/">logistic</a>
+    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
     
-    <a href="http://example.org/tags/makefile/">makefile</a>
+    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
     
-    <a href="http://example.org/tags/neural/">neural</a>
+    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
     
-    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
     
-    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
     
-    <a href="http://example.org/tags/python/">python</a>
+    <a href="https://hardy5012.github.io/tags/python/">python</a>
     
-    <a href="http://example.org/tags/regression/">regression</a>
+    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
     
-    <a href="http://example.org/tags/regularization/">regularization</a>
+    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
     
-    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
     
-    <a href="http://example.org/tags/static/">static</a>
+    <a href="https://hardy5012.github.io/tags/static/">static</a>
     
-    <a href="http://example.org/tags/template/">template</a>
+    <a href="https://hardy5012.github.io/tags/template/">template</a>
     
 </div>
     </section>
@@ -281,7 +281,7 @@
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>
@@ -290,7 +290,7 @@
 </div>
 <footer id="footer">
     <div class="container">
-        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
         <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         

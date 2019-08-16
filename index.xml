@@ -2,453 +2,453 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Learning Hardy</title>
-    <link>http://example.org/</link>
+    <link>https://hardy5012.github.io/</link>
     <description>Recent content on Learning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hardy5012.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>为运行的容器挂载文件目录</title>
-      <link>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</link>
+      <link>https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</link>
       <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</guid>
+      <guid>https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</guid>
       <description>在使用 docker 时，经常需要为已运行的容器挂载文件目录。方法如下:    首先使用 df 查看需要挂载的文件目录是在哪个文件系统上 #on the host: df /home/huaming_li/github Filesystem 1K-blocks Used Available Use% Mounted on /dev/mapper/centos-home 917199292 103069408 814129884 12% /home     通过/proc/self/mountinfo 查看哪个子目录是在 /home #on the host, look for &amp;#39;/home&amp;#39; in the MOUNT column: cat /proc/self/mountinf 65 18 0:6 / /sys/kernel/debug rw,relatime shared:26 - debugfs debugfs rw 71 16 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:27 - binfmt_misc binfmt_misc rw 74 19 0:37 / /proc/fs/nfsd rw,relatime shared:28 - nfsd nfsd rw 76 62 8:1 / /boot rw,relatime shared:29 - xfs /dev/sda1 rw,attr2,inode64,noquota 78 62 253:2 / /home rw,relatime shared:30 - xfs /dev/mapper/centos-home rw,attr2,inode64,noquota 80 62 0:38 / /var/lib/nfs/rpc_pipefs rw,relatime shared:31 - rpc_pipefs sunrpc rw 348 24 0:3 / /run/docker/netns/ingress_sbox rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 357 24 0:3 / /run/docker/netns/1-7qyaqxyicw rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 187 24 0:39 / /run/user/1000 rw,nosuid,nodev,relatime shared:134 - tmpfs tmpfs rw,size=1621780k,mode=700,uid=1000,gid=1000 195 18 0:41 / /sys/fs/fuse/connections rw,relatime shared:141 - fusectl fusectl rw     我们找到了需要创建的设备 253:2, 在容器中 # in the container, create the device if it doesn&amp;#39;t already exist: [ -b /dev/xvda1 ] || mknod --mode 0600 /dev/xvda1 b 253 2     把这个设备挂到容器中 # in the container: $ mkdir -p /tmpmount $ mount /dev/xvda1 /tmpmount mount: permission denied     如果挂载提示权限失败，则需要 ns-enter， 这允许我们作为主机用户输入容器的命名空间： # on the host, get the container&amp;#39;s PID: $ docker inspect --format {{.</description>
     </item>
     
     <item>
       <title>super 没那么简单</title>
-      <link>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</link>
+      <link>https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</guid>
+      <guid>https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</guid>
       <description>大家都知道使用 super 来调用父类了方法，但如何正确使用 super 普遍知之甚少。 为了弄清它的原理，我们需要花点时间解释下 Python 是如何实现继承的。 对于你定义的每一个类，Python 会计算出一个所谓的方法解析顺序(MRO)列表。 这个 MRO 列表就是一个简单的所有基类的线性顺序表。 MRO(Method Resolution Order)   Python 中是使用 C3 算法来确定 MRO 的。可通过 mro()函数来获取每个类的 MRO。  首先了解 C3 的一些基本定义： C1C2...CN   表示一个包含多个类的列表 [C1,C2,…,CN]  例表的第一个元素定义为 head: head = C1   剩余的为 tail: tail = C2...CN   例表相加 [C] + [C1,C2,…,CN]: C + (C1C2...CN) = CC1C2...CN   考虑我们有个多继承的类 C，基类为 B1,B2,…,BN.现在要计算类 C 的线性顺序表 L[C].规则为    C 的线性顺序表为 C 加上 父类的线性顺序表 和 父类例表的 merge.</description>
     </item>
     
     <item>
       <title>Postgres 中的五种分页方式</title>
-      <link>http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</link>
+      <link>https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</link>
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</guid>
+      <guid>https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</guid>
       <description>任意查询分页  limit-offset   limit-offset 是最简单，也是最危险的分页方式。不幸的是，它是 Web 应用程序开发教程的主要内容。对象关系映射（ORM）库使它变得简单而诱人，从 SQLAlchemy 的.slice（1，3）到 ActiveRecord 的.limit（1）.offset（3）到 Sequelize 的.findAll（{offset：3，limit：1}） 。它们最后生成的 SQL 都是以 LIMIT 1 OFFSET3 结束。limit-offset 的使用非常普遍，并非巧合，您可以将其应用于任何查询而无需进一步修改。  这个技术有两个大总是，结果不一致和偏移(offset)效率低下。一致性是指遍历结果集的意图应该检索每个项目一次，没有遗漏或重复。 偏移效率是指将结果转移大量偏移所导致的延迟。  这里有个 limit-offse 分页结果不一致的例子。假设从第 n 页跳到 n+1 页时，同时一个新的元素插入到第 n 页。 这将同时导致重复（第 n 页的先前最后一个元素被推入第 n + 1 页）和一个省略（新元素）。 或者考虑从用户移动到页面 n + 1 时从页面 n 中删除的元素。 页面 n + 1 的先前初始元素将被移动到页面 n 并被省略。  现在分析低效率。大的偏移本质上就是昂贵的，即使存在索引，数据库也必须通过存储进行扫描，对行进行计数。 为了利用索引，我们必须通过一个值过滤一列，但在这种情况下，我们需要一定数量的行，而不管它们的列值如何。 此外，这些行的存储空间不需要具有相同的大小，有些可能存在于磁盘上，但标记为已删除，因此数据库无法使用简单的算术在磁盘上查找位置以开始读取结果。 我们来衡量有多少慢。 -- Create table with random strings of various lengths  CREATE TABLE medley AS SELECT generate_series(1,10000000) AS n, substr(concat(md5(random()::text), md5(random()::text)), 1, (random() * 64)::integer + 1) AS description; -- Notify query planner of drastically changed table size  VACUUM ANALYZE; -- Low offsets are refreshingly fast  EXPLAIN ANALYZE SELECT * FROM medley LIMIT 100;   估计成本相当低： QUERY PLAN -------------------------------------------------------------------------------------------------------------------- 	Limit (cost=0.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep23: constexpr if</title>
-      <link>http://example.org/post/c&#43;&#43;-ep23-if-constexpt/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</link>
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep23-if-constexpt/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</guid>
       <description> 以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句 （若存在），否则舍去 true 分支语句 。示例： #include&amp;lt;type_traits&amp;gt; #include&amp;lt;iostream&amp;gt; template&amp;lt;typename T&amp;gt; auto print_type_info(const T &amp;amp;t) { if constexpr(std::is_integral&amp;lt;T&amp;gt;::value){ return t + 1; } else if constexpr(std::is_floating_point&amp;lt;T&amp;gt;::value){ return t + 0.1; } else{ return t; } } int main() { std::cout &amp;lt;&amp;lt; print_type_info(5) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; std::cout &amp;lt;&amp;lt; print_type_info(4.3) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; std::cout &amp;lt;&amp;lt; print_type_info(&amp;#34;hello world&amp;#34;) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; }    在上面的例中，当传参 5 时。语句可看成： template&amp;lt;typename T&amp;gt; auto print_type_info(const T &amp;amp;t) { return t + 1; }    说明：    constexpr 整个条件语句都会执行，与普通的不同(如 &amp;amp;&amp;amp; 在前面为 false 时会中断)。    在被舍去语句中的 return 语句不参与函数返回类型推导    被舍去语句可以 odr 使用不定义的变量    若 constexpr if 语句出现于模板实体内，且若 条件 在实例化后不是值依赖的，则在实例化外围模板时不会实例化被舍去语句    在模板外，被舍去语句受到完整的检查。if constexpr 不是 #if 预处理指令的替代品   </description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep22: Fibonacci</title>
-      <link>http://example.org/post/c&#43;&#43;-ep22-fibonacci/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/</link>
       <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep22-fibonacci/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/</guid>
       <description>Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本  int fib(const int i) { if(i == 0) return 0; if(i == 1) return 1; return fib(i - 1) + fib(i - 2); }      文件大小：8.7K    时间：7.4S   模板版本  template&amp;lt;int I&amp;gt; struct Fib { static const int val = Fib&amp;lt;I-1&amp;gt;::val + Fib&amp;lt;I-2&amp;gt;::val; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;0&amp;gt; { static const int val = 0; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;1&amp;gt; { static const int val = 1; };      文件大小：8.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep21: variadic Templates</title>
-      <link>http://example.org/post/c&#43;&#43;-ep21-variadic-templates/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</link>
       <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep21-variadic-templates/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</guid>
       <description>使用  之前   在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 //一个参数  template&amp;lt;typename T1&amp;gt; //两个参数  template&amp;lt;typename T1, typename T2&amp;gt; //三个参数  template&amp;lt;typename T1, typename T2, typename T3&amp;gt; ....    无论是实现还是效率都非常差 可变参数版本（递归实现）   对于上面情况，使用可变参数模板实现： #include &amp;lt;sstream&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;vector&amp;gt; template&amp;lt;typename T&amp;gt; std::string to_string_impl(const T&amp;amp; t) { std::stringstream ss; ss &amp;lt;&amp;lt; t; return ss.str(); } std::vector&amp;lt;std::string&amp;gt; to_string(){ return {}; } template&amp;lt;typename P1, typename ...Param&amp;gt; std::vector&amp;lt;std::string&amp;gt; to_string(const P1 &amp;amp;p1, const Param&amp;amp; .</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep20: Static Variable</title>
-      <link>http://example.org/post/c&#43;&#43;-ep20-static-variable/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</link>
       <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep20-static-variable/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</guid>
       <description> C++ static 变量  初始化顺序     全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化    局部静态变量在第一次被使用时初始化   线程安全   从 C++ 11 起局部静态变量的初始化是线程安全的。 效率   由于要保证局部静态变量的线程安全，所以在每次访问时都需要 guard 判断变量是补始化，这样存在一个效率的问题。 struct C{ static const std::string &amp;amp;magic_static() { static std::string s = &amp;#34;hardy&amp;#34;; return s; } const std::string &amp;amp;s = magic_static(); const std::string &amp;amp;magic_static_ref() { return s; } };    在上面的例子中，调用 magic_static 的效率要比 magic_static_ref 低。 </description>
     </item>
     
     <item>
       <title>Tweaks(2)</title>
-      <link>http://example.org/post/tweaks2/</link>
+      <link>https://hardy5012.github.io/post/tweaks2/</link>
       <pubDate>Tue, 06 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/tweaks2/</guid>
+      <guid>https://hardy5012.github.io/post/tweaks2/</guid>
       <description>Item 42:考虑就地创建而非插入   如果你有一个容器，比如说 std::strings，将 std::string 元素类型传给插入函数(如, insert, push_front, push_back, 或是, for std::forward_list, insert_after)添加新的元素，似乎是乎合逻辑的。毕竟，这是容器的内容。 尽管这可能是逻辑的，但并不总是如此。 考虑这个代码： std::vector&amp;lt;std::string&amp;gt; vs; // container of std::string  vs.push_back(&amp;#34;xyzzy&amp;#34;); // add string literal    在这里，容器容纳了 std::strings，但是你手头上的东西（你实际上想要 push_back 的东西）是一个字符串，也就是引号内的一系列字符。 字符串文字不是 std::string，这意味着传递给 push_back 的参数不是容器所持有的类型。 对于 std::vector，push_back 被重载为左值和右值，如下所示： template &amp;lt;classT, // from the C++11 	classAllocator = allocator&amp;lt;T&amp;gt;&amp;gt; // Standard  classvector { public: … void push_back(const T&amp;amp; x); // insert lvalue 	void push_back(T&amp;amp;&amp;amp; x); // insert rvalue 	… };    在这个调用中： vs.</description>
     </item>
     
     <item>
       <title>Tweaks(1)</title>
-      <link>http://example.org/post/tweaks1/</link>
+      <link>https://hardy5012.github.io/post/tweaks1/</link>
       <pubDate>Mon, 05 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/tweaks1/</guid>
+      <guid>https://hardy5012.github.io/post/tweaks1/</guid>
       <description>Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式   有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来源。) 例如，成员函数 addName 可能会将其参数复制到私有容器中。 为了提高效率，这样的函数应该复制左值参数，但移动右值参数： classWidget { public: void addName(const std::string&amp;amp; newName) // take lvalue; 	{ names.push_back(newName); } // copy it 	void addName(std::string&amp;amp;&amp;amp; newName) // take rvalue; 	{ names.push_back(std::move(newName)); } // move it; see 	… // Item 25 for use 	// of std::move 	private: std::vector&amp;lt;std::string&amp;gt; names; };    这是有效的，但是它需要编写两个基本相同的功能。 这个功能：两个功能声明，两个功能实现，两个功能文件，两个功能维护。啊。  此外，在目标代码中将会有两个功能 - 如果您担心程序的占用空间，您可能会关心这些功能。在这种情况下，两个函数都可能被内联， 这可能会消除与两个函数的存在相关的任何膨胀问题，但是如果这些函数不是内联到处，那么在对象代码中实际上会得到两个函数。  另一种方法是使 addName 成为一个通用的函数模板参考（见 item 24）： classWidget { public: template&amp;lt;typename T&amp;gt; // take lvalues 	void addName(T&amp;amp;&amp;amp; newName) // and rvalues; 	{ // copy lvalues, 	names.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep19:The Concurrency API(4)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/</link>
       <pubDate>Fri, 02 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/</guid>
       <description>Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&amp;lt;int&amp;gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &amp;lt;&amp;lt; ai; // atomically read ai&amp;#39;s value  ++ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &amp;lt;&amp;lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &amp;lt;&amp;lt; vi; // read vi&amp;#39;s value  ++vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&amp;lt;int&amp;gt; ac(0); // &amp;#34;atomic counter&amp;#34;  volatile int vc(0); // &amp;#34;volatile counter&amp;#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ ++ac; ++ac; ++vc; ++vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &amp;lt;bool&amp;gt;。计算值任务的代码部分如下： std::atomic&amp;lt;bool&amp;gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&amp;#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&amp;#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep18:The Concurrency API(3)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep18the-concurrency-api3/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep18the-concurrency-api3/</link>
       <pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep18the-concurrency-api3/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep18the-concurrency-api3/</guid>
       <description>Item39:考虑使用 void futures 一次性事件通信   ​有的时候对于一个任务来说，希望有一种机制可以和另外一个任务进行通信，尤其是那种异步运行的任务，并且会出现一种特定事件的任务， 另外一个任务需要等到这个事件的发生才能继续运行，典型的，可以是等待一个重要的数据结构进行初始化，或者是等待一个计算阶段完成，又或者是检测一个重要的值。 那么什么样的方式可以处理好这种线程间的通信呢？  一个很明显的方法就是使用 条件变量 （ condvar ） 。如果我把检测条件的任务叫做检测任务，响应条件的任务叫响应任务，那么这个策略简单：响应任务等待条件变量，当事件 发生时，检测线程通知条件变量。 std::condition_variable cv; // condvar for event  std::mutex m; // mutex for use with cv    检测任务中的代码非常简单： … // detect event  cv.notify_one(); // tell reacting task    如果有多个响应任务需要通知，则可以用 notify_all 替换 notify_one.  响应任务中的代码有点复杂，因为在调用 wait 这个条件变量之前，需要通过 std::unique_lock 来互斥锁住。 … // prepare to react  { // open critical section 	std::unique_lock&amp;lt;std::mutex&amp;gt; lk(m); // lock mutex 	cv.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep17:The Concurrency API(2)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep17the-concurrency-api2/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/</link>
       <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep17the-concurrency-api2/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/</guid>
       <description>Item 37:让 std::thread 对象在所有路径都无法连接   每个 std::thread 对象的状态都是这两种中的一种：joinable（可连接的）或 unjoinable（不可连接的）。一个可连接的 std::thread 对应一个底层异步执行线程， 例如，一个 std::thread 对应的一个底层线程，它会被阻塞或等待被调度， 那么这个 std::thread 就是可连接的。std::thread 对象对应的底层线程可以将代码运行至结束，也可将其视为可连接的。  不可连接的 std::thread 的意思就如你想象那样：std::thread 不是可连接的。不可连接的 std::thread 对象包括：    默认构造的 std::thread。这种 std::thread 没有函数可以执行，因此没有对应的底层执行线程。    被移动过的 std::thread。移动的结果是，一个 std::thread 对应的底层执行线程被对应到另一个 std::thread。    被连接过（调用了 join）的 std::thread。在调用了 join 之后，std::thread 对应的底层执行线程结束运行，就没有对应的底层线程了    被分离（detach）的 std::thread。detach 把 std::thread 对象与它对应的底层执行线程分离开。    std::thread 的连接性是很重要的，其中一个原因是：如果一个可连接的线程对象执行了析构操作，那么程序会被终止。 例如，假设我们有一个函数 doWork，它的参数包含过滤器函数 filter、一个最大值 maxVal。doWork 把 0 到 maxVal 之间值传给过滤器， 然后满足特定条件就对满足过滤器的值进行计算。如果执行过滤器函数是费时的，而检查条件也是费时的，那么并发做这两件事是合理的。  我们其实会更偏向于使用基于任务的设计（看条款 35），但是让我们假定我们想要设置执行过滤器线程的优先级。 条款 35 解释过请求使用线程的本机句柄（native handle）时，只能通过 std::thread 的 API；基于任务的 API 没有提供这个功能。 因此我们的方法是基于线程，而不是基于任务。  我们可以提出这样的代码： constexpr auto tenMillion = 10000000; // see Item 15  // for constexpr  bool doWork(std::function&amp;lt;bool(int)&amp;gt; filter, // returns whether 	int maxVal = tenMillion) // computation was  { // performed; see  // Item 2 for  // std::function 	std::vector&amp;lt;int&amp;gt; goodVals; // values that  // satisfy filter 	std::thread t([&amp;amp;filter, maxVal, &amp;amp;goodVals] // populate 	{ // goodVals 	for (auto i = 0; i &amp;lt;= maxVal; ++i) { if (filter(i)) goodVals.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep16:The Concurrency API(1)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep16the-concurrency-api1/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/</link>
       <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep16the-concurrency-api1/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/</guid>
       <description>Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &amp;#34;fut&amp;#34; for &amp;#34;future&amp;#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C++并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C++进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C++标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C++标准库没有要求线程池或者工作窃取算法，而且，实话说，C++11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C++并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C++并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C++提供的要多（例如，C++没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C++并发 API 之上实现线程技术。例如，实现一个 C++不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C++14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep15:Lambda Epressions(2)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep15lambda-epressions2/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/</link>
       <pubDate>Sun, 14 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep15lambda-epressions2/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/</guid>
       <description>Item 33:对需要 std::forward 的 auto&amp;amp;&amp;amp;参数使用 decltype   泛型 lambda(generic lambda)是 C++14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 auto。这个特性的实现很直截了当： 闭包类中的 operator() 函数是一个模板。例如，给定这个 lambda， auto f = [](auto x) { return func(normalize(x)); };    闭包类的函数调用操作符看起来是这样的： classSomeCompilerGeneratedClassName { public: template&amp;lt;typename T&amp;gt; // see Item 3 for 	auto operator()(T x) const // auto return type 	{ return func(normalize(x)); } … // other closure class  }; // functionality    在这个例子中，lambda 对 x 做的唯一的一件事就是把它转发给 normalized。如果 normalized 区别对待左值和右值，这个 lambda 这样写是不合适的， 因为即使传递给 lambda 的实参是个右值，lambda 总是传一个左值（形参 x）给 normalized。  写这个 lambda 的正确方式是把 x 完美转发给 normalized，这样做需要在代码中修改两个地方。第一，x 要改成通用引用（看条款 24）， 第二，借助 std::forward（看条款 25）把 x 转发到 normalized。在概念上，修改成这样： auto f = [](auto&amp;amp;&amp;amp; x) { return func(normalize(std::forward&amp;lt;?</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep14:Lambda Epressions(1)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep14lambda-epressions1/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/</link>
       <pubDate>Thu, 11 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep14lambda-epressions1/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/</guid>
       <description>Item31:对于 lambda 表达式，避免使用默认捕获模式   C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获模式诱骗你——让你认为你可以免疫刚说的问题（事实上没有免疫）， 然后它又骗你——让你认为你的闭包是独立的（事实上它们可能不是独立的）  那就是本条款的总纲。如果你是工程师，你会想要更具体的内容，所以让我们从默认捕获模式的危害开始说起吧。  引用捕获会导致闭包包含一个局部变量的引用或者一个形参的引用（在定义 lamda 的作用域）。如果一个由 lambda 创建的闭包的生命期超过了局部变量或者形参的生命期， 那么闭包的引用将会空悬。例如，我们有一个容器，它的元素是过滤函数，这种过滤函数接受一个 int，返回 bool 表示传入的值是否可以满足过滤条件： using FilterContainer = // see Item 9 for 	std::vector&amp;lt;std::function&amp;lt;bool(int)&amp;gt;&amp;gt;; // &amp;#34;using&amp;#34;, Item 2  // for std::function  FilterContainer filters; // filtering funcs    我们可以通过添加一个过滤器，过滤掉 5 的倍数，像这样： filters.emplace_back( // see Item 42 for 	[](int value) { return value % 5 == 0; } // info on 	); // emplace_back    但是，我们可能需要在运行期间计算被除数，而不是直接把硬编码 5 写到 lambda 中，所以添加过滤器的代码可能是这样的： void addDivisorFilter() { auto calc1 = computeSomeValue1(); auto calc2 = computeSomeValue2(); auto divisor = computeDivisor(calc1, calc2); filters.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</link>
       <pubDate>Tue, 09 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</guid>
       <description>Item 30:熟悉完美转发失败的情况   完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现实中的“完美”有点出入。 C++11 的完美转发非常棒，但当且仅当你愿意忽略一两个特殊情况，才能真正得到完美。该条款就是为了让你熟悉那些特殊情况。  在着手探索我们的特殊情况之前，值得回顾一下“完美转发”的意思。“转发”的意思是一个函数传递——转发——它的参数到另一个函数， 目的是为了让第二个函数（被转发参数的函数）收到第一个函数（进行转发的函数）接受到的对象。这个规则排除值语义的形参， 因为它们只是拷贝原始调用者传递的参数，我们想要的是，接受转发参数的函数能够处理最开始传递进来的对象。指针形参也排除在外， 因为我们不想强迫调用者传递指针。通常，当发生有目的的转发时，我们都是处理形参为引用的参数。  完美转发意思是：我们不单单转发对象，我们还转发它们重要的特性：它们的类型，它们是右值还是左值，它们是否是 const 或者 volation 修饰的。 配合我们观察到的我们一般处理引用参数，这暗示着我们会把完美转发用到通用引用（看条款 24）上， 因为只有通用引用形参才会把传递给它们的实参的左值或右值信息进行编码。  假设我们有一些函数 f，然后我们写了个函数（事实上是模板函数），这个函数把参数转发到函数 f。我们需要的关键代码是这样的： template&amp;lt;typename T&amp;gt; void fwd(T&amp;amp;&amp;amp; param) // accept any argument  { f(std::forward&amp;lt;T&amp;gt;(param)); // forward it to f  }    按照本性，进行转发的函数是通用的。例如，fwd 模板，应该可以接受一些类型不同的参数，然后转发它所得到的。对于这种通用性的一种有逻辑的扩展是， fwd 不应该只是个模板，而是个可变参数模板，因此可以接受任意数目的参数，可变参数模板 fwd 看起来应该是这样的： template&amp;lt;typename... Ts&amp;gt; void fwd(Ts&amp;amp;&amp;amp;... params) // accept any arguments  { f(std::forward&amp;lt;Ts&amp;gt;(params)...); // forward them to f  }    这种形式的模板你能在其它地方见到，例如标准库容器的 emplace 函数（看条款 42），和智能指针工厂函数——std::make_shared 和 std::make_unique （看条款 21）。  给定我们的目标函数 f 和进行转发的函数 fwd，如果用某个实参调用 f 会做某件事，然后用同样的实参调用 fwd，但 fwd 里的 f 行为和前面那种情况不一样， 那么完美转发是失败的： f( expression ); // if this does one thing,  fwd( expression ); // but this does something else, fwd fails  // to perfectly forward expression to f    几种类型的实参会导致这种失败，知道它们是什么和如何工作是很重要的，让我们来观察这几种不能完美转发的类型吧。 大括号初始值   假如 f 的声明是这样的： void f(const std::vector&amp;lt;int&amp;gt;&amp;amp; v);    这种情况，用大括号初始值调用 f 是可以通过编译的： f({ 1, 2, 3 }); // fine, &amp;#34;{1, 2, 3}&amp;#34; implicitly  // converted to std::vector&amp;lt;int&amp;gt;    但如果把大括号初始值传递给 fwd 就不能通过编译： fwd({ 1, 2, 3 }); // error!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</link>
       <pubDate>Sun, 07 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</guid>
       <description>Item 28:理解引用折叠   Item 23 说过，当一个参数被传给模板函数时，不管这个参数是左值还是右值，模板参数的类型推导都会对参数进行编码。 那个 Item 没有解释这样的情况只在实参被用在初始化一个 universal 引用类型的型参时才会发生， 但是它没有解释是有理由的：universal 引用在 Item24 之前没有被介绍过。 同时，这些关于 universal 引用以及左右值编码的观察报告说明了对于这个模板： template&amp;lt;typename T&amp;gt; void func(T&amp;amp;&amp;amp; param);    无论传给 param 的参数是左值还是右值，被推导出来的模板参数 T 将会被编码。  编码的机制很简单。 当一个左值做为一个参数传入时，T 被推导为一个左值引用。当一个右值被传入时，T 被推导为没有引用 。 （记住这种不对称：左值被编码成左值引用，但是右值被编码成没有引用。）因此： Widget widgetFactory(); // function returning rvalue  Widget w; // a variable (an lvalue)  func(w); // call func with lvalue; T deduced  // to be Widget&amp;amp;  func(widgetFactory()); // call func with rvalue; T deduced  // to be Widget    两个对 func 的调用中，Widget 都被传入了，但是因为一个 Widget 是左值，一个是右值，模板参数 T 被推导成了不同的类型 。就像我们马上要看到的一样，这个特性就是能决定 universal 引用成为右值引用或左值引用的关键，它同时也是 std::forward 能完成其工作的底层机制。  在我们进一步观察 std::forward 和 universal 引用之前，我们必须注意到，在 C++中对引用进行引用是非法的。也许你应该尝试去声明一个，你的编译器会谴责你： int x; … auto&amp;amp; &amp;amp; rx = x; // error!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</link>
       <pubDate>Fri, 05 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</guid>
       <description>Item 27:明白什么时候选择重载，什么时候选择 universal 引用   Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系列的问题。 到目前为止，我也已经给出了好几个例子，如果它能表现得和我们期待的一样，这种重载也能很实用。 此 Item 会探索如何让这种重载能实现我们所需求的行为。我们可以设计出避免对 universal 引用进行重载的实现， 也可以通过限制参数的类型，来使得它们能够匹配。 抛弃重载   Item 26 中的第一个例子（logAndAdd）就是一个典型的例子，很多这样的函数如果想要避免对 universal 引用进行重载， 那只要简单地对即将重载的函数进行不同的命名即可。举个例子，两个 logAndAdd 重载能被分割成 logAndAddName 和 logAndAddNameIdx。可惜的是，这个方法不能在第二个例子（Person 构造函数）中工作，因为构造函数的名字是由语言固定的。 再说了，谁又想放弃重载呢？ 通过 const T&amp;amp;传参数   另一个选择是回到 C++98，并且把 pass-by-universal-reference（通过 universal 引用传参数） 替换成 pass-by-lvalue-reference-to-const（通过 const 左值引用传参数）。事实上，这是 Item 26 考虑的第一个方法。 这个办法的缺点是它的效率无法达到最优。要知道，对于我们现在所知道的 universal 引用和重载来说， 牺牲一些效率来保持事情的简单性可能是一个很有吸引力的方案。 传值   一个常常能让你提升效率并且不增加复杂性的办法是把传引用的参数替换成传值的参数。虽然这很不直观， 但这个设计遵守了 Item 41 的建议（当知道你需要拷贝一个对象时，直接通过传值来传递它）。 所以，对于它们怎么工作以及它们有多高效的细节部分，我会推迟到 Item 41 再讨论。 在这，我只是给你看一下这个技术怎么用在 Person 例子中去： classPerson { public: explicit Person(std::string n) // replaces T&amp;amp;&amp;amp; ctor; see 	: name(std::move(n)) {} // Item 41 for use of std::move 	explicit Person(int idx) // as before 	: name(nameFromIdx(idx)) {} … private: std::string name; };    因为 std::string 的构造函数接受类型为整型的参数，所以所有传给 Person 构造函数的 int 及类 int （比如，std::size_t, short, long）的参数讲调用 int 版本的重载。相似的，所有的 std::string 类型 （以及那些可以用来创建一个 std::string 的参数，比如字符串&amp;#34;Ruth&amp;#34;）会被传给以 std::string 为参数的构造函数。 因此对于调用者来说，这里没有意外发生。你能争论说“我觉得有些人还是会感到奇怪，他们使用 0 或 NULL 来代表 null 指针， 所以这会掉用 int 版本的重载”，但是这些人应该回到 Item 8，然后再读一次，直到他们觉得使用 0 或 NULL 来表示 null 指针会让他们觉得可怕。 使用 Tag dispatch（标签分发）   不管是通过 lvalue-reference-to-const 传递还是传值的方式来支持完美转发。如果使用 universal 引用的动机是完美转发的话， 我们没有其他的选择。我们还是不想抛弃重载。所以如果我们不想抛弃重载，也不想抛弃 universal 引用的话， 我们怎么才能避免对 universal 引用进行重载呢？  事实上没有这么困难。重载函数的调用是这样的：依次查看每个重载函数的参数（形参）以及调用点的参数（实参）， 然后选择最匹配的重载函数（匹配上所有的形参和实参）。一个 universal 引用参数通常提供一个格外的匹配，使得不管传入的是什么， 都能匹配上，但是如果 universal 引用只是参数列表的一部分，这个参数列表还包含其他不是 universal 引用的参数，那么， 即使不考虑 universal 引用，非 universal 引用参数就足够我们造成不匹配了。这就是 tag dispatch 方法背后的基础， 一个例子会让之前的描述更加好理解。  我们把 tag dispatch 永在 logAndAdd177 页的例子上去。为了避免你分神去找，这里给出那个例子的代码： std::multiset&amp;lt;std::string&amp;gt; names; // global data structure  template&amp;lt;typename T&amp;gt; // make log entry and add  void logAndAdd(T&amp;amp;&amp;amp; name) // name to data structure  { auto now = std::chrono::system_clock::now(); log(now, &amp;#34;logAndAdd&amp;#34;); names.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</link>
       <pubDate>Thu, 04 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</guid>
       <description>Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward   右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道这个被绑定的对象可以被 move： classWidget { Widget(Widget&amp;amp;&amp;amp; rhs); // rhs definitely refers to an 	… // object eligible for moving  };    在这种情况下，你会想传这样一个对象给其他函数，来允许这些函数能利用对象的右值属性。为了达到这样的目的，需要把绑定到这些对象的参数转换成右值。 就像 Item 23 解释的那样，std::move 不仅是这么做了，它就是为了这个目的而被创造出来的： classWidget { public: Widget(Widget&amp;amp;&amp;amp; rhs) // rhs is rvalue reference 	: name(std::move(rhs.name)), p(std::move(rhs.p)) { … } … private: std::string name; std::shared_ptr&amp;lt;SomeDataStructure&amp;gt; p; };    在另一方面，一个 universal 引用可能被绑定到一个有资格被 move 的对象上去。universal 引用只在它由右值初始化的时候需要被转换成一个右值。 Item 23 解释了这就是 std::forward 具体做的事情： classWidget { public: template&amp;lt;typename T&amp;gt; void setName(T&amp;amp;&amp;amp; newName) // newName is 	{ name = std::forward&amp;lt;T&amp;gt;(newName); } // universal reference 	… };    总之，因为右值引用总是被绑定到右值，所以当它们被转发给别的函数的时候，应该被无条件地转换成右值（通过 std::move）， 而 universal 引用由于只是不定时地被绑定到右值，所以当转发它们时，它们应该被有条件地转换成右值（通过 std::forward）。  Item 23 解释了对右值引用使用 std::forward 能让它显示出正确的行为，但是源代码会因此变得冗长、易错、不符合习惯的， 所以你应该避免对右值引用使用 std::forward。对 universal 引用使用 std::move 是更加糟糕的想法，因为这样会对左值（比如，局部变量）产生非预期的修改： classWidget { public: template&amp;lt;typename T&amp;gt; void setName(T&amp;amp;&amp;amp; newName) // universal reference 	{ name = std::move(newName); } // compiles, but is 	… // bad, bad, bad!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep08:Smart Pointers(3)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep08smart-pointers3/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/</link>
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep08smart-pointers3/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/</guid>
       <description>Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现   如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&amp;#34;point to implementation&amp;#34;,指向实现）机制很熟悉了。这种技术让你把类的数据成员替换成指向一个实现类（或结构）的指针， 把曾经放在主类中的数据成员放到实现类中去，然后通过指针间接地访问那些数据成员。举个例子，假设 Widget 看起来像这个样子： classWidget { // in header &amp;#34;widget.h&amp;#34;  public: Widget(); … private: std::string name; std::vector&amp;lt;double&amp;gt; data; Gadget g1, g2, g3; // Gadget is some user-  };    因为 Widget 的数据成员包含 std::string，std::vector 和 Gadget 类型，这些类型的头文件必须出现在 Widget 的编译中， 这就意味着 Widget 的客户必须#include &amp;lt;string&amp;gt;,&amp;lt;vector&amp;gt;,和 gadget.h。这些头文件增加了 Widget 客户的编译时间， 加上它们使得这些客户依赖于头文件的内容。如果头文件的内容改变了，Widget 的客户必须重编译。标准头文件&amp;lt;string&amp;gt;和&amp;lt;vector&amp;gt;不会经常改变， 但是 gadget.h 有频繁更替版本的倾向。  在 C++98 中应用 Pimpl 机制需要在 Widget 中把它的数据成员替换成一个原始指针，指向一个已经被声明却还没有定义的结构： classWidget { // still in header &amp;#34;widget.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</link>
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</guid>
       <description>Item 23:理解 std::move 和 std::forward   根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在运行期，它们没有做任何事情。它们没有产生需要执行的代码，一 byte 都没有。  std::move 和 std::forward 只不过就是执行 cast 的两个函数（实际上是函数模板）。 std::move 无条件地把它的参数转换成一个右值，而 std::forward 只在特定条件满足的情况下执行这个转换。就是这样了， 我的解释又引申出一系列的新问题，但是，基本上来说，上面说的就是全部内容了。  为了让内容更加形象，这里给出 C++11 中 std::move 实现的一个例子。它没有完全遵循标准的细节，但是很接近了。 template&amp;lt;typename T&amp;gt; // in namespace std  typename remove_reference&amp;lt;T&amp;gt;::type&amp;amp;&amp;amp; move(T&amp;amp;&amp;amp; param) { using ReturnType = // alias declaration; 	typename remove_reference&amp;lt;T&amp;gt;::type&amp;amp;&amp;amp;; // see Item 9 	return static_cast&amp;lt;ReturnType&amp;gt;(param); }    我已经帮你把代码的两个部分高亮（move 和 static_cast）显示了。一个是函数的名字，因为返回值类型挺复杂的，我不想让你在这复杂的地方浪费时间。 另一个地方是包括了这个函数的本质（cast）。就像你看到的那样，std::move 需要一个对象的引用（准确地说是一个 universal 引用，看 Item 24）， 并且返回同一个对象的引用。  函数返回值类型的“&amp;amp;&amp;amp;”部分暗示了 std::move 返回一个右值引用，但是，就像 Item 28 解释的那样，如果类型 T 恰好是左值引用，T&amp;amp;&amp;amp;将成为一个左值引用。 为了防止这样的事情发生，type trait（看 Item 9）std::remove_reference 被用在 T 上了，因此能保证把“&amp;amp;&amp;amp;”加在不是引用的类型上。 这样能保证让 std::move 确切地返回一个右值引用，并且这是很重要的，因为由函数返回的右值引用是一个右值。 因此，std::move 所做的所有事情就是转换它的参数为一个右值。  说句题外话，在 C++14 中 std::move 能被实现得更简便一些。多亏了函数返回值类型推导（看 Item 3）以及标准库的别名模板 std::remove_reference_t（看 Item 9），std::move 能被写成这样： template&amp;lt;typename T&amp;gt; // C++14; still in  decltype(auto) move(T&amp;amp;&amp;amp; param) // namespace std  { using ReturnType = remove_reference_t&amp;lt;T&amp;gt;&amp;amp;&amp;amp;; return static_cast&amp;lt;ReturnType&amp;gt;(param); }    看上去更简单了，不是吗？  因为 std::move 值只转换它的参数为右值，这里有一些更好的名字，比如说 rvalue_cast。尽管如此，我们仍然使用 std::move 作为它的名字， 所以记住 std::move 做了什么和没做什么很重要。它做的是转换，没有做 move。  当然了，右值是 move 的候选人，所以把 std::move 应用在对象上能告诉编译器，这个对象是有资格被 move 的。 这也就是为什么 std::move 有这样的名字：能让指定的对象更容易被 move。  事实上，右值是 move 的唯一候选人。假设你写了一个代表注释的类。 这个类的构造函数有一个 std::string 的参数，并且它拷贝参数到一个数据成员中。根据 Item 41 中的信息，你声明一个传值的参数： classAnnotation { public: explicit Annotation(std::string text); // param to be copied, 	… // so per Item 41,  }; // pass by value    但是 Annotation 的构造函数只需要读取 text 的值。它不需要修改它。 为了符合历史传统（把 const 用在任何可以使用的地方），你修改了你的声明，因此 text 成为了 const 的： classAnnotation { public: explicit Annotation(const std::string text) … };    为了在拷贝 text 到数据成员的时候不把时间浪费在拷贝操作上，你保持 Item 41 的建议并且把 std::move 用在 text 上，因此产生了一个右值： classAnnotation { public: explicit Annotation(const std::string text) : value(std::move(text)) // &amp;#34;move&amp;#34; text into value; this code 	{ … } // doesn&amp;#39;t do what it seems to!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep07:Smart Pointers(2)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep07smart-pointers2/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/</link>
       <pubDate>Tue, 02 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep07smart-pointers2/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/</guid>
       <description>Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&amp;lt;Widget&amp;gt;(); // the pointed-to Widget&amp;#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep06:Smart Pointers(1)</title>
-      <link>http://example.org/post/c&#43;&#43;_ep06_smart_pointers_1/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/</link>
       <pubDate>Fri, 29 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;_ep06_smart_pointers_1/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/</guid>
       <description>item 18: 使用 std::unique_ptr 来管理独占所有权的资源   当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是很合理的：std::unique_ptr 和原始指针的大小是一样的， 并且很多操作（包括解引用），它们执行的是完全相同的指令。这意味着你甚至能把它们用在对内存和时间都很紧的地方。如果一个原始指针对你来说足够的小和快， 那么一个 std::unique_ptr 也几乎可以肯定是这样的。  std::unique_ptr 表现出独占所有权的语义。一个非空的 std::unique_ptr 总是对它指向的资源拥有所有权。 move 一个 std::unique_ptr 将把所有权从源指针转交给目标指针（源指针将被设置为 null）。拷贝一个 std::unique_ptr 是不被允许的， 因为如果你拷贝一个 std::unique_ptr，你将得到两个 std::unique_ptr 指向同样的资源，然后这两个指针都认为它们拥有资源（因此应该释放资源）。 因此 std::unique_ptr 是一个 move-only（只能进行 move 操作的）类型。再看看资源的销毁，一个非空的 std::unique_ptr 销毁它的资源。 默认情况下，通过在 std::unique_ptr 中 delete 一个原始指针的方法来进行资源的销毁。  std::unique_ptr 的常用方法是作为一个工厂函数的返回类型（指向类层次中的对象），假设我们有一个投资类型的类层次（比如，股票，债券，不动产等等）， 这个类层次的基类是 Investment。 classInvestment { … }; classStock: public Investment { … }; classBond: public Investment { … }; classRealEstate: public Investment { … };    对于这样的类层次，一个工厂函数常常会在堆上分配一个对象，并且返回一个指向这个对象的指针，当这个对象不再需要被使用的时候，调用者有责任销毁这个对象。 这完全符合 std::unique_ptr 的概念，因为调用者要对工厂返回的资源负责（也就是，它独占了所有权），然后当 std::unique_ptr 被销毁的时候， std::unique_ptr 会自动销毁它指向的对象。对于 Investment 类层次，一个工厂函数能被声明成这样： template&amp;lt;typename.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</link>
       <pubDate>Wed, 27 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</guid>
       <description>item 15: 只要有可能，就使用 constexpr   从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当 constexpr 应用在函数上时， 事情变得比看上去还要微妙。为了避免毁掉后面的惊喜，现在，我只能说你不能假设 constexpr 函数的返回值是 const 的，同时你也不能假设这些值能在编译期被知道。 也许最有趣的是，这些东西都是特性（是有用的）。对于 constexpr 函数来说，不需要产生 const 或能在编译期知道的返回结果是一件好事。  但是，让我们从 constexpr 对象开始。这些对象确实是常量，也确实能在编译期被知道。 （技术上来讲，它们的值是在翻译阶段被决定的，翻译阶段包含了编译期和链接期。除非你要写一个 C++的编译器或连接器，不然这都影响不到你， 所以你能在编程的时候，开心地假设为 constexpr 对象的值是在编译期被决定的） int sz; // non-constexpr variable  … constexpr auto arraySize1 = sz; // error! sz&amp;#39;s value not  // known at compilation  std::array&amp;lt;int, sz&amp;gt; data1; // error! same problem  constexpr auto arraySize2 = 10; // fine, 10 is a  // compile-time constant  std::array&amp;lt;int, arraySize2&amp;gt; data2; // fine, arraySize2  // is constexpr    记住，const 不能提供和 constexpr 一样的保证，因为 const 对象不需要用“在编译期就知道的”值初始化： int sz; // as before  … const auto arraySize = sz; // fine, arraySize is  // const copy of sz  std::array&amp;lt;int, arraySize&amp;gt; data; // error!</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</link>
       <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</guid>
       <description>item 11: 优先考虑使用 deleted function 而非 private undefined   在 C++ 98 中禁止拷贝和赋值实现如下： template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp;amp; ); // not defined 	basic_ios&amp;amp; operator=(const basic_ios&amp;amp;); // not defined  };    In C++11,可使用 = delete template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … basic_ios(const basic_ios&amp;amp; ) = delete; basic_ios&amp;amp; operator=(const basic_ios&amp;amp;) = delete; … };    delete 还可以删除实例化模板 template&amp;lt;typename T&amp;gt; void processPointer(T* ptr); template&amp;lt;&amp;gt; void processPointer&amp;lt;void&amp;gt;(void*) = delete; template&amp;lt;&amp;gt; void processPointer&amp;lt;char&amp;gt;(char*) = delete;   记住     优先考虑使用 deleted function 而非 private undefined    任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数   item 12: 把重写函数声明为“override”   因为 overriding (重写)听起来有点像 overloading (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。 classBase { public: virtual void doWork(); // base class virtual function 	… }; classDerived: public Base { public: virtual void doWork(); // overrides Base::doWork 	… // (&amp;#34;virtual&amp;#34; is optional  }; // here)  std::unique_ptr&amp;lt;Base&amp;gt; upb = // create base class pointer 	std::make_unique&amp;lt;Derived&amp;gt;(); // to derived class object;  // see Item 21 for info on  … // std::make_unique  upb-&amp;gt;doWork(); // call doWork through base  // class ptr; derived class  // function is invoked    为了能够成功重写，必须要符合一些要求：    基类函数必须是 virtual 的。    基类函数和派生类函数的名字必须完全一样（除了析构函数）    基类函数和派生类函数的参数类型必须完全一样。    基类函数和派生类函数的 const 属性必须完全一样。    类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的    这些限制是 C++98 要求的，C++11 还增加了一条:    函数的引用限定符必须完全一样    “成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。 它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数： classWidget { public: void doWork() &amp;amp;; // this version of doWork applies  // only when *this is an lvalue 	void doWork() &amp;amp;&amp;amp;; // this version of doWork applies  }; // only when *this is an rvalue  Widget makeWidget(); // factory function (returns rvalue)  Widget w; // normal object (an lvalue)  w.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</title>
-      <link>http://example.org/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</link>
       <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</guid>
       <description>item 7: 区别使用（）和{}创建对象  记住     括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++最令人头疼的解析有天生的免疫性.   double x, y, z; int sum1{ x + y + z }; // error! sum of doubles may  // not be expressible as int   Widget w2(); // most vexing parse! declares a function  // named w2 that returns a Widget!  Widget w3{}; // calls Widget ctor with no args      在构造函数重载决议中，括号初始化尽最大可能与 std::initializer_list 参数匹配，即便其他构造函数看起来是更好的选择.</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep02:auto</title>
-      <link>http://example.org/post/c&#43;&#43;-ep02auto/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/</link>
       <pubDate>Thu, 21 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep02auto/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/</guid>
       <description>item 5: 尽量用 auto 代替显式类型声明  std::unordered_map&amp;lt;std::string, int&amp;gt; m; … for (const std::pair&amp;lt;std::string, int&amp;gt;&amp;amp; p : m) { … // do something with p 	}    上面代码看起来很完美，但是有个问题。std::unordered_map 的 * key * 部分的类型是* const *修饰的， 所以哈希表(std::unordered_map)中的 std::pair 类型不是 std::pair&amp;lt;std::string,int&amp;gt;，而是 std::pair&amp;lt;const std::string, int&amp;gt;。 导致的结果是，编译器会把 std::pair&amp;lt;const std::string,int&amp;gt;对象强制转换为 std::pair&amp;lt;std::string,int&amp;gt;对象(也就是 p 声明的类型)。 因此编译器为 m 哈希表中每一个元素的拷贝生成一个临时对象(key 为非 const 的 pair 类型)，然后 p 就引用了那些临时对象。当循环结束，那些临时对象被析构。 记住     auto 变量必须初始化，它通常不会类型不匹配，从而更轻便和更高效，还能减少重构的工作量，一般我们尽量用 auto 代替显式类型声明。    auto 类型变量会有 time 2 和条款 item 6 中的陷阱   item 6: 当 auto 推断出不想要的类型时，使用显示类型初始化语法  Widget w; … bool highPriority = features(w)[5]; // is w high priority?</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep01:模板类型推导</title>
-      <link>http://example.org/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/</link>
+      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/</link>
       <pubDate>Mon, 18 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/</guid>
+      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/</guid>
       <description>Case 1:ParmaType 是引用或指针，但不是 Universal Referencs     如果 expr 类型是一个引用，忽略引用部分    expr 的类型和 ParamType 模式匹配的部分决定了 T    示例模板： template&amp;lt;typename T&amp;gt; void f(T&amp;amp; param); // param is a reference    变量定义： int x = 27; // x is an int  const int cx = x; // cx is a const int  const int&amp;amp; rx = x; // rx is a reference to x as a const int    param 和 T 的推导： f(x); // T is int, param&amp;#39;s type is int&amp;amp;  f(cx); // T is const int, 	// param&amp;#39;s type is const int&amp;amp;  f(rx); // T is const int, 	// param&amp;#39;s type is const int&amp;amp;   template&amp;lt;typename T&amp;gt; void f(const T&amp;amp; param); // param is now a ref-to-const  int x = 27; // as before  const int cx = x; // as before  const int&amp;amp; rx = x; // as before  f(x); // T is int, param&amp;#39;s type is const int&amp;amp;  f(cx); // T is int, param&amp;#39;s type is const int&amp;amp;  f(rx); // T is int, param&amp;#39;s type is const int&amp;amp;   Case 2:ParamType 是 Universal Reference     如果 expr 是个左值，T 和 ParamType 都被推导为左值引用。这里有两个地方不同寻常，第一，这是唯一一种场景下模板类型推导把 T 推导成一个引用。第二，尽管 ParamType 是使用了右值引用的语法来声明的，它的推导类型却是一个左值引用。    如果 expr 是个右值，则 Case 1 会适用。 template&amp;lt;typename T&amp;gt; void f(T&amp;amp;&amp;amp; param); // param is now a universal reference  int x = 27; // as before const int cx = x; // as before const int&amp;amp; rx = x; // as before  f(x); // x is lvalue, so T is int&amp;amp;,  // param&amp;#39;s type is also int&amp;amp; f(cx); // cx is lvalue, so T is const int&amp;amp;, // param&amp;#39;s type is also const int&amp;amp; f(rx); // rx is lvalue, so T is const int&amp;amp;,  // param&amp;#39;s type is also const int&amp;amp; f(27); // 27 is rvalue, so T is int,  // param&amp;#39;s type is therefore int&amp;amp;&amp;amp;     Case 3:ParamType 既不是指针也不是引用   此时执行的是传值参数，这意味着无论传递什么，param 都会是个拷贝—一个新的对象    和之前一样，如果 expr 的类型是个引用，则引用部分被忽略。    如果忽略了引用部分后，expr 是一个 const 或 volatile，也都忽略。 template&amp;lt;typename T&amp;gt; void f(T param); // param is now passed by value  int x = 27; // as before const int cx = x; // as before const int&amp;amp; rx = x; // as before  f(x); // T&amp;#39;s and param&amp;#39;s types are both int f(cx); // T&amp;#39;s and param&amp;#39;s types are again both int f(rx); // T&amp;#39;s and param&amp;#39;s types are still both int      注意，即使 cx 和 rx 都表示 const 值，param 也不是常量。这也讲得通，param 是个完全独立于 cx 或 rx 的对象—是 cx 和 rx 的拷贝。cx 和 rx 不能被修改而 param 可以被修改。 数组及函数参数   在模板类型推导时，数组和函数参数会退化成指针，除非它们被用做初始化引用 Universal Reference   当看起来像右值引用的 T&amp;amp;&amp;amp; 出现在 template 的中，他就是 universal reference，既不是 lvalue reference 也不是 rvalue reference。 universal reference 的实际效果就是，你给他一个 lvalue reference 的时候，他就是 lvalue reference，你给他 rvalue reference 的时候，他就是 rvalue reference。  auto 类型推导  auto 类型推导与模板规则类似,除大括号初始例如，auto 推导为 std::initializer_list 而模板则不支持  auto x = { 11, 23, 9 }; // x&amp;#39;s type is // std::initializer_list&amp;lt;int&amp;gt;  template&amp;lt;typename T&amp;gt; // template with parameter void f(T param); // declaration equivalent to // x&amp;#39;s declaration f({ 11, 23, 9 }); // error!</description>
     </item>
     
     <item>
       <title>centos7 配置 service</title>
-      <link>http://example.org/post/centos7%E9%85%8D%E7%BD%AEservice/</link>
+      <link>https://hardy5012.github.io/post/centos7%E9%85%8D%E7%BD%AEservice/</link>
       <pubDate>Thu, 07 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/centos7%E9%85%8D%E7%BD%AEservice/</guid>
+      <guid>https://hardy5012.github.io/post/centos7%E9%85%8D%E7%BD%AEservice/</guid>
       <description>配置 service 文件  在/usr/lib/systemd/system/目录创建自己的 service 文件 my.service  [Unit] Description=infrec # Wants=systemd-user-sessions.service # After=systemd-user-sessions.service [Service] Environment=&amp;#34;PATH=/home/lytz/.virtualenvs/xn_infrec/bin&amp;#34; &amp;#34;PYTHONPATH=.:/home/lytz/app/xn_InfRec/src:/home/lytz/app/rlib-py&amp;#34; &amp;#34;APP_SETTINGS=/home/lytz/app/xn_InfRec/src/config.py&amp;#34; #Sets the working directory for executed processes WorkingDirectory=/home/lytz/app/xn_InfRec/src/ # Sets the Unix user that the processes are executed as User=lytz # Sets the highest scheduling priority for executed processes Nice=-20 # disable OOM killing for this process OOMScoreAdjust=-1000 ExecStartPre=/bin/echo ${PYTHONPATH} ExecStart=/home/lytz/.virtualenvs/xn_infrec/bin/gunicorn run:app --bind 0.0.0.0:9021 --worker-class sanic.worker.GunicornWorker -w 4 -t 180 # systemd will send SIGTERM to all processes started from this service if we don&amp;#39;t set ExecStop # ExecStop=-/bin/kill -15 $MAINPID Restart=on-failure RestartSec=15s # systemd-coredump will log the coredump including a backtrace if possible, and store the core (contents of process&amp;#39; memory contents) in an external file on disk in /var/lib/systemd/coredump or in current working directory # ulimit -c unlimited # echo &amp;#34;core.</description>
     </item>
     
     <item>
       <title>python 协程</title>
-      <link>http://example.org/post/python%E5%8D%8F%E7%A8%8B/</link>
+      <link>https://hardy5012.github.io/post/python%E5%8D%8F%E7%A8%8B/</link>
       <pubDate>Sun, 26 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/python%E5%8D%8F%E7%A8%8B/</guid>
+      <guid>https://hardy5012.github.io/post/python%E5%8D%8F%E7%A8%8B/</guid>
       <description>协程     协程是一种用户态的轻量级线程，因为是非抢占式的，所以协程的调度完全由用户控制。协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈，直接操作栈则基本没有内核切换的开销，可以不加锁的访问全局变量，所以上下文的切换非常快。    协程的本质上是：allowing multiple entry points for suspending and resuming execution at certain locations.允许多个入口对程序进行挂起、继续执行等操作   yield     带有 yield 的函数不再是一个普通函数，而是一个生成器 generator.    调用生成器得到一个迭代器，利用 next()或 send(msg)不断获取数据.    调用者使用 send 方法传给 yield 表达式一个值，并从下一个 yield 表达式获取一个值.   def jump_range(upper): index = 0 while index &amp;lt; upper: jump = yield index if jump is None: jump = 1 index += jump jump = jump_range(5) print(jump) print(jump.</description>
     </item>
     
     <item>
       <title>linux 环境</title>
-      <link>http://example.org/post/linux%E7%8E%AF%E5%A2%83/</link>
+      <link>https://hardy5012.github.io/post/linux%E7%8E%AF%E5%A2%83/</link>
       <pubDate>Thu, 16 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/linux%E7%8E%AF%E5%A2%83/</guid>
+      <guid>https://hardy5012.github.io/post/linux%E7%8E%AF%E5%A2%83/</guid>
       <description>翻墙  ssh  sudo ssh -qTfnN -D 8087 user@remote-hosts   上面的 8087 是本地未被占用的端口，可以自己选择。其它参数的意思是： -q :- be very quite, we are acting only as a tunnel. -T :- Do not allocate a pseudo tty, we are only acting a tunnel. -f :- move the ssh process to background, as we don’t want to interact with this ssh session directly. -N :- Do not execute remote command. -n :- redirect standard input to /dev/null.</description>
     </item>
     
     <item>
       <title>HeroKu</title>
-      <link>http://example.org/post/2017-06-07-heroku/</link>
+      <link>https://hardy5012.github.io/post/2017-06-07-heroku/</link>
       <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-06-07-heroku/</guid>
+      <guid>https://hardy5012.github.io/post/2017-06-07-heroku/</guid>
       <description> 安装  sudo yum install ruby gem sudo gem install json_pure sudo gem install rails sudo gem install bundler sudo gem install heroku    {{{more}}} </description>
     </item>
     
     <item>
       <title>Python 虚拟环境</title>
-      <link>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <link>https://hardy5012.github.io/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
       <pubDate>Tue, 06 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <guid>https://hardy5012.github.io/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
       <description>Virtualenv  Introduction   virtualenv is a tool to create isolated Python environments. Installation  sudo pip install virtualenv   {{{more}}} Usage   1.为一个工程创建一个虚拟环境： cd my_project_folder virtualenv venv   virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，以及 pip 库的一份拷贝，这样就能安装其他包了。虚拟环境的名字（此例中是 venv）可以是任意的；若省略名字将会把文件均放在当前目录。  在任何你运行命令的目录中，这会创建 Python 的拷贝，并将之放在叫做 venv 的文件中。  你可以选择使用一个 Python 解释器： virtualenv -p /usr/bin/python2.7 venv   这将会使用 /usr/bin/python2.7 中的 Python 解释器。 2.要开始使用虚拟环境，其需要被激活： source venv/bin/activate   从现在起，任何你使用 pip 安装的包将会放在 ``venv 文件夹中，与全局安装的 Python 隔绝开 3.</description>
     </item>
     
     <item>
       <title>Machine Learning(4) Regularization</title>
-      <link>http://example.org/post/machine-learning4-regularization/</link>
+      <link>https://hardy5012.github.io/post/machine-learning4-regularization/</link>
       <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/machine-learning4-regularization/</guid>
+      <guid>https://hardy5012.github.io/post/machine-learning4-regularization/</guid>
       <description>正规化(Regularization)弱化的高阶项的系数，这弱化也称为对参数θ的惩罚（penalize）。 线性回归中的正规化   公式变为： \begin{gather*} J(θ) &amp;amp;= \frac{1}{2m}∑limitsi=1^m(h_θ(x(i))-y(i))^2+λ∑limitsi=1nθ_j^2 &amp;amp;= \frac{1}{2m}(Xθ-y)^T(Xθ-y)+λ∑limitsi=1nθ_j^2 \end{gather*} 其中，参数λ主要是完成以下两个任务:    证对数据的拟合良好    保证θ足够小，避免过拟合问题    λ越大，要使 J(θ)变小，惩罚力度就要变大，这样θ会被惩罚得越惨（越小），即要避免过拟合，我们显然应当增大λ的值。  梯度下降公式变为： Repeat{ \begin{gather*} θ_0 &amp;amp;=θ_0-α\frac{1}{m}∑limitsi=1m(h_θ(x(i))-y(i))x_0(i) \\  θ_j &amp;amp;=θ_j-α\big(\frac{1}{m}∑limitsi=1m(h_θ(x(i))-y(i))x_j(i)+\frac{λ}{m}θ_j\big) \quad (1) \\  \mbox {即：}&amp;amp; θ &amp;amp;= θ-α*(\frac{1}{m} X^T(y-Xθ) + \frac{λ}{m}θj) \quad j ≠q 0  \end{gather*}  } 其中，（1）式等价于： $$ θ_j=θ_j(1-α\frac{λ}{m})-α\frac{1}{m}∑limitsi=1m[h_θ(x(i))-y(i)]x_j(i) $$ 由于 $ 1-α\frac{λ}{m}&amp;lt;1 $，故而梯度下降中每次更新θ ，同时也会去减小θ值，达到了 Regularization 的目的。  正规方程： $$ θ=(X^TX+λ≤ft[\begin{array}{ccccc}0 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;⋯ &amp;amp;0 \\ 0 &amp;amp;1 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;0\\ \vdots &amp;amp; \vdots &amp;amp; 1 &amp;amp;⋯ &amp;amp; 0\\ \vdots &amp;amp;\vdots &amp;amp;⋯ &amp;amp;\ddots &amp;amp; \vdots \\ 0 &amp;amp; 0 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;1 \end{array}\right])-1X^Ty $$ 正规化同时可以解决矩阵不可逆的问题（ $X^TX$ 不可逆, $X^TX + λ.</description>
     </item>
     
     <item>
       <title>octave</title>
-      <link>http://example.org/post/2017-05-11-octave/</link>
+      <link>https://hardy5012.github.io/post/2017-05-11-octave/</link>
       <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-05-11-octave/</guid>
+      <guid>https://hardy5012.github.io/post/2017-05-11-octave/</guid>
       <description> 矩阵与标量＝＝运算，对矩阵所有值与标量进行判断，如果相等则为 1，不等则为 0   {{{more}}} </description>
     </item>
     
     <item>
       <title>Machine Learning(3) Neural Networks</title>
-      <link>http://example.org/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
+      <link>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
       <pubDate>Sun, 07 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
+      <guid>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
       <description>Model Representation  \text {If network has $s_j$ units in layer $j$ and $sj+1$ units in layer $j+1$, then $Θ(j)$ will be of dimension $sj+1 × (s_j + 1)$.}  Cost Function   Let&amp;#39;s first define a few variables that we will need to use: L = total number of layers in the network $s_l$ = number of units (not counting bias unit) in layer l K = number of output units/classes   \begin{gather*} J(Θ) = - \frac{1}{m} ∑i=1^m ∑k=1^K ≤ft[y(i)_k log ((h_Θ (x(i)))_k) + (1 - y(i)_k)log (1 - (h_Θ(x(i)))_k)\right] + \frac{λ}{2m}∑l=1L-1 ∑i=1s_l ∑j=1^{sl+1} ( Θj,i(l))^2\end{gather*} Gradient Checking   Gradient checking will assure that our backpropagation works as intended.</description>
     </item>
     
     <item>
       <title>Machine Learning(2）Logistic Regression</title>
-      <link>http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
+      <link>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
+      <guid>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
       <description> Decision Boundary   决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集属性”，这是因为能作出“划清”类间界限的只有$h_θ(x)$ ，而训练集只是用来训练和调节参数的。 Hypothesis   在逻辑回归中，定义预测函数为: $$h_θ (x) = g(z)$$ 其中，$z=θ^Tx$ 是分类边界，且 $g(z)=\frac{1}{1+e-z}$ Cost Function   \begin{gather*} &amp;amp; J(θ) = \dfrac{1}{m} ∑i=1^m \mathrm{Cost}(h_θ(x(i)),y(i)) ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(h_θ(x)) \; &amp;amp; \text{if y = 1} ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(1-h_θ(x)) \; &amp;amp; \text{if y = 0} \end{gather*}  \begin{gather*} &amp;amp; \mathrm{Cost}(h_θ(x),y) = 0 \text{ if } h_θ(x) = y ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 0 \; \mathrm{and} \; h_θ(x) → 1 ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 1 \; \mathrm{and} \; h_θ(x) → 0 ≠wline \end{gather*} Simplified Cost Function   $$\mathrm{Cost}(h_θ(x),y) = - y \; log(h_θ(x)) - (1 - y) log(1 - h_θ(x))$$ $$J(θ) = - \frac{1}{m} \displaystyle ∑i=1^m [y(i)log (h_θ (x(i))) + (1 - y(i))log (1 - h_θ(x(i)))]$$ \begin{gather*} &amp;amp; h = g(Xθ)≠wline &amp;amp; J(θ) = \frac{1}{m} ⋅ ≤ft(-yTlog(h)-(1-y)Tlog(1-h)\right) \end{gather*} Gradient Descent   \begin{gather*}&amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - α \dfrac{∂}{∂ θ_j}J(θ) ≠wline &amp;amp; \rbrace\end{gather*} \begin{gather*} &amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - \frac{α}{m} ∑i=1^m (h_θ(x(i)) - y(i)) x_j(i) ≠wline &amp;amp; \rbrace \end{gather*} A vectorized implementation is: $$θ := θ - \frac{α}{m} XT (g(X θ ) - \vec{y})$$ Multi-class classification   多分类问题通常采用 One-vs-All ，亦称 One-vs-the Rest 方法来实现多分类，其将多分类问题转化为了多次二分类问题 overfitting   过拟合：如果太多的特征时，预测函数能拟合训练集，即代价函数的值非常小，但无法正确预测新的新的样本。 解决方案：    减少特征    正规化   </description>
     </item>
     
     <item>
       <title>Machine Learning(1)Linear Regression</title>
-      <link>http://example.org/post/2017-04-21-maching-learing-normal-equation/</link>
+      <link>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</link>
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-04-21-maching-learing-normal-equation/</guid>
+      <guid>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</guid>
       <description> Hypothesis   $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function   $$ J(θ)=\frac{1}{2m}∑limitsi=1m(h_θ(x(i))-y(i))^2,\quad \mbox{$m$ 为样本数} $$ Normal Equation   $$ θ = (X^TX)-1X^Ty $$ 在特征值少于 1w 时则可以使用标准方程一次得解，但如果特征值过多时，需要使用梯度下降方程进行求解. 标准方程的复杂度为$\mathrm{O}(n^3)$, 梯度下降为$\mathrm{O}(n^2)$  $(X^TX)-1$ 不可逆的情况：    冗余的特征，如线性依赖    太多特征，样本小于特征   </description>
     </item>
     
     <item>
       <title>Machine Learning(0) introduction</title>
-      <link>http://example.org/post/machine-learning0-introduction/</link>
+      <link>https://hardy5012.github.io/post/machine-learning0-introduction/</link>
       <pubDate>Thu, 13 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/machine-learning0-introduction/</guid>
+      <guid>https://hardy5012.github.io/post/machine-learning0-introduction/</guid>
       <description> Supervised Learning and Unsupevised Learning     监督学习（Supervised Learning）所给的样本已知道正确的输出是什么样子，对输入与输出有一定的了解。    无监督学习（Unsupervised Learning）能够在很少或根本不知道结果应该是什么样的情况下解决问题。通过数据变量之间的关系数据聚类推导出这种结构。    在无监督学习下，没有基于预测结果的反馈。 Regression and Classification     归回问题（Regression）预测一个连续的输出，也就说把输入映射到连续函数中。    分类问题(Classification)以离散输出预测结果。换句话说，将变映射到离散类别。   Cost Function   代价函数 (cost function)用来衡量预测函数的准确程度。 Gradient descent   梯度下降 (Gradient descent)使用代价函数最小化。 $$ θ_j = θ_j-α\frac{∂}{∂θ_j}J(θ) \quad \mbox{$α$ 为学习率} $$ $$ \begin{align*} \text{repeat until convergence: } \lbrace &amp;amp; ≠wline θ_0 := &amp;amp; θ_0 - α \frac{1}{m} ∑limitsi=1m(h_θ(xi) - yi) ≠wline θ_1 := &amp;amp; θ_1 - α \frac{1}{m} ∑limitsi=1m≤ft((h_θ(xi) - yi) xi\right) ≠wline \rbrace&amp;amp; \end{align*} $$    注意在更新$θ$时需要同步更新。    训练中不用初时高速学习速率，因为在接近局部最小值时。导数的绝对值会变小，这样步幅自然小了。    训练就是不断的梯度下降直到收敛，导数为 0, 梯度下降中$θ$不在变化。    对特征缩放和均一化可以提高训练。   </description>
     </item>
     
     <item>
       <title>makefile</title>
-      <link>http://example.org/post/2017-04-25-makefile/</link>
+      <link>https://hardy5012.github.io/post/2017-04-25-makefile/</link>
       <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-04-25-makefile/</guid>
+      <guid>https://hardy5012.github.io/post/2017-04-25-makefile/</guid>
       <description> undefined reference 问题  多个库文件连接顺序问题   在链接命令中给出所依赖的库时，需要注意库之间的依赖顺序，依赖其他库的库一定要放到被依赖库的前面，这样才能真正避免 undefined reference 的错误  {{{more}}} </description>
     </item>
     
     <item>
       <title>ETF notes</title>
-      <link>http://example.org/post/2016-11-28-etf-notes/</link>
+      <link>https://hardy5012.github.io/post/2016-11-28-etf-notes/</link>
       <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-11-28-etf-notes/</guid>
+      <guid>https://hardy5012.github.io/post/2016-11-28-etf-notes/</guid>
       <description> 预估现金  预估现金为负时，表示 ETF 的市值要比篮子市值少，在做赎回时会先从资金账户中先扣除这部分钱   {{{more}}} 4A1B  A1:期货与现货的价差  A2:A2 交易，也就是市场中很多人称为α套利的交易产品  A3:ETF  </description>
     </item>
     
     <item>
       <title>python notes</title>
-      <link>http://example.org/post/2016-11-16-python-notes/</link>
+      <link>https://hardy5012.github.io/post/2016-11-16-python-notes/</link>
       <pubDate>Wed, 16 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-11-16-python-notes/</guid>
+      <guid>https://hardy5012.github.io/post/2016-11-16-python-notes/</guid>
       <description>yield  yield 为生成器，有调用 next 或 send 来取值（只有调用这两个函数才会运行）  在 yield 处返回数据，用 send 来发送数据到程序内  def h(): print &amp;#39;Wen Chuan&amp;#39;, m = yield 5 # Fighting! print m d = yield 12 print &amp;#39;We are together!&amp;#39; if __name__ == &amp;#39;__main__&amp;#39;: c = h() m = c.next() #m 获取了 yield 5 的参数值 5 d = c.send(&amp;#39;Fighting!&amp;#39;) #d 获取了 yield 12 的参数值 12 print &amp;#39;We will never forget the date&amp;#39;, m, &amp;#39;.</description>
     </item>
     
     <item>
       <title>learning boost</title>
-      <link>http://example.org/post/2016-11-03-learning-boost/</link>
+      <link>https://hardy5012.github.io/post/2016-11-03-learning-boost/</link>
       <pubDate>Thu, 03 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-11-03-learning-boost/</guid>
+      <guid>https://hardy5012.github.io/post/2016-11-03-learning-boost/</guid>
       <description> MSM  执行顺序: start state on_exit -&amp;gt; action -&amp;gt; next state on_entry  状态转换判断顺序： 按转表换插入的反序来判断，即在从转换表后面开始判断,同样满足条件的，执行后面  事件只能激活子状态中每组状态机中的一个状态，即显示的激活了一个状态，则对应的默认状态不被激活  转发的事件必须在退出点定义中命名,例 event6 需要在退出状态中定义  struct PseudoExit1 : public msm::front::exit_pseudo_state&amp;lt;event6&amp;gt;    {{{more}}} </description>
     </item>
     
     <item>
       <title>性能分析</title>
-      <link>http://example.org/post/2016-09-05-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/</link>
+      <link>https://hardy5012.github.io/post/2016-09-05-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/</link>
       <pubDate>Mon, 05 Sep 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-09-05-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/</guid>
+      <guid>https://hardy5012.github.io/post/2016-09-05-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/</guid>
       <description> c++ 程序性能分析  环境准备  安装 graphviz  sudo yum install graphviz.x86_64  安装 gprof2dot  sudo pip install gprof2dot  在 makefile 中增加 -pg 参数  导出图片  gprof 程序名 gmon.out|gprof2dot -s | dot -Tpng -o output.png   gprof2dot 后面带参数-s 是简化函数名  {{{more}}} </description>
     </item>
     
     <item>
       <title>编程小记</title>
-      <link>http://example.org/post/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/</link>
+      <link>https://hardy5012.github.io/post/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/</link>
       <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/</guid>
+      <guid>https://hardy5012.github.io/post/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/</guid>
       <description> ProtoBuf  c++ protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针   {{{more}}} </description>
     </item>
     
     <item>
       <title>配置多个 git 账户</title>
-      <link>http://example.org/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</link>
+      <link>https://hardy5012.github.io/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</link>
       <pubDate>Tue, 26 Jul 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</guid>
+      <guid>https://hardy5012.github.io/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</guid>
       <description>配置多个 git 账户   在使用 ssh keys 时常因为有多个 git 账户，无法正常使用 {{{more}}} 生成 SSH keys  ssh-keygen -t rsa -f ~/.ssh/id_github -C &amp;#34;youremail@xxx.com&amp;#34;   在 Git Bash 中执行命令根据提示一路回车，会在~/.ssh/目录下生成 id_github 开头的两个文件，把 id_github.pub 放到 github 的 SSH keys 中 然后生成别一个 keys（命名需要不同） 把新的 keys 加到 SSH 服务中  ssh-agent bash ssh-add ~/.ssh/id_github   查看有哪些 keys ssh-add -l  创建配置文件，在.ssh 目录下面创建 config 文件  # Default github user(github@mail.com),注意 User 项直接填 git，不用填在 github 的用户名 # 多个账户时，host 可以精确到用户名以做区分 Host github.</description>
     </item>
     
     <item>
       <title>学习 Spacemacs</title>
-      <link>http://example.org/post/2016-07-22-test/</link>
+      <link>https://hardy5012.github.io/post/2016-07-22-test/</link>
       <pubDate>Fri, 22 Jul 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2016-07-22-test/</guid>
+      <guid>https://hardy5012.github.io/post/2016-07-22-test/</guid>
       <description>安装  下载，最新下载地址 http://ftpmirror.gnu.org/emacs/emacs-25.2.tar.xz  安装  sudo yum -y install libXpm-devel libjpeg-turbo-devel openjpeg-devel openjpeg2-devel turbojpeg-devel giflib-devel libtiff-devel gnutls-devel libxml2-devel GConf2-devel dbus-devel wxGTK-devel gtk3-devel ./configure make sudo make install  常用快捷键  vi  normal   r, R: r 修改当个字符，R 则会进入一种 overwrite 模式，可以替换从当前光标开始的任何字符 编辑  删除整行：kill-whole-line (C-S-Backspace)  环境  博客   1.SPC o p: 使用 org-save-and-export 导出博客 2.SPC a S: 发布博客, 使用 prodigy 运行 hexo deploy,里面按 s 键启动 牛人的一些配   https://github.</description>
     </item>
     
     <item>
       <title></title>
-      <link>http://example.org/about/about/</link>
+      <link>https://hardy5012.github.io/about/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/about/about/</guid>
+      <guid>https://hardy5012.github.io/about/about/</guid>
       <description></description>
     </item>
     
     <item>
       <title></title>
-      <link>http://example.org/archives/</link>
+      <link>https://hardy5012.github.io/archives/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/archives/</guid>
+      <guid>https://hardy5012.github.io/archives/</guid>
       <description>title: &amp;ldquo;归档&amp;rdquo; description: c++ type: archives</description>
     </item>
     

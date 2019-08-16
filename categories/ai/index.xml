@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ai on Learning Hardy</title>
-    <link>http://example.org/categories/ai/</link>
+    <link>https://hardy5012.github.io/categories/ai/</link>
     <description>Recent content in ai on Learning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Wed, 17 May 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/categories/ai/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hardy5012.github.io/categories/ai/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Machine Learning(4) Regularization</title>
-      <link>http://example.org/post/machine-learning4-regularization/</link>
+      <link>https://hardy5012.github.io/post/machine-learning4-regularization/</link>
       <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/machine-learning4-regularization/</guid>
+      <guid>https://hardy5012.github.io/post/machine-learning4-regularization/</guid>
       <description>正规化(Regularization)弱化的高阶项的系数，这弱化也称为对参数θ的惩罚（penalize）。 线性回归中的正规化   公式变为： \begin{gather*} J(θ) &amp;amp;= \frac{1}{2m}∑limitsi=1^m(h_θ(x(i))-y(i))^2+λ∑limitsi=1nθ_j^2 &amp;amp;= \frac{1}{2m}(Xθ-y)^T(Xθ-y)+λ∑limitsi=1nθ_j^2 \end{gather*} 其中，参数λ主要是完成以下两个任务:    证对数据的拟合良好    保证θ足够小，避免过拟合问题    λ越大，要使 J(θ)变小，惩罚力度就要变大，这样θ会被惩罚得越惨（越小），即要避免过拟合，我们显然应当增大λ的值。  梯度下降公式变为： Repeat{ \begin{gather*} θ_0 &amp;amp;=θ_0-α\frac{1}{m}∑limitsi=1m(h_θ(x(i))-y(i))x_0(i) \\  θ_j &amp;amp;=θ_j-α\big(\frac{1}{m}∑limitsi=1m(h_θ(x(i))-y(i))x_j(i)+\frac{λ}{m}θ_j\big) \quad (1) \\  \mbox {即：}&amp;amp; θ &amp;amp;= θ-α*(\frac{1}{m} X^T(y-Xθ) + \frac{λ}{m}θj) \quad j ≠q 0  \end{gather*}  } 其中，（1）式等价于： $$ θ_j=θ_j(1-α\frac{λ}{m})-α\frac{1}{m}∑limitsi=1m[h_θ(x(i))-y(i)]x_j(i) $$ 由于 $ 1-α\frac{λ}{m}&amp;lt;1 $，故而梯度下降中每次更新θ ，同时也会去减小θ值，达到了 Regularization 的目的。  正规方程： $$ θ=(X^TX+λ≤ft[\begin{array}{ccccc}0 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;⋯ &amp;amp;0 \\ 0 &amp;amp;1 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;0\\ \vdots &amp;amp; \vdots &amp;amp; 1 &amp;amp;⋯ &amp;amp; 0\\ \vdots &amp;amp;\vdots &amp;amp;⋯ &amp;amp;\ddots &amp;amp; \vdots \\ 0 &amp;amp; 0 &amp;amp;⋯ &amp;amp;⋯ &amp;amp;1 \end{array}\right])-1X^Ty $$ 正规化同时可以解决矩阵不可逆的问题（ $X^TX$ 不可逆, $X^TX + λ.</description>
     </item>
     
     <item>
       <title>Machine Learning(3) Neural Networks</title>
-      <link>http://example.org/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
+      <link>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
       <pubDate>Sun, 07 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
+      <guid>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
       <description>Model Representation  \text {If network has $s_j$ units in layer $j$ and $sj+1$ units in layer $j+1$, then $Θ(j)$ will be of dimension $sj+1 × (s_j + 1)$.}  Cost Function   Let&amp;#39;s first define a few variables that we will need to use: L = total number of layers in the network $s_l$ = number of units (not counting bias unit) in layer l K = number of output units/classes   \begin{gather*} J(Θ) = - \frac{1}{m} ∑i=1^m ∑k=1^K ≤ft[y(i)_k log ((h_Θ (x(i)))_k) + (1 - y(i)_k)log (1 - (h_Θ(x(i)))_k)\right] + \frac{λ}{2m}∑l=1L-1 ∑i=1s_l ∑j=1^{sl+1} ( Θj,i(l))^2\end{gather*} Gradient Checking   Gradient checking will assure that our backpropagation works as intended.</description>
     </item>
     
     <item>
       <title>Machine Learning(2）Logistic Regression</title>
-      <link>http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
+      <link>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
+      <guid>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
       <description> Decision Boundary   决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集属性”，这是因为能作出“划清”类间界限的只有$h_θ(x)$ ，而训练集只是用来训练和调节参数的。 Hypothesis   在逻辑回归中，定义预测函数为: $$h_θ (x) = g(z)$$ 其中，$z=θ^Tx$ 是分类边界，且 $g(z)=\frac{1}{1+e-z}$ Cost Function   \begin{gather*} &amp;amp; J(θ) = \dfrac{1}{m} ∑i=1^m \mathrm{Cost}(h_θ(x(i)),y(i)) ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(h_θ(x)) \; &amp;amp; \text{if y = 1} ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(1-h_θ(x)) \; &amp;amp; \text{if y = 0} \end{gather*}  \begin{gather*} &amp;amp; \mathrm{Cost}(h_θ(x),y) = 0 \text{ if } h_θ(x) = y ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 0 \; \mathrm{and} \; h_θ(x) → 1 ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 1 \; \mathrm{and} \; h_θ(x) → 0 ≠wline \end{gather*} Simplified Cost Function   $$\mathrm{Cost}(h_θ(x),y) = - y \; log(h_θ(x)) - (1 - y) log(1 - h_θ(x))$$ $$J(θ) = - \frac{1}{m} \displaystyle ∑i=1^m [y(i)log (h_θ (x(i))) + (1 - y(i))log (1 - h_θ(x(i)))]$$ \begin{gather*} &amp;amp; h = g(Xθ)≠wline &amp;amp; J(θ) = \frac{1}{m} ⋅ ≤ft(-yTlog(h)-(1-y)Tlog(1-h)\right) \end{gather*} Gradient Descent   \begin{gather*}&amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - α \dfrac{∂}{∂ θ_j}J(θ) ≠wline &amp;amp; \rbrace\end{gather*} \begin{gather*} &amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - \frac{α}{m} ∑i=1^m (h_θ(x(i)) - y(i)) x_j(i) ≠wline &amp;amp; \rbrace \end{gather*} A vectorized implementation is: $$θ := θ - \frac{α}{m} XT (g(X θ ) - \vec{y})$$ Multi-class classification   多分类问题通常采用 One-vs-All ，亦称 One-vs-the Rest 方法来实现多分类，其将多分类问题转化为了多次二分类问题 overfitting   过拟合：如果太多的特征时，预测函数能拟合训练集，即代价函数的值非常小，但无法正确预测新的新的样本。 解决方案：    减少特征    正规化   </description>
     </item>
     
     <item>
       <title>Machine Learning(1)Linear Regression</title>
-      <link>http://example.org/post/2017-04-21-maching-learing-normal-equation/</link>
+      <link>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</link>
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/2017-04-21-maching-learing-normal-equation/</guid>
+      <guid>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</guid>
       <description> Hypothesis   $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function   $$ J(θ)=\frac{1}{2m}∑limitsi=1m(h_θ(x(i))-y(i))^2,\quad \mbox{$m$ 为样本数} $$ Normal Equation   $$ θ = (X^TX)-1X^Ty $$ 在特征值少于 1w 时则可以使用标准方程一次得解，但如果特征值过多时，需要使用梯度下降方程进行求解. 标准方程的复杂度为$\mathrm{O}(n^3)$, 梯度下降为$\mathrm{O}(n^2)$  $(X^TX)-1$ 不可逆的情况：    冗余的特征，如线性依赖    太多特征，样本小于特征   </description>
     </item>
     
     <item>
       <title>Machine Learning(0) introduction</title>
-      <link>http://example.org/post/machine-learning0-introduction/</link>
+      <link>https://hardy5012.github.io/post/machine-learning0-introduction/</link>
       <pubDate>Thu, 13 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/machine-learning0-introduction/</guid>
+      <guid>https://hardy5012.github.io/post/machine-learning0-introduction/</guid>
       <description> Supervised Learning and Unsupevised Learning     监督学习（Supervised Learning）所给的样本已知道正确的输出是什么样子，对输入与输出有一定的了解。    无监督学习（Unsupervised Learning）能够在很少或根本不知道结果应该是什么样的情况下解决问题。通过数据变量之间的关系数据聚类推导出这种结构。    在无监督学习下，没有基于预测结果的反馈。 Regression and Classification     归回问题（Regression）预测一个连续的输出，也就说把输入映射到连续函数中。    分类问题(Classification)以离散输出预测结果。换句话说，将变映射到离散类别。   Cost Function   代价函数 (cost function)用来衡量预测函数的准确程度。 Gradient descent   梯度下降 (Gradient descent)使用代价函数最小化。 $$ θ_j = θ_j-α\frac{∂}{∂θ_j}J(θ) \quad \mbox{$α$ 为学习率} $$ $$ \begin{align*} \text{repeat until convergence: } \lbrace &amp;amp; ≠wline θ_0 := &amp;amp; θ_0 - α \frac{1}{m} ∑limitsi=1m(h_θ(xi) - yi) ≠wline θ_1 := &amp;amp; θ_1 - α \frac{1}{m} ∑limitsi=1m≤ft((h_θ(xi) - yi) xi\right) ≠wline \rbrace&amp;amp; \end{align*} $$    注意在更新$θ$时需要同步更新。    训练中不用初时高速学习速率，因为在接近局部最小值时。导数的绝对值会变小，这样步幅自然小了。    训练就是不断的梯度下降直到收敛，导数为 0, 梯度下降中$θ$不在变化。    对特征缩放和均一化可以提高训练。   </description>
     </item>
     

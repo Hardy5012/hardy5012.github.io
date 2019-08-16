@@ -1,87 +1,138 @@
-<!doctype html>
-<html lang="zh-CN">
+
+
+There are two possible situations that led to this error:
+  1. You haven&#39;t copied the config.toml yet. See https://github.com/olOwOlo/hugo-theme-even#installation 
+  2. You have an incompatible update. See https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
+
+有两种可能的情况会导致这个错误发生:
+  1. 你还没有复制 config.toml 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation 
+  2. 你进行了一次不兼容的更新 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep19:The Concurrency API(4) - Learning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep19:The Concurrency API(4) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep19:The Concurrency API(4) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2018-02-02T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2018-02-02T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep19:The Concurrency API(4)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="" /><meta name="description" content="Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&amp;lt;int&amp;gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &amp;lt;&amp;lt; ai; // atomically read ai&amp;#39;s value  &#43;&#43;ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &amp;lt;&amp;lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &amp;lt;&amp;lt; vi; // read vi&amp;#39;s value  &#43;&#43;vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&amp;lt;int&amp;gt; ac(0); // &amp;#34;atomic counter&amp;#34;  volatile int vc(0); // &amp;#34;volatile counter&amp;#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ &#43;&#43;ac; &#43;&#43;ac; &#43;&#43;vc; &#43;&#43;vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &amp;lt;bool&amp;gt;。计算值任务的代码部分如下： std::atomic&amp;lt;bool&amp;gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&amp;#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&amp;#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+
+
+<meta property="og:title" content="C&#43;&#43; Ep19:The Concurrency API(4)" />
+<meta property="og:description" content="Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&lt;int&gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &lt;&lt; ai; // atomically read ai&#39;s value  &#43;&#43;ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &lt;&lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &lt;&lt; vi; // read vi&#39;s value  &#43;&#43;vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&lt;int&gt; ac(0); // &#34;atomic counter&#34;  volatile int vc(0); // &#34;volatile counter&#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ &#43;&#43;ac; &#43;&#43;ac; &#43;&#43;vc; &#43;&#43;vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &lt;bool&gt;。计算值任务的代码部分如下： std::atomic&lt;bool&gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" />
+<meta property="article:published_time" content="2018-02-02T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-02-02T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep19:The Concurrency API(4)">
+<meta itemprop="description" content="Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&lt;int&gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &lt;&lt; ai; // atomically read ai&#39;s value  &#43;&#43;ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &lt;&lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &lt;&lt; vi; // read vi&#39;s value  &#43;&#43;vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&lt;int&gt; ac(0); // &#34;atomic counter&#34;  volatile int vc(0); // &#34;volatile counter&#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ &#43;&#43;ac; &#43;&#43;ac; &#43;&#43;vc; &#43;&#43;vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &lt;bool&gt;。计算值任务的代码部分如下： std::atomic&lt;bool&gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!">
+
+
+<meta itemprop="datePublished" content="2018-02-02T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-02-02T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="789">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep19:The Concurrency API(4)"/>
+<meta name="twitter:description" content="Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&lt;int&gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &lt;&lt; ai; // atomically read ai&#39;s value  &#43;&#43;ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &lt;&lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &lt;&lt; vi; // read vi&#39;s value  &#43;&#43;vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&lt;int&gt; ac(0); // &#34;atomic counter&#34;  volatile int vc(0); // &#34;volatile counter&#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ &#43;&#43;ac; &#43;&#43;ac; &#43;&#43;vc; &#43;&#43;vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &lt;bool&gt;。计算值任务的代码部分如下： std::atomic&lt;bool&gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="http://example.org/">
-                        Learning Hardy
-                    </a>
-                
-                
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="http://example.org/">首页</a>
-                    
-                    <a  href="http://example.org/archives/" title="归档">归档</a>
-                    
-                    <a  href="http://example.org/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning Hardy</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/archives/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning Hardy</a>
+</div>
 
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/archives/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep19:The Concurrency API(4)</h1>
 
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep19:The Concurrency API(4)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2018年2月2日
-                        </date>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+      <div class="post-meta">
+        <span class="post-time"> 2018-02-02 </span>
+        
+        
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      
 <h1 id="headline-1">
 Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile
 </h1>
@@ -444,212 +495,74 @@ volatile 是内存的读写不应该被优化。 这是一个使用特殊内存�
 原文：effective-modern-c++
 </p>
 
-                        </div>
-
-                        
-
-
-                        
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            没有标签
-                            
-                        </div>
-                    </article>
-                    
-    
+    </div>
 
     
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+<footer class="post-footer">
       
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="http://example.org/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="http://example.org/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="http://example.org/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="http://example.org/tags/boost/">boost</a>
-    
-    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="http://example.org/tags/constexpr/">constexpr</a>
-    
-    <a href="http://example.org/tags/docker/">docker</a>
-    
-    <a href="http://example.org/tags/etf/">etf</a>
-    
-    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
-    
-    <a href="http://example.org/tags/git/">git</a>
-    
-    <a href="http://example.org/tags/gprof/">gprof</a>
-    
-    <a href="http://example.org/tags/heroku/">heroku</a>
-    
-    <a href="http://example.org/tags/linear/">linear</a>
-    
-    <a href="http://example.org/tags/linux/">linux</a>
-    
-    <a href="http://example.org/tags/logistic/">logistic</a>
-    
-    <a href="http://example.org/tags/makefile/">makefile</a>
-    
-    <a href="http://example.org/tags/neural/">neural</a>
-    
-    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="http://example.org/tags/protobuf/">protobuf</a>
-    
-    <a href="http://example.org/tags/python/">python</a>
-    
-    <a href="http://example.org/tags/regression/">regression</a>
-    
-    <a href="http://example.org/tags/regularization/">regularization</a>
-    
-    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
-    
-    <a href="http://example.org/tags/static/">static</a>
-    
-    <a href="http://example.org/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/tweaks1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Tweaks(1)</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep18the-concurrency-api3/">
+            <span class="next-text nav-default">C&#43;&#43; Ep18:The Concurrency API(3)</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+     - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"></span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
+  </div>
+  <script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+  
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
 
 
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
 
 
