@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>spacemacs on Learning Hardy</title>
+    <title>spacemacs on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/spacemacs/</link>
-    <description>Recent content in spacemacs on Learning Hardy</description>
+    <description>Recent content in spacemacs on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Fri, 22 Jul 2016 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/spacemacs/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Fri, 22 Jul 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/2016-07-22-test/</guid>
-      <description>安装  下载，最新下载地址 http://ftpmirror.gnu.org/emacs/emacs-25.2.tar.xz  安装  sudo yum -y install libXpm-devel libjpeg-turbo-devel openjpeg-devel openjpeg2-devel turbojpeg-devel giflib-devel libtiff-devel gnutls-devel libxml2-devel GConf2-devel dbus-devel wxGTK-devel gtk3-devel ./configure make sudo make install  常用快捷键  vi  normal   r, R: r 修改当个字符，R 则会进入一种 overwrite 模式，可以替换从当前光标开始的任何字符 编辑  删除整行：kill-whole-line (C-S-Backspace)  环境  博客   1.SPC o p: 使用 org-save-and-export 导出博客 2.SPC a S: 发布博客, 使用 prodigy 运行 hexo deploy,里面按 s 键启动 牛人的一些配   https://github.</description>
+      <description>安装 下载，最新下载地址 http://ftpmirror.gnu.org/emacs/emacs-25.2.tar.xz 安装 1 2 3 4 sudo yum -y install libXpm-devel libjpeg-turbo-devel openjpeg-devel openjpeg2-devel turbojpeg-devel giflib-devel libtiff-devel gnutls-devel libxml2-devel GConf2-devel dbus-devel wxGTK-devel gtk3-devel ./configure make sudo make install 常用快捷键 vi normal r, R: r 修改当个字符，R 则会进入一种 overwrite 模式，可以</description>
     </item>
     
   </channel>

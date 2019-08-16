@@ -1,497 +1,209 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Learning Hardy | </title>
-    <meta property="og:title" content="Learning Hardy | ">
-    <meta property="og:type" content="website">
-    <meta name="Keywords" content="">
-    <meta name="description" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://hardy5012.github.io/index.xml" title="Learning Hardy" />
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="Hugo theme even example site." /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/" />
+  <link href="https://hardy5012.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Leaning Hardy" />
+  <link href="https://hardy5012.github.io/index.xml" rel="feed" type="application/rss+xml" title="Leaning Hardy" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Leaning Hardy" />
+<meta property="og:description" content="Hugo theme even example site." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hardy5012.github.io/" />
+
+<meta property="og:updated_time" content="2018-11-22T00:00:00+00:00" />
+<meta itemprop="name" content="Leaning Hardy">
+<meta itemprop="description" content="Hugo theme even example site.">
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Leaning Hardy"/>
+<meta name="twitter:description" content="Hugo theme even example site."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <h1>
-                        <a id="logo" href="https://hardy5012.github.io/">
-                            Learning Hardy
-                        </a>
-                    </h1>
-                
-                
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
 
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录" >为运行的容器挂载文件目录</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年11月22日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/summary">summary</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                在使用 docker 时，经常需要为已运行的容器挂载文件目录。方法如下:    首先使用 df 查看需要挂载的文件目录是在哪个文件系统上 #on the host: df /home/huaming_li/github Filesystem 1K-blocks Used Available Use% Mounted on /dev/mapper/centos-home 917199292 103069408 814129884 12% /home     通过/proc/self/mountinfo 查看哪个子目录是在 /home #on the host, look for &#39;/home&#39; in the MOUNT column: cat /proc/self/mountinf 65 18 0:6 / /sys/kernel/debug rw,relatime shared:26 - debugfs debugfs rw 71 16 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:27 - binfmt_misc binfmt_misc rw 74 19 0:37 / /proc/fs/nfsd rw,relatime shared:28 - nfsd nfsd rw 76 62 8:1 / /boot rw,relatime shared:29 - xfs /dev/sda1 rw,attr2,inode64,noquota 78 62 253:2 / /home rw,relatime shared:30 - xfs /dev/mapper/centos-home rw,attr2,inode64,noquota 80 62 0:38 / /var/lib/nfs/rpc_pipefs rw,relatime shared:31 - rpc_pipefs sunrpc rw 348 24 0:3 / /run/docker/netns/ingress_sbox rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 357 24 0:3 / /run/docker/netns/1-7qyaqxyicw rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 187 24 0:39 / /run/user/1000 rw,nosuid,nodev,relatime shared:134 - tmpfs tmpfs rw,size=1621780k,mode=700,uid=1000,gid=1000 195 18 0:41 / /sys/fs/fuse/connections rw,relatime shared:141 - fusectl fusectl rw     我们找到了需要创建的设备 253:2, 在容器中 # in the container, create the device if it doesn&#39;t already exist: [ -b /dev/xvda1 ] || mknod --mode 0600 /dev/xvda1 b 253 2     把这个设备挂到容器中 # in the container: $ mkdir -p /tmpmount $ mount /dev/xvda1 /tmpmount mount: permission denied     如果挂载提示权限失败，则需要 ns-enter， 这允许我们作为主机用户输入容器的命名空间： # on the host, get the container&#39;s PID: $ docker inspect --format {{.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单" >super 没那么简单</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年10月9日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/summary">summary</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                大家都知道使用 super 来调用父类了方法，但如何正确使用 super 普遍知之甚少。 为了弄清它的原理，我们需要花点时间解释下 Python 是如何实现继承的。 对于你定义的每一个类，Python 会计算出一个所谓的方法解析顺序(MRO)列表。 这个 MRO 列表就是一个简单的所有基类的线性顺序表。 MRO(Method Resolution Order)   Python 中是使用 C3 算法来确定 MRO 的。可通过 mro()函数来获取每个类的 MRO。  首先了解 C3 的一些基本定义： C1C2...CN   表示一个包含多个类的列表 [C1,C2,…,CN]  例表的第一个元素定义为 head: head = C1   剩余的为 tail: tail = C2...CN   例表相加 [C] + [C1,C2,…,CN]: C + (C1C2...CN) = CC1C2...CN   考虑我们有个多继承的类 C，基类为 B1,B2,…,BN.现在要计算类 C 的线性顺序表 L[C].规则为    C 的线性顺序表为 C 加上 父类的线性顺序表 和 父类例表的 merge.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式" >Postgres 中的五种分页方式</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年3月28日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/date">date</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                任意查询分页  limit-offset   limit-offset 是最简单，也是最危险的分页方式。不幸的是，它是 Web 应用程序开发教程的主要内容。对象关系映射（ORM）库使它变得简单而诱人，从 SQLAlchemy 的.slice（1，3）到 ActiveRecord 的.limit（1）.offset（3）到 Sequelize 的.findAll（{offset：3，limit：1}） 。它们最后生成的 SQL 都是以 LIMIT 1 OFFSET3 结束。limit-offset 的使用非常普遍，并非巧合，您可以将其应用于任何查询而无需进一步修改。  这个技术有两个大总是，结果不一致和偏移(offset)效率低下。一致性是指遍历结果集的意图应该检索每个项目一次，没有遗漏或重复。 偏移效率是指将结果转移大量偏移所导致的延迟。  这里有个 limit-offse 分页结果不一致的例子。假设从第 n 页跳到 n+1 页时，同时一个新的元素插入到第 n 页。 这将同时导致重复（第 n 页的先前最后一个元素被推入第 n + 1 页）和一个省略（新元素）。 或者考虑从用户移动到页面 n + 1 时从页面 n 中删除的元素。 页面 n + 1 的先前初始元素将被移动到页面 n 并被省略。  现在分析低效率。大的偏移本质上就是昂贵的，即使存在索引，数据库也必须通过存储进行扫描，对行进行计数。 为了利用索引，我们必须通过一个值过滤一列，但在这种情况下，我们需要一定数量的行，而不管它们的列值如何。 此外，这些行的存储空间不需要具有相同的大小，有些可能存在于磁盘上，但标记为已删除，因此数据库无法使用简单的算术在磁盘上查找位置以开始读取结果。 我们来衡量有多少慢。 -- Create table with random strings of various lengths  CREATE TABLE medley AS SELECT generate_series(1,10000000) AS n, substr(concat(md5(random()::text), md5(random()::text)), 1, (random() * 64)::integer + 1) AS description; -- Notify query planner of drastically changed table size  VACUUM ANALYZE; -- Low offsets are refreshingly fast  EXPLAIN ANALYZE SELECT * FROM medley LIMIT 100;   估计成本相当低： QUERY PLAN -------------------------------------------------------------------------------------------------------------------- 	Limit (cost=0.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if" >C&#43;&#43; Ep23: constexpr if</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年3月7日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/weekly">Weekly</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                 以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句 （若存在），否则舍去 true 分支语句 。示例： #include&lt;type_traits&gt; #include&lt;iostream&gt; template&lt;typename T&gt; auto print_type_info(const T &amp;t) { if constexpr(std::is_integral&lt;T&gt;::value){ return t + 1; } else if constexpr(std::is_floating_point&lt;T&gt;::value){ return t + 0.1; } else{ return t; } } int main() { std::cout &lt;&lt; print_type_info(5) &lt;&lt; &#34;\n&#34;; std::cout &lt;&lt; print_type_info(4.3) &lt;&lt; &#34;\n&#34;; std::cout &lt;&lt; print_type_info(&#34;hello world&#34;) &lt;&lt; &#34;\n&#34;; }    在上面的例中，当传参 5 时。语句可看成： template&lt;typename T&gt; auto print_type_info(const T &amp;t) { return t + 1; }    说明：    constexpr 整个条件语句都会执行，与普通的不同(如 &amp;&amp; 在前面为 false 时会中断)。    在被舍去语句中的 return 语句不参与函数返回类型推导    被舍去语句可以 odr 使用不定义的变量    若 constexpr if 语句出现于模板实体内，且若 条件 在实例化后不是值依赖的，则在实例化外围模板时不会实例化被舍去语句    在模板外，被舍去语句受到完整的检查。if constexpr 不是 #if 预处理指令的替代品   ……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci" >C&#43;&#43; Ep22: Fibonacci</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月28日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/weekly">Weekly</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本  int fib(const int i) { if(i == 0) return 0; if(i == 1) return 1; return fib(i - 1) + fib(i - 2); }      文件大小：8.7K    时间：7.4S   模板版本  template&lt;int I&gt; struct Fib { static const int val = Fib&lt;I-1&gt;::val + Fib&lt;I-2&gt;::val; }; template&lt;&gt; struct Fib&lt;0&gt; { static const int val = 0; }; template&lt;&gt; struct Fib&lt;1&gt; { static const int val = 1; };      文件大小：8.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates" >C&#43;&#43; Ep21: variadic Templates</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月21日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/weekly">Weekly</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                使用  之前   在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 //一个参数  template&lt;typename T1&gt; //两个参数  template&lt;typename T1, typename T2&gt; //三个参数  template&lt;typename T1, typename T2, typename T3&gt; ....    无论是实现还是效率都非常差 可变参数版本（递归实现）   对于上面情况，使用可变参数模板实现： #include &lt;sstream&gt; #include &lt;iostream&gt; #include &lt;vector&gt; template&lt;typename T&gt; std::string to_string_impl(const T&amp; t) { std::stringstream ss; ss &lt;&lt; t; return ss.str(); } std::vector&lt;std::string&gt; to_string(){ return {}; } template&lt;typename P1, typename ...Param&gt; std::vector&lt;std::string&gt; to_string(const P1 &amp;p1, const Param&amp; .……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable" >C&#43;&#43; Ep20: Static Variable</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月13日
-                            </date>
-                            
-                            <div class="post-meta">
-                                <span>|</span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                                
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/weekly">Weekly</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                 C++ static 变量  初始化顺序     全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化    局部静态变量在第一次被使用时初始化   线程安全   从 C++ 11 起局部静态变量的初始化是线程安全的。 效率   由于要保证局部静态变量的线程安全，所以在每次访问时都需要 guard 判断变量是补始化，这样存在一个效率的问题。 struct C{ static const std::string &amp;magic_static() { static std::string s = &#34;hardy&#34;; return s; } const std::string &amp;s = magic_static(); const std::string &amp;magic_static_ref() { return s; } };    在上面的例子中，调用 magic_static 的效率要比 magic_static_ref 低。 ……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)" >Tweaks(2)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月6日
-                            </date>
-                            
-                            <div class="post-content">
-                                Item 42:考虑就地创建而非插入   如果你有一个容器，比如说 std::strings，将 std::string 元素类型传给插入函数(如, insert, push_front, push_back, 或是, for std::forward_list, insert_after)添加新的元素，似乎是乎合逻辑的。毕竟，这是容器的内容。 尽管这可能是逻辑的，但并不总是如此。 考虑这个代码： std::vector&lt;std::string&gt; vs; // container of std::string  vs.push_back(&#34;xyzzy&#34;); // add string literal    在这里，容器容纳了 std::strings，但是你手头上的东西（你实际上想要 push_back 的东西）是一个字符串，也就是引号内的一系列字符。 字符串文字不是 std::string，这意味着传递给 push_back 的参数不是容器所持有的类型。 对于 std::vector，push_back 被重载为左值和右值，如下所示： template &lt;classT, // from the C++11 	classAllocator = allocator&lt;T&gt;&gt; // Standard  classvector { public: … void push_back(const T&amp; x); // insert lvalue 	void push_back(T&amp;&amp; x); // insert rvalue 	… };    在这个调用中： vs.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/tweaks2/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)" >Tweaks(1)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月5日
-                            </date>
-                            
-                            <div class="post-content">
-                                Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式   有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来源。) 例如，成员函数 addName 可能会将其参数复制到私有容器中。 为了提高效率，这样的函数应该复制左值参数，但移动右值参数： classWidget { public: void addName(const std::string&amp; newName) // take lvalue; 	{ names.push_back(newName); } // copy it 	void addName(std::string&amp;&amp; newName) // take rvalue; 	{ names.push_back(std::move(newName)); } // move it; see 	… // Item 25 for use 	// of std::move 	private: std::vector&lt;std::string&gt; names; };    这是有效的，但是它需要编写两个基本相同的功能。 这个功能：两个功能声明，两个功能实现，两个功能文件，两个功能维护。啊。  此外，在目标代码中将会有两个功能 - 如果您担心程序的占用空间，您可能会关心这些功能。在这种情况下，两个函数都可能被内联， 这可能会消除与两个函数的存在相关的任何膨胀问题，但是如果这些函数不是内联到处，那么在对象代码中实际上会得到两个函数。  另一种方法是使 addName 成为一个通用的函数模板参考（见 item 24）： classWidget { public: template&lt;typename T&gt; // take lvalues 	void addName(T&amp;&amp; newName) // and rvalues; 	{ // copy lvalues, 	names.……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/tweaks1/">阅读全文</a></p>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)" >C&#43;&#43; Ep19:The Concurrency API(4)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年2月2日
-                            </date>
-                            
-                            <div class="post-content">
-                                Item40: 对于并发使用 std :: atomic，对特殊的内存使用 volatile   一旦构建了一个 std::atomic 对象，对它的操作就好像它们在一个受互斥体保护的临界区域内一样，但是操作通常是使用特殊的机器指令来实现的， 这些指令比互斥体更高效。 std::atomic&lt;int&gt; ai(0); // initialize ai to 0  ai = 10; // atomically set ai to 10  std::cout &lt;&lt; ai; // atomically read ai&#39;s value  ++ai; // atomically increment ai to 11  --ai; // atomically decrement ai to 10    在执行这些语句期间，其他读取 ai 的线程可能只会看到值 0,10 或 11.没有其他值是可能的（当然，假设这是唯一的线程修改 ai）。 这里有两点需要注意：第一，在“std::cout &lt;&lt; ai;”中，只有读 ai 的操作是原子的，整个语句不受原子保护。第二，ai 的自增，自减都是 read-modify-write (RMW) 操作，它们的执行是原子的。这是 std::atomic 类型最好的特性之一：一旦构造了 std::atomic 对象， 其上的所有成员函数，包括那些包含 RMW 操作的成员函数，都被保证被其他线程视为原子。  相反，使用 volatile 的相应代码在多线程上下文中几乎没有任何保证： volatile int vi(0); // initialize vi to 0  vi = 10; // set vi to 10  std::cout &lt;&lt; vi; // read vi&#39;s value  ++vi; // increment vi to 11  --vi; // decrement vi to 10    在执行这段代码期间，如果其他线程正在读取 vi 的值，他们可能会看到任何东西，例如-12，68，4090727-任何东西！ 这样的代码会有不确定的行为，因为这些语句修改了 vi，所以如果其他线程同时读取 vi，那么同时存在的读写内在既不是 std::atomic 也不是由互斥锁保护的， 这就是 数据竞争。  看 std::atomics 和 volatile 在多线程程序中有何不同的行为，可以考虑一个由多个线程递增的简单计数器。 我们将初始化为 0： std::atomic&lt;int&gt; ac(0); // &#34;atomic counter&#34;  volatile int vc(0); // &#34;volatile counter&#34;    然后，我们将在两个同时运行的线程中每次递增一个计数器： /*----- Thread 1 ----- */ /*------- Thread 2 ------- */ ++ac; ++ac; ++vc; ++vc;    当两个线程都完成后，ac 的值（即 std::atomic 的值）必定是 2，因为每个增量都是作为不可分割的操作出现的。 另一方面，vc 的值不一定是 2，因为它的自增可能不会原子地发生。 每个自增包括读取 vc 的值，递增读取的值，并将结果写回 vc。 但是对于 volatile 对像这个三操作不能保证原子进行，所以可能两个 vc 自增的组成部分是交错的，如下所示：    线程 1 读取 vc 的值，即 0。    线程 2 读取 vc 的值，它仍然是 0。    线程 1 将读取的 0 递增为 1，然后将该值写入 vc。    线程 2 将读取的 0 递增为 1，然后将该值写入 vc。    因此 vc 的最终值是 1，尽管它增加了两次。  这不是唯一可能的结果。vc 的最终值通常是不可预测的，因为 vc 涉及数据竞争，并且标准的规定数据竞争导致未定义的行为意味着编译器可以生成代码来完成任何事情。 当然，编译器不会使用这个余地。相反，它们执行的优化在没有数据竞争的程序中是有效的，而且这些优化在存在竞争的程序中产生意想不到的和不可预测的行为。  RMW 并不是 std::atomics 并发成功而 volatile 失败的唯一情况。假设一个任务计算第二个任务所需的重要值。 当第一个任务已经计算出这个值时，它必须把这个通知给第二个任务。 第 39 项演示过，第一个任务将所需值的可用性传递给第二个任务的一种方法是使用 std::atomic &lt;bool&gt;。计算值任务的代码部分如下： std::atomic&lt;bool&gt; valAvailable(false); auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    当人类阅读这些代码时，我们知道在赋值为 valAvailable 之前赋值给 imptValue 是至关重要的，但是所有编译器看到的都是一对赋值给独立变量的赋值。 作为一般规则，编译器可以重新排序这些不相关的任务。也就是说，给定这一系列的任务（其中 a，b，x 和 y 对应于独立变量） a = b; x = y;    编译器通常可以按如下方式重新排列它们： x = y; a = b;    即使编译器不对它们进行重新排序，底层硬件也可能会这样做，因为有时可能会使代码跑得更快。 然而，std::atomics 的使用限制了代码的重新排序方式，一个这样的限制是，在源代码之前， 在 std::atomic 变量的代码发生之后不会有写代码。这意味着在我们的代码中， auto imptValue = computeImportantValue(); // compute value  valAvailable = true; // tell other task  // it&#39;s available    不仅编译器必须将赋值顺序保留为 imptValue 和 valAvailable，还必须确保底层硬件生成的代码也是这样。 因此，将 valAvailable 声明为 std::atomic 可以确保我们的关键排序要求-imptValue 必须不晚于 valAvailable 被所有线程看到。  声明 valAvailable 为 volatile 不会强加这种重新排序限制： volatile bool valAvailable(false); auto imptValue = computeImportantValue(); valAvailable = true; // other threads might see this assignment  // before the one to imptValue!……
-                            </div>
-                            <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/">阅读全文</a></p>
-                        </article>
-                    
-                    
-
-
-
-<ol class="page-navigator">
-    
-
-    
-    <li  class="current">
-        <a href="https://hardy5012.github.io/">1</a>
-    </li>
-    
-    <li >
-        <a href="https://hardy5012.github.io/page/2/">2</a>
-    </li>
-    
-    <li >
-        <a href="https://hardy5012.github.io/page/3/">3</a>
-    </li>
-    
-    <li >
-        <a href="https://hardy5012.github.io/page/4/">4</a>
-    </li>
-    
-    <li >
-        <a href="https://hardy5012.github.io/page/5/">5</a>
-    </li>
-    
-
-    
-    <li class="next">
-        <a href="https://hardy5012.github.io/page/2/">下一页</a>
-    </li>
-    
-</ol>
-
-
-
-                </div>
-            </div>
-
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <section id="posts" class="posts">
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/">Posts</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2018-11-22 </span>
       
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      
+    </div>
+    <div class="read-more">
+      <a href="/post/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
 
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
     </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
+  
+  <nav class="pagination">
     
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
     
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+  </nav>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
 
 

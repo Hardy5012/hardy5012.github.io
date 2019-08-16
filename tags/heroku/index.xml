@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>HeroKu on Learning Hardy</title>
+    <title>HeroKu on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/heroku/</link>
-    <description>Recent content in HeroKu on Learning Hardy</description>
+    <description>Recent content in HeroKu on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Wed, 07 Jun 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/heroku/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/2017-06-07-heroku/</guid>
-      <description> 安装  sudo yum install ruby gem sudo gem install json_pure sudo gem install rails sudo gem install bundler sudo gem install heroku    {{{more}}} </description>
+      <description>安装 1 2 3 4 5 sudo yum install ruby gem sudo gem install json_pure sudo gem install rails sudo gem install bundler sudo gem install heroku {{{more}}}</description>
     </item>
     
   </channel>

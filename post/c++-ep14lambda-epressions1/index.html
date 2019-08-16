@@ -1,96 +1,162 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep14:Lambda Epressions(1) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep14:Lambda Epressions(1) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep14:Lambda Epressions(1) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2018-01-11T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2018-01-11T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep14:Lambda Epressions(1)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item31:对于 lambda 表达式，避免使用默认捕获模式 C&#43;&#43;11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep14:Lambda Epressions(1)" />
+<meta property="og:description" content="Item31:对于 lambda 表达式，避免使用默认捕获模式 C&#43;&#43;11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/" />
+<meta property="article:published_time" content="2018-01-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-11T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep14:Lambda Epressions(1)">
+<meta itemprop="description" content="Item31:对于 lambda 表达式，避免使用默认捕获模式 C&#43;&#43;11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获">
+
+
+<meta itemprop="datePublished" content="2018-01-11T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-11T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="6790">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep14:Lambda Epressions(1)"/>
+<meta name="twitter:description" content="Item31:对于 lambda 表达式，避免使用默认捕获模式 C&#43;&#43;11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://hardy5012.github.io/">
-                        Learning Hardy
-                    </a>
-                
-                
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep14:Lambda Epressions(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-11 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        
+      </div>
+    </header>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep14:Lambda Epressions(1)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2018年1月11日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                            
-                        </div>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item31:对于 lambda 表达式，避免使用默认捕获模式</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">Item 32:使用初始化捕获来把对象移动到闭包</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
 <h1 id="headline-1">
 Item31:对于 lambda 表达式，避免使用默认捕获模式
 </h1>
@@ -107,36 +173,71 @@ C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引�
 那么闭包的引用将会空悬。例如，我们有一个容器，它的元素是过滤函数，这种过滤函数接受一个 int，返回 bool 表示传入的值是否可以满足过滤条件：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> FilterContainer <span style="color:#f92672">=</span> <span style="color:#75715e">// see Item 9 for
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>function<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span>(<span style="color:#66d9ef">int</span>)<span style="color:#f92672">&gt;&gt;</span>; <span style="color:#75715e">// &#34;using&#34;, Item 2
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// for std::function
-</span><span style="color:#75715e"></span>  FilterContainer filters; <span style="color:#75715e">// filtering funcs
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="n">FilterContainer</span> <span class="o">=</span> <span class="c1">// see Item 9 for
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="p">;</span> <span class="c1">// &#34;using&#34;, Item 2
+</span><span class="c1"></span>  <span class="c1">// for std::function
+</span><span class="c1"></span>  <span class="n">FilterContainer</span> <span class="n">filters</span><span class="p">;</span> <span class="c1">// filtering funcs
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 我们可以通过添加一个过滤器，过滤掉 5 的倍数，像这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  filters.emplace_back( <span style="color:#75715e">// see Item 42 for
-</span><span style="color:#75715e"></span>	  [](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// info on
-</span><span style="color:#75715e"></span>	  ); <span style="color:#75715e">// emplace_back
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span> <span class="c1">// see Item 42 for
+</span><span class="c1"></span>	  <span class="p">[](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// info on
+</span><span class="c1"></span>	  <span class="p">);</span> <span class="c1">// emplace_back
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 但是，我们可能需要在运行期间计算被除数，而不是直接把硬编码 5 写到 lambda 中，所以添加过滤器的代码可能是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addDivisorFilter</span>()
-  {
-	  <span style="color:#66d9ef">auto</span> calc1 <span style="color:#f92672">=</span> computeSomeValue1();
-	  <span style="color:#66d9ef">auto</span> calc2 <span style="color:#f92672">=</span> computeSomeValue2();
-	  <span style="color:#66d9ef">auto</span> divisor <span style="color:#f92672">=</span> computeDivisor(calc1, calc2);
-	  filters.emplace_back( <span style="color:#75715e">// danger!
-</span><span style="color:#75715e"></span>		  [<span style="color:#f92672">&amp;</span>](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// ref to
-</span><span style="color:#75715e"></span>		  ); <span style="color:#75715e">// divisor
-</span><span style="color:#75715e"></span>  } <span style="color:#75715e">// will
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// dangle!
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">addDivisorFilter</span><span class="p">()</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">calc1</span> <span class="o">=</span> <span class="n">computeSomeValue1</span><span class="p">();</span>
+	  <span class="k">auto</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">computeSomeValue2</span><span class="p">();</span>
+	  <span class="k">auto</span> <span class="n">divisor</span> <span class="o">=</span> <span class="n">computeDivisor</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">);</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span> <span class="c1">// danger!
+</span><span class="c1"></span>		  <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// ref to
+</span><span class="c1"></span>		  <span class="p">);</span> <span class="c1">// divisor
+</span><span class="c1"></span>  <span class="p">}</span> <span class="c1">// will
+</span><span class="c1"></span>  <span class="c1">// dangle!
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这代码有个定时炸弹。lambda 引用了局部变量 divisor， 但是局部变量的生命期在 addDivisorFilter 返回时终止，也就是在 filters.emplace_back 返回之后，
@@ -146,11 +247,21 @@ C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引�
 现在呢，如果显式引用捕获 divisor，会存在着同样的问题：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  filters.emplace_back(
-	  [<span style="color:#f92672">&amp;</span>divisor](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// danger! ref to
-</span><span style="color:#75715e"></span>	  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// divisor will
-</span><span style="color:#75715e"></span>	  ); <span style="color:#75715e">// still dangle!
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+	  <span class="p">[</span><span class="o">&amp;</span><span class="n">divisor</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// danger! ref to
+</span><span class="c1"></span>	  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// divisor will
+</span><span class="c1"></span>	  <span class="p">);</span> <span class="c1">// still dangle!
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 不过使用显示捕获，很容易就可以看出 lambda 的活性依赖于 divisor 的生命期。而且，写出名字“divisor”会提醒我们，
@@ -162,29 +273,57 @@ C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引�
 例如，我们的过滤 lambda 只是作为 C++11 的 std::all_of 的参数（std::all_of 返回范围内元素是否都满足某个条件）：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> C<span style="color:#f92672">&gt;</span>
-  <span style="color:#66d9ef">void</span> workWithContainer(<span style="color:#66d9ef">const</span> C<span style="color:#f92672">&amp;</span> container)
-  {
-	  <span style="color:#66d9ef">auto</span> calc1 <span style="color:#f92672">=</span> computeSomeValue1(); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">auto</span> calc2 <span style="color:#f92672">=</span> computeSomeValue2(); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">auto</span> divisor <span style="color:#f92672">=</span> computeDivisor(calc1, calc2); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">using</span> ContElemT <span style="color:#f92672">=</span> <span style="color:#66d9ef">typename</span> C<span style="color:#f92672">::</span>value_type; <span style="color:#75715e">// type of
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// elements in
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// container
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">using</span> std<span style="color:#f92672">::</span>begin; <span style="color:#75715e">// for
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">using</span> std<span style="color:#f92672">::</span>end; <span style="color:#75715e">// genericity;
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// see Item 13
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">if</span> (std<span style="color:#f92672">::</span>all_of( <span style="color:#75715e">// if all values
-</span><span style="color:#75715e"></span>			  begin(container), end(container), <span style="color:#75715e">// in container
-</span><span style="color:#75715e"></span>			  [<span style="color:#f92672">&amp;</span>](<span style="color:#66d9ef">const</span> ContElemT<span style="color:#f92672">&amp;</span> value) <span style="color:#75715e">// are multiples
-</span><span style="color:#75715e"></span>			  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; }) <span style="color:#75715e">// of divisor...
-</span><span style="color:#75715e"></span>		  ) {
-		  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// they are...
-</span><span style="color:#75715e"></span>			  } <span style="color:#66d9ef">else</span> {
-		  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// at least one
-</span><span style="color:#75715e"></span>			  } <span style="color:#75715e">// isn&#39;t...
-</span><span style="color:#75715e"></span>  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">C</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">workWithContainer</span><span class="p">(</span><span class="k">const</span> <span class="n">C</span><span class="o">&amp;</span> <span class="n">container</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">calc1</span> <span class="o">=</span> <span class="n">computeSomeValue1</span><span class="p">();</span> <span class="c1">// as above
+</span><span class="c1"></span>	  <span class="k">auto</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">computeSomeValue2</span><span class="p">();</span> <span class="c1">// as above
+</span><span class="c1"></span>	  <span class="k">auto</span> <span class="n">divisor</span> <span class="o">=</span> <span class="n">computeDivisor</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">);</span> <span class="c1">// as above
+</span><span class="c1"></span>	  <span class="k">using</span> <span class="n">ContElemT</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">C</span><span class="o">::</span><span class="n">value_type</span><span class="p">;</span> <span class="c1">// type of
+</span><span class="c1"></span>  <span class="c1">// elements in
+</span><span class="c1"></span>  <span class="c1">// container
+</span><span class="c1"></span>	  <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">;</span> <span class="c1">// for
+</span><span class="c1"></span>	  <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">;</span> <span class="c1">// genericity;
+</span><span class="c1"></span>  <span class="c1">// see Item 13
+</span><span class="c1"></span>	  <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">all_of</span><span class="p">(</span> <span class="c1">// if all values
+</span><span class="c1"></span>			  <span class="n">begin</span><span class="p">(</span><span class="n">container</span><span class="p">),</span> <span class="n">end</span><span class="p">(</span><span class="n">container</span><span class="p">),</span> <span class="c1">// in container
+</span><span class="c1"></span>			  <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span> <span class="n">ContElemT</span><span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// are multiples
+</span><span class="c1"></span>			  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">})</span> <span class="c1">// of divisor...
+</span><span class="c1"></span>		  <span class="p">)</span> <span class="p">{</span>
+		  <span class="err">…</span> <span class="c1">// they are...
+</span><span class="c1"></span>			  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		  <span class="err">…</span> <span class="c1">// at least one
+</span><span class="c1"></span>			  <span class="p">}</span> <span class="c1">// isn&#39;t...
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 当然，这是安全的，但是它的安全有点不稳定，如果发现 lambda 在其他上下文很有用（例如，作为函数加入到过滤器容器），然后拷贝及粘贴到其他上下文，
@@ -198,20 +337,39 @@ C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引�
 然后把 if 语句的条件改成这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">if</span> (std<span style="color:#f92672">::</span>all_of(begin(container), end(container),
-				  [<span style="color:#f92672">&amp;</span>](<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> value) <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>				  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; }))
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">all_of</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">container</span><span class="p">),</span> <span class="n">end</span><span class="p">(</span><span class="n">container</span><span class="p">),</span>
+				  <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// C++14
+</span><span class="c1"></span>				  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}))</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 解决这个问题的一种办法是对 divisor 使用默认的值捕获模式。即，我们这样向容器添加 lambda：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  filters.emplace_back( <span style="color:#75715e">// now
-</span><span style="color:#75715e"></span>	  [<span style="color:#f92672">=</span>](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// divisor
-</span><span style="color:#75715e"></span>	  ); <span style="color:#75715e">// can&#39;t
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// dangle
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span> <span class="c1">// now
+</span><span class="c1"></span>	  <span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// divisor
+</span><span class="c1"></span>	  <span class="p">);</span> <span class="c1">// can&#39;t
+</span><span class="c1"></span>  <span class="c1">// dangle
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这满足这个例子的需要，但是，总的来说，默认以值捕获不是对抗空悬的长生不老药。问题在于，如果你用值捕获了个指针，
@@ -226,26 +384,51 @@ C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引�
 假如 Widget 类可以做的其中一件事是，向过滤器容器添加条目：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// ctors, etc.
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">void</span> addFilter() <span style="color:#66d9ef">const</span>; <span style="color:#75715e">// add an entry to filters
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">int</span> divisor; <span style="color:#75715e">// used in Widget&#39;s filter
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span> <span class="c1">// ctors, etc.
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span> <span class="c1">// add an entry to filters
+</span><span class="c1"></span>  <span class="k">private</span><span class="o">:</span>
+	  <span class="kt">int</span> <span class="n">divisor</span><span class="p">;</span> <span class="c1">// used in Widget&#39;s filter
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 Widget::addFilter 可能定义成这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  filters.emplace_back(
-		  [<span style="color:#f92672">=</span>](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; }
-		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 对于外行人，这看起来像是安全的代码。lambda 依赖 divisor，但默认的以值捕获模式确保了 divisor 被拷贝到 lambda 创建的闭包里，对吗？
@@ -258,26 +441,51 @@ Widget::addFilter 可能定义成这样：
 divisor 不是局部变量，它是 Widget 类的成员变量，它是不能被捕获的，如果默认捕获模式被删除，代码就不能编译了：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  filters.emplace_back( <span style="color:#75715e">// error!
-</span><span style="color:#75715e"></span>		  [](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// divisor
-</span><span style="color:#75715e"></span>		  ); <span style="color:#75715e">// not
-</span><span style="color:#75715e"></span>  } <span style="color:#75715e">// available
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span> <span class="c1">// error!
+</span><span class="c1"></span>		  <span class="p">[](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// divisor
+</span><span class="c1"></span>		  <span class="p">);</span> <span class="c1">// not
+</span><span class="c1"></span>  <span class="p">}</span> <span class="c1">// available
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 而且，如果试图显式捕获 divisor（无论是值捕获还是引用捕获，这都没有关系），捕获不会通过编译，因为 divisor 不是局部变量或形参：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  filters.emplace_back(
-		  [divisor](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// error! no local
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// divisor to capture
-</span><span style="color:#75715e"></span>		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="n">divisor</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// error! no local
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// divisor to capture
+</span><span class="c1"></span>		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 所以如果在默认值捕获语句中（即“[=]”），捕获的不是 divisor，而不是默认值捕获语句就不能编译，那么前者发生了什么？
@@ -287,47 +495,92 @@ divisor 不是局部变量，它是 Widget 类的成员变量，它是不能被�
 例如，在 Widget 的一些成员函数中，编译器内部会把 divisor 替换成 this-&gt;divisor。在 Widget::addFiliter 的默认值捕获版本中，
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  filters.emplace_back(
-		  [<span style="color:#f92672">=</span>](<span style="color:#66d9ef">int</span> value) { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; }
-		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 被捕获的是 Widget 的 this 指针，而不是 divisor，编译器把上面的代码视为这样写的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  <span style="color:#66d9ef">auto</span> currentObjectPtr <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>;
-	  filters.emplace_back(
-		  [currentObjectPtr](<span style="color:#66d9ef">int</span> value)
-		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> currentObjectPtr<span style="color:#f92672">-&gt;</span>divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; }
-		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">currentObjectPtr</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="n">currentObjectPtr</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">currentObjectPtr</span><span class="o">-&gt;</span><span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 理解了这个就相当于理解了 lambda 闭包的活性与 Widget 对象的生命期有紧密关系，闭包内含有 Widget 的 this 指针的拷贝。
 特别是，思考下面的代码，它根据第 4 章，只是用智能指针：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> FilterContainer <span style="color:#f92672">=</span> <span style="color:#75715e">// as before
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>function<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span>(<span style="color:#66d9ef">int</span>)<span style="color:#f92672">&gt;&gt;</span>;
-  FilterContainer filters; <span style="color:#75715e">// as before
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doSomeWork</span>()
-  {
-	  <span style="color:#66d9ef">auto</span> pw <span style="color:#f92672">=</span> <span style="color:#75715e">// create Widget; see
-</span><span style="color:#75715e"></span>		  std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>(); <span style="color:#75715e">// Item 21 for
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// std::make_unique
-</span><span style="color:#75715e"></span>	  pw<span style="color:#f92672">-&gt;</span>addFilter(); <span style="color:#75715e">// add filter that uses
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Widget::divisor
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-		  } <span style="color:#75715e">// destroy Widget; filters
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// now holds dangling pointer!
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="n">FilterContainer</span> <span class="o">=</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+  <span class="n">FilterContainer</span> <span class="n">filters</span><span class="p">;</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">doSomeWork</span><span class="p">()</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">pw</span> <span class="o">=</span> <span class="c1">// create Widget; see
+</span><span class="c1"></span>		  <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// Item 21 for
+</span><span class="c1"></span>  <span class="c1">// std::make_unique
+</span><span class="c1"></span>	  <span class="n">pw</span><span class="o">-&gt;</span><span class="n">addFilter</span><span class="p">();</span> <span class="c1">// add filter that uses
+</span><span class="c1"></span>  <span class="c1">// Widget::divisor
+</span><span class="c1"></span>	  <span class="err">…</span>
+		  <span class="p">}</span> <span class="c1">// destroy Widget; filters
+</span><span class="c1"></span>  <span class="c1">// now holds dangling pointer!
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 当调用 doSomeWork 时，创建了一个过滤函数，它依赖 std::make_unique 创建的 Widget 对象，即，那个过滤函数内含有指向 Widget 指针——即，
@@ -338,29 +591,57 @@ Widget 的 this 指针——的拷贝。这个函数被添加到 filters 中，�
 通过将你想捕获的成员变量拷贝到局部变量中，然后捕获这个局部拷贝，就可以解决这个特殊的问题了：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  <span style="color:#66d9ef">auto</span> divisorCopy <span style="color:#f92672">=</span> divisor; <span style="color:#75715e">// copy data member
-</span><span style="color:#75715e"></span>	  filters.emplace_back(
-		  [divisorCopy](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// capture the copy
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisorCopy <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// use the copy
-</span><span style="color:#75715e"></span>		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">divisorCopy</span> <span class="o">=</span> <span class="n">divisor</span><span class="p">;</span> <span class="c1">// copy data member
+</span><span class="c1"></span>	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="n">divisorCopy</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// capture the copy
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisorCopy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// use the copy
+</span><span class="c1"></span>		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 实话说，如果你用这种方法，那么默认值捕获也是可以工作的
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  <span style="color:#66d9ef">auto</span> divisorCopy <span style="color:#f92672">=</span> divisor; <span style="color:#75715e">// copy data member
-</span><span style="color:#75715e"></span>	  filters.emplace_back(
-		  [<span style="color:#f92672">=</span>](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// capture the copy
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisorCopy <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// use the copy
-</span><span style="color:#75715e"></span>		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">divisorCopy</span> <span class="o">=</span> <span class="n">divisor</span><span class="p">;</span> <span class="c1">// copy data member
+</span><span class="c1"></span>	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// capture the copy
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisorCopy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// use the copy
+</span><span class="c1"></span>		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 但是，我们为什么要冒险呢？在一开始的代码，默认值捕获就意外地捕获了 this 指针，而不是你以为的 divisor。
@@ -369,14 +650,27 @@ Widget 的 this 指针——的拷贝。这个函数被添加到 filters 中，�
 在 C++14 中，捕获成员变量一种更好的方法是使用广义 lambda 捕获（ <strong>generalized lambda capture</strong> ，即，捕获语句可以是表达式，看条款 32）：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> Widget<span style="color:#f92672">::</span>addFilter() <span style="color:#66d9ef">const</span>
-  {
-	  filters.emplace_back( <span style="color:#75715e">// C++14:
-</span><span style="color:#75715e"></span>		  [divisor <span style="color:#f92672">=</span> divisor](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// copy divisor to closure
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// use the copy
-</span><span style="color:#75715e"></span>		  );
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="n">Widget</span><span class="o">::</span><span class="n">addFilter</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span> <span class="c1">// C++14:
+</span><span class="c1"></span>		  <span class="p">[</span><span class="n">divisor</span> <span class="o">=</span> <span class="n">divisor</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// copy divisor to closure
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// use the copy
+</span><span class="c1"></span>		  <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 广义 lambda 捕获没有默认捕获模式，但是，就算在 C++14，本条款的建议——避免使用默认捕获模式——依然成立。
@@ -388,19 +682,37 @@ Widget 的 this 指针——的拷贝。这个函数被添加到 filters 中，�
 但是它们不能被捕获。如果你使用了默认值捕获模式，这些对象会给你错觉，让你认为它们可以捕获。思考下面这个修改版本的 addDivisorFilter 函数：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addDivisorFilter</span>()
-  {
-	  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">auto</span> calc1 <span style="color:#f92672">=</span> computeSomeValue1(); <span style="color:#75715e">// now static
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">auto</span> calc2 <span style="color:#f92672">=</span> computeSomeValue2(); <span style="color:#75715e">// now static
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">auto</span> divisor <span style="color:#f92672">=</span> <span style="color:#75715e">// now static
-</span><span style="color:#75715e"></span>		  computeDivisor(calc1, calc2);
-	  filters.emplace_back(
-		  [<span style="color:#f92672">=</span>](<span style="color:#66d9ef">int</span> value) <span style="color:#75715e">// captures nothing!
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> value <span style="color:#f92672">%</span> divisor <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; } <span style="color:#75715e">// refers to above static
-</span><span style="color:#75715e"></span>		  );
-	  <span style="color:#f92672">++</span>divisor; <span style="color:#75715e">// modify divisor
-</span><span style="color:#75715e"></span>  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">addDivisorFilter</span><span class="p">()</span>
+  <span class="p">{</span>
+	  <span class="k">static</span> <span class="k">auto</span> <span class="n">calc1</span> <span class="o">=</span> <span class="n">computeSomeValue1</span><span class="p">();</span> <span class="c1">// now static
+</span><span class="c1"></span>	  <span class="k">static</span> <span class="k">auto</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">computeSomeValue2</span><span class="p">();</span> <span class="c1">// now static
+</span><span class="c1"></span>	  <span class="k">static</span> <span class="k">auto</span> <span class="n">divisor</span> <span class="o">=</span> <span class="c1">// now static
+</span><span class="c1"></span>		  <span class="n">computeDivisor</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">);</span>
+	  <span class="n">filters</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+		  <span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="c1">// captures nothing!
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="n">divisor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// refers to above static
+</span><span class="c1"></span>		  <span class="p">);</span>
+	  <span class="o">++</span><span class="n">divisor</span><span class="p">;</span> <span class="c1">// modify divisor
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这份代码，对于随便的读者，他们看到“[=]”然后想，“很好，lambda 拷贝了它内部使用的对象，因此 lambda 是独立的。”，这可以被谅解。
@@ -462,23 +774,45 @@ C++11 没有办法做这事。如果你有个对象的拷贝操作昂贵，但�
 这里是如何使用初始化捕获来把 std::unique_ptr 移动到闭包内：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> { <span style="color:#75715e">// some useful type
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">bool</span> isValidated() <span style="color:#66d9ef">const</span>;
-	  <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">isProcessed</span>() <span style="color:#66d9ef">const</span>;
-	  <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">isArchived</span>() <span style="color:#66d9ef">const</span>;
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-<span style="color:#66d9ef">auto</span> pw <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>(); <span style="color:#75715e">// create Widget; see
-</span><span style="color:#75715e">// Item 21 for info on
-</span><span style="color:#75715e">// std::make_unique
-</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// configure *pw
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> [pw <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>move(pw)] <span style="color:#75715e">// init data mbr
-</span><span style="color:#75715e"></span>{ <span style="color:#66d9ef">return</span> pw<span style="color:#f92672">-&gt;</span>isValidated() <span style="color:#75715e">// in closure w/
-</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;&amp;</span> pw<span style="color:#f92672">-&gt;</span>isArchived(); }; <span style="color:#75715e">// std::move(pw)
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// some useful type
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">bool</span> <span class="n">isValidated</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+	  <span class="kt">bool</span> <span class="nf">isProcessed</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+	  <span class="kt">bool</span> <span class="nf">isArchived</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+<span class="k">auto</span> <span class="n">pw</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// create Widget; see
+</span><span class="c1">// Item 21 for info on
+</span><span class="c1">// std::make_unique
+</span><span class="c1"></span><span class="err">…</span> <span class="c1">// configure *pw
+</span><span class="c1"></span><span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="p">[</span><span class="n">pw</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">pw</span><span class="p">)]</span> <span class="c1">// init data mbr
+</span><span class="c1"></span><span class="p">{</span> <span class="k">return</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isValidated</span><span class="p">()</span> <span class="c1">// in closure w/
+</span><span class="c1"></span><span class="o">&amp;&amp;</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isArchived</span><span class="p">();</span> <span class="p">};</span> <span class="c1">// std::move(pw)
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 初始化捕获的代码部分是 <strong>pw = std::move(pw)</strong> ，“=”左边的是你指定的闭包类的成员变量名，右边的是进行初始化表达式。
@@ -495,11 +829,21 @@ Widget 在某些方面会被修改。如果这个配置不是必需的，即，�
 那么局部变量 pw 是不必要的，因为闭包类的成员变量可以直接被 std::make_unique 初始化：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> [pw <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>()] <span style="color:#75715e">// init data mbr
-</span><span style="color:#75715e"></span>  { <span style="color:#66d9ef">return</span> pw<span style="color:#f92672">-&gt;</span>isValidated() <span style="color:#75715e">// in closure w/
-</span><span style="color:#75715e"></span>	<span style="color:#f92672">&amp;&amp;</span> pw<span style="color:#f92672">-&gt;</span>isArchived(); }; <span style="color:#75715e">// result of call
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// to make_unique
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="p">[</span><span class="n">pw</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">()]</span> <span class="c1">// init data mbr
+</span><span class="c1"></span>  <span class="p">{</span> <span class="k">return</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isValidated</span><span class="p">()</span> <span class="c1">// in closure w/
+</span><span class="c1"></span>	<span class="o">&amp;&amp;</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isArchived</span><span class="p">();</span> <span class="p">};</span> <span class="c1">// result of call
+</span><span class="c1"></span>  <span class="c1">// to make_unique
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这应该清楚地表明在 C++14 中，C++11 的“捕获”概念得到显著推广，因为在 C++11，不可能捕获一个表达式的结果。因此，
@@ -513,18 +857,35 @@ Widget 在某些方面会被修改。如果这个配置不是必需的，即，�
 就像上面展示的 C++14 的 lambda 代码，在 C++11 中可被写成这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">IsValAndArch</span> { <span style="color:#75715e">// &#34;is validated
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span> <span style="color:#75715e">// and archived&#34;
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">using</span> DataType <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>;
-	  <span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">IsValAndArch</span>(DataType<span style="color:#f92672">&amp;&amp;</span> ptr) <span style="color:#75715e">// Item 25 explains
-</span><span style="color:#75715e"></span>		  <span style="color:#f92672">:</span> pw(std<span style="color:#f92672">::</span>move(ptr)) {} <span style="color:#75715e">// use of std::move
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">operator</span>()() <span style="color:#66d9ef">const</span>
-		  { <span style="color:#66d9ef">return</span> pw<span style="color:#f92672">-&gt;</span>isValidated() <span style="color:#f92672">&amp;&amp;</span> pw<span style="color:#f92672">-&gt;</span>isArchived(); }
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  DataType pw;
-  };
-  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> IsValAndArch(std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>());
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">IsValAndArch</span> <span class="p">{</span> <span class="c1">// &#34;is validated
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// and archived&#34;
+</span><span class="c1"></span>	  <span class="k">using</span> <span class="n">DataType</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">;</span>
+	  <span class="k">explicit</span> <span class="nf">IsValAndArch</span><span class="p">(</span><span class="n">DataType</span><span class="o">&amp;&amp;</span> <span class="n">ptr</span><span class="p">)</span> <span class="c1">// Item 25 explains
+</span><span class="c1"></span>		  <span class="o">:</span> <span class="n">pw</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">ptr</span><span class="p">))</span> <span class="p">{}</span> <span class="c1">// use of std::move
+</span><span class="c1"></span>	  <span class="kt">bool</span> <span class="nf">operator</span><span class="p">()()</span> <span class="k">const</span>
+		  <span class="p">{</span> <span class="k">return</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isValidated</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isArchived</span><span class="p">();</span> <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">DataType</span> <span class="n">pw</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="n">IsValAndArch</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">());</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这比起写 lambda 多做了很多工作，事实上没有改变：在 C++11 中，如果你想要一个支持成员变量移动初始化的类，
@@ -552,27 +913,52 @@ Widget 在某些方面会被修改。如果这个配置不是必需的，即，�
 假如你创建了一个局部的 std::vector，把一系列合适的值放进去，然后想要把它移动到闭包中。在 C++14，这很容易：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> data; <span style="color:#75715e">// object to be moved
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// into closure
-</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// populate data
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> [data <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>move(data)] <span style="color:#75715e">// C++14 init capture
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">/* uses of data */</span> };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span> <span class="c1">// object to be moved
+</span><span class="c1"></span>  <span class="c1">// into closure
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// populate data
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="c1">// C++14 init capture
+</span><span class="c1"></span>  <span class="p">{</span> <span class="cm">/* uses of data */</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这代码的关键部分是：你想要移动的对象的类型（std::vector&lt;double&gt;）和名字（data），还有初始化捕获中的初始化表达式（std::move(data)）。
 C++11 的对等物也是一样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> data; <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span>
-	  std<span style="color:#f92672">::</span>bind( <span style="color:#75715e">// C++11 emulation
-</span><span style="color:#75715e"></span>		  [](<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;&amp;</span> data) <span style="color:#75715e">// of init capture
-</span><span style="color:#75715e"></span>		  { <span style="color:#75715e">/* uses of data */</span> },
-		  std<span style="color:#f92672">::</span>move(data)
-		  );
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span> <span class="c1">// C++11 emulation
+</span><span class="c1"></span>		  <span class="p">[](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&amp;</span> <span class="n">data</span><span class="p">)</span> <span class="c1">// of init capture
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="cm">/* uses of data */</span> <span class="p">},</span>
+		  <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		  <span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 类似于 lambda 表达式，std::bind 产生一个函数对象。我把 std::bind 返回的函数对象称为 <strong>bind object</strong> （绑定对象）。
@@ -598,13 +984,25 @@ std::bind 的第一个参数是一个可执行对象，后面的参数代表传�
 如果 lambda 被声明为 mutable，闭包里的 operator()函数就不会被声明为 const，所以此时在 lambda 声明中省略 const 比较合适
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span>
-	  std<span style="color:#f92672">::</span>bind( <span style="color:#75715e">// C++11 emulation
-</span><span style="color:#75715e"></span>		  [](std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;&amp;</span> data) <span style="color:#66d9ef">mutable</span> <span style="color:#75715e">// of init capture
-</span><span style="color:#75715e"></span>		  { <span style="color:#75715e">/* uses of data */</span> }, <span style="color:#75715e">// for mutable lambda
-</span><span style="color:#75715e"></span>		  std<span style="color:#f92672">::</span>move(data)
-		  );
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span> <span class="c1">// C++11 emulation
+</span><span class="c1"></span>		  <span class="p">[](</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&amp;</span> <span class="n">data</span><span class="p">)</span> <span class="k">mutable</span> <span class="c1">// of init capture
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="cm">/* uses of data */</span> <span class="p">},</span> <span class="c1">// for mutable lambda
+</span><span class="c1"></span>		  <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		  <span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 因为一个绑定对象会存储传给 std::bind 的所有实参的拷贝，在我们的例子中，绑定对象持有一份由 lambda 产生的闭包的拷贝，它是 std::bind 的第一个实参。
@@ -634,22 +1032,43 @@ std::bind 的第一个参数是一个可执行对象，后面的参数代表传�
 作为使用 std::bind 模仿移动捕获的第二个例子，这里是我们之前看到的在 C++14，闭包内创建 std::unique_ptr 的代码：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> [pw <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>()] <span style="color:#75715e">// as before,
-</span><span style="color:#75715e"></span>  { <span style="color:#66d9ef">return</span> pw<span style="color:#f92672">-&gt;</span>isValidated() <span style="color:#75715e">// create pw
-</span><span style="color:#75715e"></span>	<span style="color:#f92672">&amp;&amp;</span> pw<span style="color:#f92672">-&gt;</span>isArchived(); }; <span style="color:#75715e">// in closure
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="p">[</span><span class="n">pw</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">()]</span> <span class="c1">// as before,
+</span><span class="c1"></span>  <span class="p">{</span> <span class="k">return</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isValidated</span><span class="p">()</span> <span class="c1">// create pw
+</span><span class="c1"></span>	<span class="o">&amp;&amp;</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isArchived</span><span class="p">();</span> <span class="p">};</span> <span class="c1">// in closure
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这是 C++11 的模仿物：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> func <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>bind(
-	  [](<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;&amp;</span> pw)
-	  { <span style="color:#66d9ef">return</span> pw<span style="color:#f92672">-&gt;</span>isValidated()
-		<span style="color:#f92672">&amp;&amp;</span> pw<span style="color:#f92672">-&gt;</span>isArchived(); },
-	  std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span>()
-	  );
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">func</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span>
+	  <span class="p">[](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;&amp;</span> <span class="n">pw</span><span class="p">)</span>
+	  <span class="p">{</span> <span class="k">return</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isValidated</span><span class="p">()</span>
+		<span class="o">&amp;&amp;</span> <span class="n">pw</span><span class="o">-&gt;</span><span class="n">isArchived</span><span class="p">();</span> <span class="p">},</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">()</span>
+	  <span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 我展示了如何使用 std::bind 来绕开 C++11 的 lambda 的限制，这是很讽刺的，因为在条款 34 中，我提倡尽量使用 lambda 来代替 std::bind。
@@ -678,233 +1097,113 @@ std::bind 的第一个参数是一个可执行对象，后面的参数代表传�
 翻译：<a href="http://blog.csdn.net/big_yellow_duck/article/category/6352345">http://blog.csdn.net/big_yellow_duck/article/category/6352345</a>
 </p>
 
-                        </div>
+    </div>
 
-                        
-
-
-                        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-11
         
-        <li><a href="/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep08smart-pointers3/">C&#43;&#43; Ep08:Smart Pointers(3)</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  
 </div>
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://hardy5012.github.io/tags/c&#43;&#43;">C&#43;&#43;</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
-    
-
-    
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
-    
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/c&#43;&#43;-ep15lambda-epressions2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep15:Lambda Epressions(2)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">
+            <span class="next-text nav-default">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
     window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
+      showProcessingMessages: false,
+      messageStyle: 'none'
     };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
 
 
 

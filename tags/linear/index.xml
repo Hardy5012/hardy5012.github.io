@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linear on Learning Hardy</title>
+    <title>linear on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/linear/</link>
-    <description>Recent content in linear on Learning Hardy</description>
+    <description>Recent content in linear on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Fri, 21 Apr 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/linear/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</guid>
-      <description> Hypothesis   $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function   $$ J(θ)=\frac{1}{2m}∑limitsi=1m(h_θ(x(i))-y(i))^2,\quad \mbox{$m$ 为样本数} $$ Normal Equation   $$ θ = (X^TX)-1X^Ty $$ 在特征值少于 1w 时则可以使用标准方程一次得解，但如果特征值过多时，需要使用梯度下降方程进行求解. 标准方程的复杂度为$\mathrm{O}(n^3)$, 梯度下降为$\mathrm{O}(n^2)$  $(X^TX)-1$ 不可逆的情况：    冗余的特征，如线性依赖    太多特征，样本小于特征   </description>
+      <description>Hypothesis $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function $$ J(θ)=\frac{1}{2m}∑limitsi=</description>
     </item>
     
   </channel>

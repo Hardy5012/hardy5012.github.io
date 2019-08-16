@@ -1,96 +1,162 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep15:Lambda Epressions(2) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep15:Lambda Epressions(2) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep15:Lambda Epressions(2) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2018-01-14T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2018-01-14T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep15:Lambda Epressions(2)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 33:对需要 std::forward 的 auto&amp;amp;&amp;amp;参数使用 decltype 泛型 lambda(generic lambda)是 C&#43;&#43;14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep15:Lambda Epressions(2)" />
+<meta property="og:description" content="Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype 泛型 lambda(generic lambda)是 C&#43;&#43;14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/" />
+<meta property="article:published_time" content="2018-01-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-14T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep15:Lambda Epressions(2)">
+<meta itemprop="description" content="Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype 泛型 lambda(generic lambda)是 C&#43;&#43;14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au">
+
+
+<meta itemprop="datePublished" content="2018-01-14T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-14T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5573">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep15:Lambda Epressions(2)"/>
+<meta name="twitter:description" content="Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype 泛型 lambda(generic lambda)是 C&#43;&#43;14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://hardy5012.github.io/">
-                        Learning Hardy
-                    </a>
-                
-                
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep15:Lambda Epressions(2)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-14 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        
+      </div>
+    </header>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep15:Lambda Epressions(2)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2018年1月14日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                            
-                        </div>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">Item 34:优先考虑使用 lambda 而不是 std::bind</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
 <h1 id="headline-1">
 Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype
 </h1>
@@ -99,21 +165,41 @@ Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype
 闭包类中的  <strong>operator()</strong> 函数是一个模板。例如，给定这个 lambda，
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> f <span style="color:#f92672">=</span> [](<span style="color:#66d9ef">auto</span> x) { <span style="color:#66d9ef">return</span> func(normalize(x)); };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">f</span> <span class="o">=</span> <span class="p">[](</span><span class="k">auto</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">x</span><span class="p">));</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 闭包类的函数调用操作符看起来是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">SomeCompilerGeneratedClassName</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// see Item 3 for
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">auto</span> <span style="color:#66d9ef">operator</span>()(T x) <span style="color:#66d9ef">const</span> <span style="color:#75715e">// auto return type
-</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> func(normalize(x)); }
-	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// other closure class
-</span><span style="color:#75715e"></span>  }; <span style="color:#75715e">// functionality
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">SomeCompilerGeneratedClassName</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// see Item 3 for
+</span><span class="c1"></span>	  <span class="k">auto</span> <span class="k">operator</span><span class="p">()(</span><span class="n">T</span> <span class="n">x</span><span class="p">)</span> <span class="k">const</span> <span class="c1">// auto return type
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">x</span><span class="p">));</span> <span class="p">}</span>
+	  <span class="err">…</span> <span class="c1">// other closure class
+</span><span class="c1"></span>  <span class="p">};</span> <span class="c1">// functionality
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <!-- more -->
 <p>
@@ -125,9 +211,17 @@ Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype
 第二，借助 std::forward（看条款 25）把 x 转发到 normalized。在概念上，修改成这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> f <span style="color:#f92672">=</span> [](<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;&amp;</span> x)
-  { <span style="color:#66d9ef">return</span> func(normalize(std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;???&gt;</span>(x))); };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">f</span> <span class="o">=</span> <span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">x</span><span class="p">)</span>
+  <span class="p">{</span> <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;???&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">)));</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 但是，在概念和实现之间，有一个问题，就是你传递给 std::forward 的参数是什么类型，这决定了我上面写的???的地方会变成怎样。
@@ -152,22 +246,43 @@ Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype
 但看回在条款 28 中，std::forward 的 C++14 实现：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// in namespace
-</span><span style="color:#75715e"></span>  T<span style="color:#f92672">&amp;&amp;</span> forward(remove_reference_t<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&amp;</span> param) <span style="color:#75715e">// std
-</span><span style="color:#75715e"></span>  {
-	  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&amp;&amp;&gt;</span>(param);
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// in namespace
+</span><span class="c1"></span>  <span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">forward</span><span class="p">(</span><span class="n">remove_reference_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// std
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 如果一个用户想要完美转发一个 Widegt 类型的右值，它正常地用 Widget 类型（即非引用类型）实例化 std::forward，然后 std::forward 产生这个函数：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  Widget<span style="color:#f92672">&amp;&amp;</span> forward(Widget<span style="color:#f92672">&amp;</span> param) <span style="color:#75715e">// instantiation of
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// std::forward when
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&amp;&amp;&gt;</span>(param); <span style="color:#75715e">// T is Widget
-</span><span style="color:#75715e"></span>  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">forward</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// instantiation of
+</span><span class="c1"></span>  <span class="p">{</span> <span class="c1">// std::forward when
+</span><span class="c1"></span>	  <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">);</span> <span class="c1">// T is Widget
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 不过，请思考如果用户代码想要完美转发一个 Widget 类型的右值，但是这次它没有服从规则将 T 指定为非引用类型，而是将 T 指定为右值引用，
@@ -175,12 +290,23 @@ Item 33:对需要 std::forward 的 auto&amp;&amp;参数使用 decltype
 引用折叠（再次看条款 28，看懂！）之前，std::forward 看起来是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  Widget<span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">&amp;&amp;</span> forward(Widget<span style="color:#f92672">&amp;</span> param) <span style="color:#75715e">// instantiation of
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// std::forward when
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">&amp;&amp;&gt;</span>(param); <span style="color:#75715e">// T is Widget&amp;&amp;
-</span><span style="color:#75715e"></span>  } <span style="color:#75715e">// (before reference-
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// collapsing)
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="o">&amp;&amp;</span> <span class="n">forward</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// instantiation of
+</span><span class="c1"></span>  <span class="p">{</span> <span class="c1">// std::forward when
+</span><span class="c1"></span>	  <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">);</span> <span class="c1">// T is Widget&amp;&amp;
+</span><span class="c1"></span>  <span class="p">}</span> <span class="c1">// (before reference-
+</span><span class="c1"></span>  <span class="c1">// collapsing)
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 如果你用这个实例化和把 T 设置为 Widget 的 std::forward 那个实例化进行比较，你会发现它们是相同的。那意味着用一个右值引用实例化 std::forward，
@@ -193,25 +319,49 @@ decltype(x)会产生一个可以传给 std::forward 的常规类型，而现在�
 因此我们的完美转发 lambda 可以这样写：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> f <span style="color:#f92672">=</span>
-	  [](<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;&amp;</span> param)
-  {
-	  <span style="color:#66d9ef">return</span>
-	  func(normalize(std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">decltype</span>(param)<span style="color:#f92672">&gt;</span>(param)));
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">f</span> <span class="o">=</span>
+	  <span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">return</span>
+	  <span class="n">func</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">)));</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 在这份代码加上 6 个点，就可以让我们的完美转发 lambda 接受多个参数了，因为 C++14 的 lambda 的参数是可变的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> f <span style="color:#f92672">=</span>
-	  [](<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;&amp;</span>... params)
-  {
-	  <span style="color:#66d9ef">return</span>
-	  func(normalize(std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">decltype</span>(params)<span style="color:#f92672">&gt;</span>(params)...));
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">f</span> <span class="o">=</span>
+	  <span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">return</span>
+	  <span class="n">func</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...));</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <h2 id="headline-2">
 记住
@@ -244,34 +394,66 @@ C++11 的 std::bind 是 C++98 的 std::bind1st 和 std::bind2nd 的继承人，�
 比起 std::bind 更偏爱 lambda 的最主要原因是 lambda 的具有更好的可读性。举个例子，假设我们有个函数用来设置警报：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#75715e">// typedef for a point in time (see Item 9 for syntax)
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">using</span> Time <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>chrono<span style="color:#f92672">::</span>steady_clock<span style="color:#f92672">::</span>time_point;
-  <span style="color:#75715e">// see Item 10 for &#34;enum class&#34;
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Sound</span> { Beep, Siren, Whistle };
-  <span style="color:#75715e">// typedef for a length of time
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">using</span> Duration <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>chrono<span style="color:#f92672">::</span>steady_clock<span style="color:#f92672">::</span>duration;
-  <span style="color:#75715e">// at time t, make sound s for duration d
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAlarm</span>(Time t, Sound s, Duration d);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="c1">// typedef for a point in time (see Item 9 for syntax)
+</span><span class="c1"></span>  <span class="k">using</span> <span class="n">Time</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">time_point</span><span class="p">;</span>
+  <span class="c1">// see Item 10 for &#34;enum class&#34;
+</span><span class="c1"></span>  <span class="k">enum</span> <span class="k">class</span><span class="err"> </span><span class="nc">Sound</span> <span class="p">{</span> <span class="n">Beep</span><span class="p">,</span> <span class="n">Siren</span><span class="p">,</span> <span class="n">Whistle</span> <span class="p">};</span>
+  <span class="c1">// typedef for a length of time
+</span><span class="c1"></span>  <span class="k">using</span> <span class="n">Duration</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">duration</span><span class="p">;</span>
+  <span class="c1">// at time t, make sound s for duration d
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">setAlarm</span><span class="p">(</span><span class="n">Time</span> <span class="n">t</span><span class="p">,</span> <span class="n">Sound</span> <span class="n">s</span><span class="p">,</span> <span class="n">Duration</span> <span class="n">d</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 进一步假设，在程序的某些地方，我们想要设置在一个小时之后发出警报，持续 30 秒。但是呢，警报的类型，依然是未决定的。
 我们可以写一个修改了 setAlarm 接口的 lambda，从而只需要指定警报类型
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#75715e">// setSoundL (&#34;L&#34; for &#34;lambda&#34;) is a function object allowing a
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// sound to be specified for a 30-sec alarm to go off an hour
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// after it&#39;s set
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> setSoundL <span style="color:#f92672">=</span>
-	  [](Sound s)
-  {
-  <span style="color:#75715e">// make std::chrono components available w/o qualification
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>chrono;
-	  setAlarm(steady_clock<span style="color:#f92672">::</span>now() <span style="color:#f92672">+</span> hours(<span style="color:#ae81ff">1</span>), <span style="color:#75715e">// alarm to go off
-</span><span style="color:#75715e"></span>			   s, <span style="color:#75715e">// in an hour for
-</span><span style="color:#75715e"></span>			   seconds(<span style="color:#ae81ff">30</span>)); <span style="color:#75715e">// 30 seconds
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="c1">// setSoundL (&#34;L&#34; for &#34;lambda&#34;) is a function object allowing a
+</span><span class="c1"></span>  <span class="c1">// sound to be specified for a 30-sec alarm to go off an hour
+</span><span class="c1"></span>  <span class="c1">// after it&#39;s set
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">setSoundL</span> <span class="o">=</span>
+	  <span class="p">[](</span><span class="n">Sound</span> <span class="n">s</span><span class="p">)</span>
+  <span class="p">{</span>
+  <span class="c1">// make std::chrono components available w/o qualification
+</span><span class="c1"></span>	  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span>
+	  <span class="n">setAlarm</span><span class="p">(</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="c1">// alarm to go off
+</span><span class="c1"></span>			   <span class="n">s</span><span class="p">,</span> <span class="c1">// in an hour for
+</span><span class="c1"></span>			   <span class="n">seconds</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span> <span class="c1">// 30 seconds
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 注意看 lambda 里的 setAlarm，这是一个正常的函数调用，就算只有一点 lambda 经验的读者都可以看出传递给 lambda 的参数会作为 setAlarm 的一个实参
@@ -281,30 +463,59 @@ C++11 的 std::bind 是 C++98 的 std::bind1st 和 std::bind2nd 的继承人，�
 这些后缀在 <strong>std::literals</strong> 命名空间里实现，所以上面的代码可以写成这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> setSoundL <span style="color:#f92672">=</span>
-	  [](Sound s)
-  {
-	  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>chrono;
-	  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>literals; <span style="color:#75715e">// for C++14 suffixes
-</span><span style="color:#75715e"></span>	  setAlarm(steady_clock<span style="color:#f92672">::</span>now() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>h, <span style="color:#75715e">// C++14, but
-</span><span style="color:#75715e"></span>			   s, <span style="color:#75715e">// same meaning
-</span><span style="color:#75715e"></span>			   <span style="color:#ae81ff">30</span>s); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">setSoundL</span> <span class="o">=</span>
+	  <span class="p">[](</span><span class="n">Sound</span> <span class="n">s</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span>
+	  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">literals</span><span class="p">;</span> <span class="c1">// for C++14 suffixes
+</span><span class="c1"></span>	  <span class="n">setAlarm</span><span class="p">(</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="n">h</span><span class="p">,</span> <span class="c1">// C++14, but
+</span><span class="c1"></span>			   <span class="n">s</span><span class="p">,</span> <span class="c1">// same meaning
+</span><span class="c1"></span>			   <span class="mi">30</span><span class="n">s</span><span class="p">);</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 我们第一次尝试写出对应的 std::bind 调用，代码在下面。我们在注释中说明它有个错误，但是正确的代码复杂得多，而这个简化的版本可以让我们看到重要的问题：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>chrono; <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>literals;
-  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>placeholders; <span style="color:#75715e">// needed for use of &#34;_1&#34;
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> setSoundB <span style="color:#f92672">=</span> <span style="color:#75715e">// &#34;B&#34; for &#34;bind&#34;
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>bind(setAlarm,
-				steady_clock<span style="color:#f92672">::</span>now() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>h, <span style="color:#75715e">// incorrect! see below
-</span><span style="color:#75715e"></span>				_1,
-				<span style="color:#ae81ff">30</span>s);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">literals</span><span class="p">;</span>
+  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="p">;</span> <span class="c1">// needed for use of &#34;_1&#34;
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">setSoundB</span> <span class="o">=</span> <span class="c1">// &#34;B&#34; for &#34;bind&#34;
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">setAlarm</span><span class="p">,</span>
+				<span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="n">h</span><span class="p">,</span> <span class="c1">// incorrect! see below
+</span><span class="c1"></span>				<span class="n">_1</span><span class="p">,</span>
+				<span class="mi">30</span><span class="n">s</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这份代码的读者简单地知道在 setSoundB 里，std::bind 会用指定时间点和持续时间来调用 setAlarm。对于缺少经验的读者，占位符“_1”简直是个魔术，
@@ -321,12 +532,23 @@ C++11 的 std::bind 是 C++98 的 std::bind1st 和 std::bind2nd 的继承人，�
 解决这个问题需要告知 std::bind 推迟表达式的求值，直到 setAlarm 被调用，而这种办法需要在原来的 std::bind 内嵌入一个新的 std::bind：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> setSoundB <span style="color:#f92672">=</span>
-	  std<span style="color:#f92672">::</span>bind(setAlarm,
-				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>plus<span style="color:#f92672">&lt;&gt;</span>(), steady_clock<span style="color:#f92672">::</span>now(), <span style="color:#ae81ff">1</span>h),
-				_1,
-				<span style="color:#ae81ff">30</span>s);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">setSoundB</span> <span class="o">=</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">setAlarm</span><span class="p">,</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;&gt;</span><span class="p">(),</span> <span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">(),</span> <span class="mi">1</span><span class="n">h</span><span class="p">),</span>
+				<span class="n">_1</span><span class="p">,</span>
+				<span class="mi">30</span><span class="n">s</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 如果你熟悉来自 C++98 的 std::plus，你可能会对这份代码感到惊奇，因为在两个方括号之间没有指定类型，即代码含有 <strong>std::plus&lt;&gt;</strong> ，
@@ -334,16 +556,31 @@ C++11 的 std::bind 是 C++98 的 std::bind1st 和 std::bind2nd 的继承人，�
 C++11 没有提供这种特性，所以在 C++11 中对于 lambda 的 std::bind 等同物是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>chrono; <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>placeholders;
-  <span style="color:#66d9ef">auto</span> setSoundB <span style="color:#f92672">=</span>
-	  std<span style="color:#f92672">::</span>bind(setAlarm,
-				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>plus<span style="color:#f92672">&lt;</span>steady_clock<span style="color:#f92672">::</span>time_point<span style="color:#f92672">&gt;</span>(),
-						  steady_clock<span style="color:#f92672">::</span>now(),
-						  hours(<span style="color:#ae81ff">1</span>)),
-				_1,
-				seconds(<span style="color:#ae81ff">30</span>));
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">setSoundB</span> <span class="o">=</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">setAlarm</span><span class="p">,</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">time_point</span><span class="o">&gt;</span><span class="p">(),</span>
+						  <span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">(),</span>
+						  <span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+				<span class="n">_1</span><span class="p">,</span>
+				<span class="n">seconds</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 如果，在现在这个时刻，lambda 的实现看起来没有吸引力的话，你可能需要去检查一下视力了。
@@ -352,36 +589,71 @@ C++11 没有提供这种特性，所以在 C++11 中对于 lambda 的 std::bind 
 当 setAlarm 被重载，会出现一个新的问题。假如有个重载接受第四个参数来指定警报的音量：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Volume</span> { Normal, Loud, LoudPlusPlus };
-  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAlarm</span>(Time t, Sound s, Duration d, Volume v);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">enum</span> <span class="k">class</span><span class="err"> </span><span class="nc">Volume</span> <span class="p">{</span> <span class="n">Normal</span><span class="p">,</span> <span class="n">Loud</span><span class="p">,</span> <span class="n">LoudPlusPlus</span> <span class="p">};</span>
+  <span class="kt">void</span> <span class="nf">setAlarm</span><span class="p">(</span><span class="n">Time</span> <span class="n">t</span><span class="p">,</span> <span class="n">Sound</span> <span class="n">s</span><span class="p">,</span> <span class="n">Duration</span> <span class="n">d</span><span class="p">,</span> <span class="n">Volume</span> <span class="n">v</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 之前那个 lambda 还会工作得很好，因为重载决策会选择带有三个参数的 setAlarm 版本：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> setSoundL <span style="color:#f92672">=</span> <span style="color:#75715e">// same as before
-</span><span style="color:#75715e"></span>	  [](Sound s)
-  {
-	  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>chrono;
-	  setAlarm(steady_clock<span style="color:#f92672">::</span>now() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>h, <span style="color:#75715e">// fine, calls
-</span><span style="color:#75715e"></span>			   s, <span style="color:#75715e">// 3-arg version
-</span><span style="color:#75715e"></span>			   <span style="color:#ae81ff">30</span>s); <span style="color:#75715e">// of setAlarm
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">setSoundL</span> <span class="o">=</span> <span class="c1">// same as before
+</span><span class="c1"></span>	  <span class="p">[](</span><span class="n">Sound</span> <span class="n">s</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span>
+	  <span class="n">setAlarm</span><span class="p">(</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="n">h</span><span class="p">,</span> <span class="c1">// fine, calls
+</span><span class="c1"></span>			   <span class="n">s</span><span class="p">,</span> <span class="c1">// 3-arg version
+</span><span class="c1"></span>			   <span class="mi">30</span><span class="n">s</span><span class="p">);</span> <span class="c1">// of setAlarm
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 另一方面，std::bind 的调用，现在会编译失败：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> setSoundB <span style="color:#f92672">=</span> <span style="color:#75715e">// error! which
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>bind(setAlarm, <span style="color:#75715e">// setAlarm?
-</span><span style="color:#75715e"></span>				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>plus<span style="color:#f92672">&lt;&gt;</span>(),
-						  steady_clock<span style="color:#f92672">::</span>now(),
-						  <span style="color:#ae81ff">1</span>h),
-				_1,
-				<span style="color:#ae81ff">30</span>s);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">setSoundB</span> <span class="o">=</span> <span class="c1">// error! which
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">setAlarm</span><span class="p">,</span> <span class="c1">// setAlarm?
+</span><span class="c1"></span>				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;&gt;</span><span class="p">(),</span>
+						  <span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">(),</span>
+						  <span class="mi">1</span><span class="n">h</span><span class="p">),</span>
+				<span class="n">_1</span><span class="p">,</span>
+				<span class="mi">30</span><span class="n">s</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 问题在于编译器没有办法决定哪个 setAlarm 应该被传递给 std::bind，它拥有的只是一个函数名，而这单独的函数名是有歧义的
@@ -390,33 +662,63 @@ C++11 没有提供这种特性，所以在 C++11 中对于 lambda 的 std::bind 
 为了让 std::bind 可以通过编译，setAlarm 必须转换为合适的函数指针类型
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> SetAlarm3ParamType <span style="color:#f92672">=</span> <span style="color:#66d9ef">void</span>(<span style="color:#f92672">*</span>)(Time t, Sound s, Duration d);
-  <span style="color:#66d9ef">auto</span> setSoundB <span style="color:#f92672">=</span> <span style="color:#75715e">// now
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>bind(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>SetAlarm3ParamType<span style="color:#f92672">&gt;</span>(setAlarm), <span style="color:#75715e">// okay
-</span><span style="color:#75715e"></span>				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>plus<span style="color:#f92672">&lt;&gt;</span>(),
-						  steady_clock<span style="color:#f92672">::</span>now(),
-						  <span style="color:#ae81ff">1</span>h),
-				_1,
-				<span style="color:#ae81ff">30</span>s);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="n">SetAlarm3ParamType</span> <span class="o">=</span> <span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="n">Time</span> <span class="n">t</span><span class="p">,</span> <span class="n">Sound</span> <span class="n">s</span><span class="p">,</span> <span class="n">Duration</span> <span class="n">d</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">setSoundB</span> <span class="o">=</span> <span class="c1">// now
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">SetAlarm3ParamType</span><span class="o">&gt;</span><span class="p">(</span><span class="n">setAlarm</span><span class="p">),</span> <span class="c1">// okay
+</span><span class="c1"></span>				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;&gt;</span><span class="p">(),</span>
+						  <span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">(),</span>
+						  <span class="mi">1</span><span class="n">h</span><span class="p">),</span>
+				<span class="n">_1</span><span class="p">,</span>
+				<span class="mi">30</span><span class="n">s</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 但这又引出了 lambda 和 std::bind 的另一个不同之处。在 setSoundL 的函数调用操作符内（即，lambda 的闭包类的函数调用操作符），
 是以普通函数调用的方式调用 setAlarm，这可以被编译器以通用的方式内联：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  setSoundL(Sound<span style="color:#f92672">::</span>Siren); <span style="color:#75715e">// body of setAlarm may
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// well be inlined here
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">setSoundL</span><span class="p">(</span><span class="n">Sound</span><span class="o">::</span><span class="n">Siren</span><span class="p">);</span> <span class="c1">// body of setAlarm may
+</span><span class="c1"></span>  <span class="c1">// well be inlined here
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 不过，在 std::bind 的调用中，传递了一个指向 setAlarm 的函数指针，而那意味着在 setSoundB 的函数调用操作符内（即，绑定对象的函数调用操作符），
 是以函数指针的方式调用 setAlarm，而那意味着通过 setSoundB 调用的 setAlarm，比通过 setSoundL 调用的 setAlarm 进行内联的可能性更低：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  setSoundB(Sound<span style="color:#f92672">::</span>Siren); <span style="color:#75715e">// body of setAlarm is less
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// likely to be inlined here
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">setSoundB</span><span class="p">(</span><span class="n">Sound</span><span class="o">::</span><span class="n">Siren</span><span class="p">);</span> <span class="c1">// body of setAlarm is less
+</span><span class="c1"></span>  <span class="c1">// likely to be inlined here
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 因此，使用 lambda 生成的代码可能会比使用 std::bind 的快。
@@ -426,42 +728,83 @@ setAlarm 那个例子只是简单地调用了一个函数，如果你想做一�
 例如，思考这个 C++14 的 lambda，返回它的实参是否在最小值（lowVal）和最大值（highVal）之间，lowVal 和 highVal 都是局部变量：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> betweenL <span style="color:#f92672">=</span>
-	  [lowVal, highVal]
-	  (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> val) <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>  { <span style="color:#66d9ef">return</span> lowVal <span style="color:#f92672">&lt;=</span> val <span style="color:#f92672">&amp;&amp;</span> val <span style="color:#f92672">&lt;=</span> highVal; };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">betweenL</span> <span class="o">=</span>
+	  <span class="p">[</span><span class="n">lowVal</span><span class="p">,</span> <span class="n">highVal</span><span class="p">]</span>
+	  <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">val</span><span class="p">)</span> <span class="c1">// C++14
+</span><span class="c1"></span>  <span class="p">{</span> <span class="k">return</span> <span class="n">lowVal</span> <span class="o">&lt;=</span> <span class="n">val</span> <span class="o">&amp;&amp;</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="n">highVal</span><span class="p">;</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 std::bind 也可以表达同样的东西，不过它为了保证工作正常运行而让代码变得晦涩：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>placeholders; <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> betweenB <span style="color:#f92672">=</span>
-	  std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>logical_and<span style="color:#f92672">&lt;&gt;</span>(), <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>less_equal<span style="color:#f92672">&lt;&gt;</span>(), lowVal, _1),
-				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>less_equal<span style="color:#f92672">&lt;&gt;</span>(), _1, highVal));
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="p">;</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">betweenB</span> <span class="o">=</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">logical_and</span><span class="o">&lt;&gt;</span><span class="p">(),</span> <span class="c1">// C++14
+</span><span class="c1"></span>				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">less_equal</span><span class="o">&lt;&gt;</span><span class="p">(),</span> <span class="n">lowVal</span><span class="p">,</span> <span class="n">_1</span><span class="p">),</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">less_equal</span><span class="o">&lt;&gt;</span><span class="p">(),</span> <span class="n">_1</span><span class="p">,</span> <span class="n">highVal</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 在 C++11，你还必须指定要比较的类型，所以 std::bind 的调用看起来是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> betweenB <span style="color:#f92672">=</span> <span style="color:#75715e">// C++11 version
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>logical_and<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span>(),
-				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>less_equal<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span>(), lowVal, _1),
-				std<span style="color:#f92672">::</span>bind(std<span style="color:#f92672">::</span>less_equal<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span>(), _1, highVal));
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">betweenB</span> <span class="o">=</span> <span class="c1">// C++11 version
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">logical_and</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(),</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">less_equal</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(),</span> <span class="n">lowVal</span><span class="p">,</span> <span class="n">_1</span><span class="p">),</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">less_equal</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(),</span> <span class="n">_1</span><span class="p">,</span> <span class="n">highVal</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 当然，在 C++11 中，lambda 不能使用 auto 形参，所以它也必须指定类型：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> betweenL <span style="color:#f92672">=</span> <span style="color:#75715e">// C++11 version
-</span><span style="color:#75715e"></span>	  [lowVal, highVal]
-	  (<span style="color:#66d9ef">int</span> val)
-  { <span style="color:#66d9ef">return</span> lowVal <span style="color:#f92672">&lt;=</span> val <span style="color:#f92672">&amp;&amp;</span> val <span style="color:#f92672">&lt;=</span> highVal; };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">betweenL</span> <span class="o">=</span> <span class="c1">// C++11 version
+</span><span class="c1"></span>	  <span class="p">[</span><span class="n">lowVal</span><span class="p">,</span> <span class="n">highVal</span><span class="p">]</span>
+	  <span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">)</span>
+  <span class="p">{</span> <span class="k">return</span> <span class="n">lowVal</span> <span class="o">&lt;=</span> <span class="n">val</span> <span class="o">&amp;&amp;</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="n">highVal</span><span class="p">;</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 不管怎样，我希望我们能认同 lambda 的版本不仅代码更短，还具有更好的可读性和可维护性。
@@ -471,20 +814,39 @@ std::bind 也可以表达同样的东西，不过它为了保证工作正常运�
 不过，占位符的行为不是完全密封的。假设我们有一个用来精简拷贝 Widget 的函数，
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">CompLevel</span> { Low, Normal, High }; <span style="color:#75715e">// compression
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// level
-</span><span style="color:#75715e"></span>  Widget <span style="color:#a6e22e">compress</span>(<span style="color:#66d9ef">const</span> Widget<span style="color:#f92672">&amp;</span> w, <span style="color:#75715e">// make compressed
-</span><span style="color:#75715e"></span>				  CompLevel lev); <span style="color:#75715e">// copy of w
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">enum</span> <span class="k">class</span><span class="err"> </span><span class="nc">CompLevel</span> <span class="p">{</span> <span class="n">Low</span><span class="p">,</span> <span class="n">Normal</span><span class="p">,</span> <span class="n">High</span> <span class="p">};</span> <span class="c1">// compression
+</span><span class="c1"></span>  <span class="c1">// level
+</span><span class="c1"></span>  <span class="n">Widget</span> <span class="nf">compress</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">,</span> <span class="c1">// make compressed
+</span><span class="c1"></span>				  <span class="n">CompLevel</span> <span class="n">lev</span><span class="p">);</span> <span class="c1">// copy of w
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 然后我们想要创建一个函数对象，它允许我们指定 Widget w 的精简级别，这是用 std::bind 创建的函数对象：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  Widget w;
-  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>placeholders;
-  <span style="color:#66d9ef">auto</span> compressRateB <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>bind(compress, w, _1);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">compressRateB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">compress</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">_1</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 当我们把 w 传递给 std::bind 时，为了以后的 compress 调用，w 会被存储起来，它存储在对象 compressRateB 中，但它是如何存储的呢——通过值还是引用呢？
@@ -495,26 +857,51 @@ std::bind 也可以表达同样的东西，不过它为了保证工作正常运�
 对比使用 lambda 方法，w 通过值捕获或通过引用捕获都是显式的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> compressRateL <span style="color:#f92672">=</span> <span style="color:#75715e">// w is captured by
-</span><span style="color:#75715e"></span>	  [w](CompLevel lev) <span style="color:#75715e">// value; lev is
-</span><span style="color:#75715e"></span>  { <span style="color:#66d9ef">return</span> compress(w, lev); }; <span style="color:#75715e">// passed by value
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">compressRateL</span> <span class="o">=</span> <span class="c1">// w is captured by
+</span><span class="c1"></span>	  <span class="p">[</span><span class="n">w</span><span class="p">](</span><span class="n">CompLevel</span> <span class="n">lev</span><span class="p">)</span> <span class="c1">// value; lev is
+</span><span class="c1"></span>  <span class="p">{</span> <span class="k">return</span> <span class="n">compress</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">lev</span><span class="p">);</span> <span class="p">};</span> <span class="c1">// passed by value
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 参数以何种方式传递也是显示的。在这里，很清楚地知道参数 lev 是以值传递的。因此：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  compressRateL(CompLevel<span style="color:#f92672">::</span>High); <span style="color:#75715e">// arg is passed
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// by value
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">compressRateL</span><span class="p">(</span><span class="n">CompLevel</span><span class="o">::</span><span class="n">High</span><span class="p">);</span> <span class="c1">// arg is passed
+</span><span class="c1"></span>  <span class="c1">// by value
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 但在绑定对象里，参数是以什么方式传递的呢？
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  compressRateB(CompLevel<span style="color:#f92672">::</span>High); <span style="color:#75715e">// how is arg
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// passed?
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">compressRateB</span><span class="p">(</span><span class="n">CompLevel</span><span class="o">::</span><span class="n">High</span><span class="p">);</span> <span class="c1">// how is arg
+</span><span class="c1"></span>  <span class="c1">// passed?
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 再次说明，想知答案的唯一办法是记住 std::bind 是怎样工作的。（答案是传递给绑定对象的所有参数都是通过引用的方式，因为绑定对象的函数调用操作符使用了完美转发。）
@@ -534,13 +921,25 @@ std::bind 也可以表达同样的东西，不过它为了保证工作正常运�
 多态函数对象。因为绑定对象的函数调用操作符会使用完美转发，它可以接受任何类型的实参（条款 30 讲述了完美转发的限制）。这在你想要绑定一个函数调用操作符模板时有用。例如，给定这个类：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">PolyWidget</span> {
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-<span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-<span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span>()(<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> param);
-<span style="color:#960050;background-color:#1e0010">…</span>
-};
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">class</span><span class="err"> </span><span class="nc">PolyWidget</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">param</span><span class="p">);</span>
+<span class="err">…</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 </li>
 </ul>
@@ -548,29 +947,57 @@ std::bind 也可以表达同样的东西，不过它为了保证工作正常运�
 std::bind 可以绑定 polyWidget 对象：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  PolyWidget pw;
-  <span style="color:#66d9ef">auto</span> boundPW <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>bind(pw, _1);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">PolyWidget</span> <span class="n">pw</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">boundPW</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">pw</span><span class="p">,</span> <span class="n">_1</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 然后 boundPW 可以绑定任何类型的实参：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  boundPW(<span style="color:#ae81ff">1930</span>); <span style="color:#75715e">// pass int to
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// PolyWidget::operator()
-</span><span style="color:#75715e"></span>  boundPW(<span style="color:#66d9ef">nullptr</span>); <span style="color:#75715e">// pass nullptr to
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// PolyWidget::operator()
-</span><span style="color:#75715e"></span>  boundPW(<span style="color:#e6db74">&#34;Rosebud&#34;</span>); <span style="color:#75715e">// pass string literal to
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// PolyWidget::operator()
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">boundPW</span><span class="p">(</span><span class="mi">1930</span><span class="p">);</span> <span class="c1">// pass int to
+</span><span class="c1"></span>  <span class="c1">// PolyWidget::operator()
+</span><span class="c1"></span>  <span class="n">boundPW</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span> <span class="c1">// pass nullptr to
+</span><span class="c1"></span>  <span class="c1">// PolyWidget::operator()
+</span><span class="c1"></span>  <span class="n">boundPW</span><span class="p">(</span><span class="s">&#34;Rosebud&#34;</span><span class="p">);</span> <span class="c1">// pass string literal to
+</span><span class="c1"></span>  <span class="c1">// PolyWidget::operator()
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这在 C++11 的 lambda 里无法做到，但是在 C++14，使用 auto 形参就很容易做到了：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> boundPW <span style="color:#f92672">=</span> [pw](<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> param) <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>  { pw(param); };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">boundPW</span> <span class="o">=</span> <span class="p">[</span><span class="n">pw</span><span class="p">](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// C++14
+</span><span class="c1"></span>  <span class="p">{</span> <span class="n">pw</span><span class="p">(</span><span class="n">param</span><span class="p">);</span> <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 当然，这些都是边缘情况，而且这种边缘情况会转瞬即逝，因为支持 C++14 的编译器已经越来越普遍。
@@ -602,233 +1029,113 @@ std::bind 可以绑定 polyWidget 对象：
 翻译：<a href="http://blog.csdn.net/big_yellow_duck/article/category/635234">http://blog.csdn.net/big_yellow_duck/article/category/635234</a>
 </p>
 
-                        </div>
+    </div>
 
-                        
-
-
-                        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-14
         
-        <li><a href="/post/c&#43;&#43;-ep14lambda-epressions1/">C&#43;&#43; Ep14:Lambda Epressions(1)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  
 </div>
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://hardy5012.github.io/tags/c&#43;&#43;">C&#43;&#43;</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
-    
-
-    
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
-    
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/c&#43;&#43;-ep16the-concurrency-api1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep16:The Concurrency API(1)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep14lambda-epressions1/">
+            <span class="next-text nav-default">C&#43;&#43; Ep14:Lambda Epressions(1)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
     window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
+      showProcessingMessages: false,
+      messageStyle: 'none'
     };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
 
 
 

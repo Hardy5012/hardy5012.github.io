@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linux on Learning Hardy</title>
+    <title>linux on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/linux/</link>
-    <description>Recent content in linux on Learning Hardy</description>
+    <description>Recent content in linux on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Thu, 07 Dec 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Thu, 07 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/centos7%E9%85%8D%E7%BD%AEservice/</guid>
-      <description>配置 service 文件  在/usr/lib/systemd/system/目录创建自己的 service 文件 my.service  [Unit] Description=infrec # Wants=systemd-user-sessions.service # After=systemd-user-sessions.service [Service] Environment=&amp;#34;PATH=/home/lytz/.virtualenvs/xn_infrec/bin&amp;#34; &amp;#34;PYTHONPATH=.:/home/lytz/app/xn_InfRec/src:/home/lytz/app/rlib-py&amp;#34; &amp;#34;APP_SETTINGS=/home/lytz/app/xn_InfRec/src/config.py&amp;#34; #Sets the working directory for executed processes WorkingDirectory=/home/lytz/app/xn_InfRec/src/ # Sets the Unix user that the processes are executed as User=lytz # Sets the highest scheduling priority for executed processes Nice=-20 # disable OOM killing for this process OOMScoreAdjust=-1000 ExecStartPre=/bin/echo ${PYTHONPATH} ExecStart=/home/lytz/.virtualenvs/xn_infrec/bin/gunicorn run:app --bind 0.0.0.0:9021 --worker-class sanic.worker.GunicornWorker -w 4 -t 180 # systemd will send SIGTERM to all processes started from this service if we don&amp;#39;t set ExecStop # ExecStop=-/bin/kill -15 $MAINPID Restart=on-failure RestartSec=15s # systemd-coredump will log the coredump including a backtrace if possible, and store the core (contents of process&amp;#39; memory contents) in an external file on disk in /var/lib/systemd/coredump or in current working directory # ulimit -c unlimited # echo &amp;#34;core.</description>
+      <description>配置 service 文件 在/usr/lib/systemd/system/目录创建自己的 service 文件 my.service 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29</description>
     </item>
     
     <item>
@@ -26,7 +26,7 @@
       <pubDate>Thu, 16 Nov 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/linux%E7%8E%AF%E5%A2%83/</guid>
-      <description>翻墙  ssh  sudo ssh -qTfnN -D 8087 user@remote-hosts   上面的 8087 是本地未被占用的端口，可以自己选择。其它参数的意思是： -q :- be very quite, we are acting only as a tunnel. -T :- Do not allocate a pseudo tty, we are only acting a tunnel. -f :- move the ssh process to background, as we don’t want to interact with this ssh session directly. -N :- Do not execute remote command. -n :- redirect standard input to /dev/null.</description>
+      <description>翻墙 ssh 1 sudo ssh -qTfnN -D 8087 user@remote-hosts 上面的 8087 是本地未被占用的端口，可以自己选择。其它参数的意思是： -q :- be very quite, we are acting only as a tunnel. -T :- Do not allocate a pseudo tty, we are only acting a tunnel. -f :- move</description>
     </item>
     
   </channel>

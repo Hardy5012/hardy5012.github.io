@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>C&#43;&#43; on Learning Hardy</title>
+    <title>C&#43;&#43; on Leaning Hardy</title>
     <link>https://hardy5012.github.io/categories/c&#43;&#43;/</link>
-    <description>Recent content in C&#43;&#43; on Learning Hardy</description>
+    <description>Recent content in C&#43;&#43; on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Wed, 07 Mar 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/categories/c++/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</guid>
-      <description> 以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句 （若存在），否则舍去 true 分支语句 。示例： #include&amp;lt;type_traits&amp;gt; #include&amp;lt;iostream&amp;gt; template&amp;lt;typename T&amp;gt; auto print_type_info(const T &amp;amp;t) { if constexpr(std::is_integral&amp;lt;T&amp;gt;::value){ return t + 1; } else if constexpr(std::is_floating_point&amp;lt;T&amp;gt;::value){ return t + 0.1; } else{ return t; } } int main() { std::cout &amp;lt;&amp;lt; print_type_info(5) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; std::cout &amp;lt;&amp;lt; print_type_info(4.3) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; std::cout &amp;lt;&amp;lt; print_type_info(&amp;#34;hello world&amp;#34;) &amp;lt;&amp;lt; &amp;#34;\n&amp;#34;; }    在上面的例中，当传参 5 时。语句可看成： template&amp;lt;typename T&amp;gt; auto print_type_info(const T &amp;amp;t) { return t + 1; }    说明：    constexpr 整个条件语句都会执行，与普通的不同(如 &amp;amp;&amp;amp; 在前面为 false 时会中断)。    在被舍去语句中的 return 语句不参与函数返回类型推导    被舍去语句可以 odr 使用不定义的变量    若 constexpr if 语句出现于模板实体内，且若 条件 在实例化后不是值依赖的，则在实例化外围模板时不会实例化被舍去语句    在模板外，被舍去语句受到完整的检查。if constexpr 不是 #if 预处理指令的替代品   </description>
+      <description>以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句</description>
     </item>
     
     <item>
@@ -26,7 +26,7 @@
       <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/</guid>
-      <description>Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本  int fib(const int i) { if(i == 0) return 0; if(i == 1) return 1; return fib(i - 1) + fib(i - 2); }      文件大小：8.7K    时间：7.4S   模板版本  template&amp;lt;int I&amp;gt; struct Fib { static const int val = Fib&amp;lt;I-1&amp;gt;::val + Fib&amp;lt;I-2&amp;gt;::val; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;0&amp;gt; { static const int val = 0; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;1&amp;gt; { static const int val = 1; };      文件大小：8.</description>
+      <description>Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本 1 2 3 4 5 6 7 int fib(const int i) { if(i == 0) return 0; if(i == 1) return</description>
     </item>
     
     <item>
@@ -35,7 +35,7 @@
       <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</guid>
-      <description>使用  之前   在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 //一个参数  template&amp;lt;typename T1&amp;gt; //两个参数  template&amp;lt;typename T1, typename T2&amp;gt; //三个参数  template&amp;lt;typename T1, typename T2, typename T3&amp;gt; ....    无论是实现还是效率都非常差 可变参数版本（递归实现）   对于上面情况，使用可变参数模板实现： #include &amp;lt;sstream&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;vector&amp;gt; template&amp;lt;typename T&amp;gt; std::string to_string_impl(const T&amp;amp; t) { std::stringstream ss; ss &amp;lt;&amp;lt; t; return ss.str(); } std::vector&amp;lt;std::string&amp;gt; to_string(){ return {}; } template&amp;lt;typename P1, typename ...Param&amp;gt; std::vector&amp;lt;std::string&amp;gt; to_string(const P1 &amp;amp;p1, const Param&amp;amp; .</description>
+      <description>使用 之前 在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 1 2 3 4 5 6 7 //一个参数 template&amp;lt;typename T1&amp;gt; //两个参数 template&amp;lt;typename T1, typename T2&amp;gt; //三个参数 template&amp;lt;typename T1, typename T2, typename T3&amp;gt;</description>
     </item>
     
     <item>
@@ -44,7 +44,7 @@
       <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</guid>
-      <description> C++ static 变量  初始化顺序     全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化    局部静态变量在第一次被使用时初始化   线程安全   从 C++ 11 起局部静态变量的初始化是线程安全的。 效率   由于要保证局部静态变量的线程安全，所以在每次访问时都需要 guard 判断变量是补始化，这样存在一个效率的问题。 struct C{ static const std::string &amp;amp;magic_static() { static std::string s = &amp;#34;hardy&amp;#34;; return s; } const std::string &amp;amp;s = magic_static(); const std::string &amp;amp;magic_static_ref() { return s; } };    在上面的例子中，调用 magic_static 的效率要比 magic_static_ref 低。 </description>
+      <description>C++ static 变量 初始化顺序 全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化 局部静态变量在第一次被使用时初始化 线程安全 从 C++ 11 起局部静态变</description>
     </item>
     
     <item>
@@ -53,7 +53,7 @@
       <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/</guid>
-      <description>Item 37:让 std::thread 对象在所有路径都无法连接   每个 std::thread 对象的状态都是这两种中的一种：joinable（可连接的）或 unjoinable（不可连接的）。一个可连接的 std::thread 对应一个底层异步执行线程， 例如，一个 std::thread 对应的一个底层线程，它会被阻塞或等待被调度， 那么这个 std::thread 就是可连接的。std::thread 对象对应的底层线程可以将代码运行至结束，也可将其视为可连接的。  不可连接的 std::thread 的意思就如你想象那样：std::thread 不是可连接的。不可连接的 std::thread 对象包括：    默认构造的 std::thread。这种 std::thread 没有函数可以执行，因此没有对应的底层执行线程。    被移动过的 std::thread。移动的结果是，一个 std::thread 对应的底层执行线程被对应到另一个 std::thread。    被连接过（调用了 join）的 std::thread。在调用了 join 之后，std::thread 对应的底层执行线程结束运行，就没有对应的底层线程了    被分离（detach）的 std::thread。detach 把 std::thread 对象与它对应的底层执行线程分离开。    std::thread 的连接性是很重要的，其中一个原因是：如果一个可连接的线程对象执行了析构操作，那么程序会被终止。 例如，假设我们有一个函数 doWork，它的参数包含过滤器函数 filter、一个最大值 maxVal。doWork 把 0 到 maxVal 之间值传给过滤器， 然后满足特定条件就对满足过滤器的值进行计算。如果执行过滤器函数是费时的，而检查条件也是费时的，那么并发做这两件事是合理的。  我们其实会更偏向于使用基于任务的设计（看条款 35），但是让我们假定我们想要设置执行过滤器线程的优先级。 条款 35 解释过请求使用线程的本机句柄（native handle）时，只能通过 std::thread 的 API；基于任务的 API 没有提供这个功能。 因此我们的方法是基于线程，而不是基于任务。  我们可以提出这样的代码： constexpr auto tenMillion = 10000000; // see Item 15  // for constexpr  bool doWork(std::function&amp;lt;bool(int)&amp;gt; filter, // returns whether 	int maxVal = tenMillion) // computation was  { // performed; see  // Item 2 for  // std::function 	std::vector&amp;lt;int&amp;gt; goodVals; // values that  // satisfy filter 	std::thread t([&amp;amp;filter, maxVal, &amp;amp;goodVals] // populate 	{ // goodVals 	for (auto i = 0; i &amp;lt;= maxVal; ++i) { if (filter(i)) goodVals.</description>
+      <description>Item 37:让 std::thread 对象在所有路径都无法连接 每个 std::thread 对象的状态都是这两种中的一种：joinable（可连接的）或 unjoinable（不可连接的）。一</description>
     </item>
     
     <item>
@@ -62,7 +62,7 @@
       <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/</guid>
-      <description>Item 35:优先考虑基于任务编程，而不是线程编程   如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thread， 用它来运行 doAsyncWork，因此这是基于线程（ thread-based ）的方法： int doAsyncWork(); std::thread t(doAsyncWork);    或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ task-based ）的策略： auto fut = std::async(doAsyncWork); // &amp;#34;fut&amp;#34; for &amp;#34;future&amp;#34;    在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。  基于任务的方法通常比基于线程实现的相对物要好，我们看到基于任务的方法代码量更少，这已经是展示了一些原因了。在这里，doAsyncWork 会返回一个值， 我们有理由假定调用 doAsyncWork 的代码对这个返回值有兴趣。在基于线程的调用中，没有直接的办法获取到它；而在基于任务的调用中，这很容易， 因为 std::asyn 返回的 future 提供了一个函数 get 来获取返回值。如果 doAsyncWork 函数发出了一个异常，get 函数是很重要的，它能取到这个异常。 在基于线程的方法中，如果 doAsyncWork 抛出了异常，程序就死亡了（通过调用 std::terminate）。  基于线程编程和基于任务编程的一个更基础的区别是，基于任务编程表现出更高级别的抽象。它让你免受线程管理的细节， 这让我想起了我需要总结“线程”在 C++并发软件里的三个意思：    硬件线程 是一种负责计算的线程。现代机器体系结构为每个 CPU 核心提供一个或多个硬件线程。    软件线程 （又称为操作系统线程或系统线程）是由操作系统管理和为硬件线程进行调度的线程。软件线程创建的数量通常会比硬件线程多，因为当一个软件线程阻塞了（例如，I/O 操作，等待锁或者条件变量），运行另一个非阻塞的线程能提供吞吐率。    std::thread 是 C++进程里的对象，它在自身内部操作软件线程。一些 std::thread 对象表示为“null”句柄，相当于不持有软件线程，因为它们处于默认构造状态（因此没有需要执行的函数），它要么被移动过了（那么，移动操作的目的 std::thread 对象会操作软件线程），要么被 join 了（std::thread 对象要执行的函数运行结束），要么被 detach 了（std::thread 对象和它内部软件线程的连接被切断了，即 thread 对象和软件线程分离了）。    软件线程是一种受限的资源，如果你想创建的线程数量多于系统提供的数量，会抛出 std::system_error 异常。就算你规定函数不能抛出异常，这个异常也会抛出。 例如，就算你把 doAsyncWork 声明为 noexcept， int doAsyncWork() noexcept; // see Item 14 for noexcept    这语句还是可能会抛出异常： std::thread t(doAsyncWork); // throws if no more  // threads are available    写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题， 而且，如果当前线程是个 GUI 线程，会导致响应时间变长。另一个方法是等待某些已存在的软件线程完成工作，然后再尝试创建一个新的 std::thread 对象， 但是有可能发生这种事情：已存在的线程在等待 doAsyncWork 的处理（例如，doAsyncWorkd 的返回值，或者通知条件变量）。  即使你的没有用完线程，你还是会有 oversubscription （过载）的问题——当就绪状态（即非阻塞）的软件线程多于硬件线程的时候。如果发生了那种事， 调度线程（通常是操作系统的一部分）会为软件线程分配 CPU 时间片，一个线程的时间片用完，就运行另一个线程，这其中发生了上下文切换。 这种上下文切换会增加系统的线程管理开销。这种情况下，（1）CPU 缓存会持有那个软件线程（即，它们会含有对于那软件线程有用的一些数据和一些指令）， 而（2）CPU 核心上“新”运行的软件线程“污染”了 CPU 缓存上“旧的”线程数据（它曾经在该 CPU 核心运行过，且可能再次调度到该 CPU 核心运行）。  避免 oversubscription 是很困难的，因为软件系统和硬件线程的最佳比例是取决于软件线程多久需要执行一次，而这是会动态改变的， 例如，当一个线程从 IO 消耗型转换为 CPU 消耗型时。这最佳比例也取决于上下文切换的开销和软件线程使用 CPU 缓存的效率。再进一步说， 硬件线程的数量和 CPU 缓存的细节（例如，缓存多大和多快）是取决于机器的体系结构，所以即使你在一个平台上让你的应用避免了 oversubscription（保持硬件繁忙工作），也不能保证在另一种机器上你的方案能工作得好。  如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事： auto fut = std::async(doAsyncWork); // onus of thread mgmt is  // on implementer of  // the Standard Library    这个调用把线程管理的责任转交给 C++标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。 “它是怎样做到的呢？”你可能好奇，“如果我申请多于系统提供的线程，使用 std::thread 和使用 std::async 有区别吗？”答案是有区别， 因为当用默认发射策略（看条款 36）调用 std::async 时，不能保证它会创建一个新的软件线程。而且，它允许调度器把指定函数（例如，doAsyncWork） 运行在——请求 doAsyncWork 结果的线程中（例如，那个线程调用了 get 或者对 fut 使用 wait），如果系统 oversubsrcibed 或线程耗尽时， 合理的调度器可以利用这个优势  如果你想用“在需求函数结果的线程上运行该函数”来欺骗自己，我提起过这会导致负载均衡的问题，这问题不会消失， 只是由 std::async 和调度器来面对它们，而不是你。但是，当涉及到负载均衡问题时，调度器比你更加了解当前机器发生了什么， 因为它管理所有进程的线程，而不是只是你的代码。  使用 std::async，GUI 线程的响应性也是有问题的，因为调度器没有办法知道哪个线程需求紧凑的响应性。在这种情况下， 你可以把 std::lanuch::async 发射策略传递给 std::async，它那可以保证你想要运行的函数马上会在另一个线程中执行（看条款 36）。  最新技术水平的线程调度器使用了系统范围的线程池来避免 oversubscription，而且调度器通过工作窃取算法来提高了硬件核心的负载均衡能力。 C++标准库没有要求线程池或者工作窃取算法，而且，实话说，C++11 并发技术的一些实现细节让我们很难利用到它们。 但是，一些供应商会在它们的标准库实现中利用这种技术，所以我们有理由期待 C++并发库会继续进步。如果你使用基于任务的方法进行编程，当它以后变智能了， 你会自动获取到好处。另一方面，如果你直接使用 std::thread 进行编程，你要承担着处理线程耗尽、oversubscription、负载均衡的压力， 更不用提你在程序中对这些问题的处理方案能否应用在同一台机器的另一个进程上。  比起基于线程编程，基于任务的设计能分担你的线程管理之痛，而且它提供了一种很自然的方式，让你检查异步执行函数的结果（即，返回值或异常）。 但是，有几种情况直接使用 std::thread 更适合，它们包括    你需要使用内部的特定平台线程的 API。C++并发 API 通常是以特定平台的低级 API 实现的，通常使用 pthread 或 Window’s Thread。它们提供的 API 比 C++提供的要多（例如，C++没有线程优先级的概念）。为了获取内部线程实现的 API，std::thread 对象有一个 native_handle 成员函数，而 std::future（即 std::async 返回的类型）没有类似的东西。    你需要且能够在你的应用中优化线程的用法。例如，你要在一个固定的机器平台上部署一个单进程的服务器软件。    你需要在 C++并发 API 之上实现线程技术。例如，实现一个 C++不提供的线程池。    不过，这些都是不常见的情况。大多数时候，你应该选择基于任务的设计，来代替线程。 记住     std::thread 的 API 没有提供直接获取异步运行函数返回值的方法，而且，如果这些函数抛出异常，程序会被终止。    基于线程编程需要手动地管理：线程耗尽、oversubscription、负载均衡、适配新平台。    借助默认发射策略的 std::async，进行基于任务编程可以解决上面提到的大部分问题   Item 36:如果异步执行是必需的，指定 std::launch::async 策略   当你调用 std::async 来执行一个函数（或一个可执行对象）时，你通常希望函数是异步执行的。但你没有要求 std::async 必须这样做， 函数是根据 std::async 的发射策略（ launch policy ）来执行的。有两个标准策略，每个都是通过 std::launch 局部枚举（scoped enum， 看条款 10） 来表示。假设一个函数 f 要传递给 std::launch 执行，    std::launch::async 发射策略意味着函数 f 必须异步执行，即在另一线程执行。    std::launch::deferred 发射策略意味着函数 f 可能只会在——std::async 返回的 future 对象调用 get 或 wait 时——执行。那就是，执行会推迟到其中一个调用发生。当调用 get 或 wait 时，f 会同步执行，即，调用者会阻塞直到 f 运行结束。如果 get 或 wait 没有被调用，f 就绝对不会执行。    可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思： auto fut1 = std::async(f); // run f using  // default launch  // policy  auto fut2 = std::async(std::launch::async | // run f either 	std::launch::deferred, // async or 	f); // deferred    默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、 负责均衡的责任。这让用 std::async 进行并发编程变得很方便。  但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f， auto fut = std::async(f); // run f using default launch policy      没有办法预知函数 f 是否会和线程 t 并发执行，因为 f 可能会被调度为推迟执行。    没有办法预知函数 f 是否运行在——与调用 get 或 wait 函数的线程不同的——线程。如果那个线程是 t，这句话的含义是没有办法预知 f 是否会运行在与 t 不同的线程    可能没有办法预知函数 f 是否执行完全，因为没有办法保证 fut 会调用 get 或 wait。    默认发射策略的调度灵活性经常会混淆使用 thread_local 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的： auto fut = std::async(f); // TLS for f possibly for  // independent thread, but  // possibly for thread  // invoking get or wait on fut    它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 wait_for 或者 wait_until 会返回值 std::launch::deferred 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行： using namespace std::literals; // for C++14 duration  // suffixes; see Item 34  void f() // f sleeps for 1 second,  { // then returns 	std::this_thread::sleep_for(1s); } auto fut = std::async(f); // run f asynchronously  // (conceptually)  while (fut.</description>
+      <description>Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr</description>
     </item>
     
     <item>
@@ -71,7 +71,7 @@
       <pubDate>Sun, 14 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/</guid>
-      <description>Item 33:对需要 std::forward 的 auto&amp;amp;&amp;amp;参数使用 decltype   泛型 lambda(generic lambda)是 C++14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 auto。这个特性的实现很直截了当： 闭包类中的 operator() 函数是一个模板。例如，给定这个 lambda， auto f = [](auto x) { return func(normalize(x)); };    闭包类的函数调用操作符看起来是这样的： classSomeCompilerGeneratedClassName { public: template&amp;lt;typename T&amp;gt; // see Item 3 for 	auto operator()(T x) const // auto return type 	{ return func(normalize(x)); } … // other closure class  }; // functionality    在这个例子中，lambda 对 x 做的唯一的一件事就是把它转发给 normalized。如果 normalized 区别对待左值和右值，这个 lambda 这样写是不合适的， 因为即使传递给 lambda 的实参是个右值，lambda 总是传一个左值（形参 x）给 normalized。  写这个 lambda 的正确方式是把 x 完美转发给 normalized，这样做需要在代码中修改两个地方。第一，x 要改成通用引用（看条款 24）， 第二，借助 std::forward（看条款 25）把 x 转发到 normalized。在概念上，修改成这样： auto f = [](auto&amp;amp;&amp;amp; x) { return func(normalize(std::forward&amp;lt;?</description>
+      <description>Item 33:对需要 std::forward 的 auto&amp;amp;&amp;amp;参数使用 decltype 泛型 lambda(generic lambda)是 C++14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au</description>
     </item>
     
     <item>
@@ -80,7 +80,7 @@
       <pubDate>Thu, 11 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/</guid>
-      <description>Item31:对于 lambda 表达式，避免使用默认捕获模式   C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获模式诱骗你——让你认为你可以免疫刚说的问题（事实上没有免疫）， 然后它又骗你——让你认为你的闭包是独立的（事实上它们可能不是独立的）  那就是本条款的总纲。如果你是工程师，你会想要更具体的内容，所以让我们从默认捕获模式的危害开始说起吧。  引用捕获会导致闭包包含一个局部变量的引用或者一个形参的引用（在定义 lamda 的作用域）。如果一个由 lambda 创建的闭包的生命期超过了局部变量或者形参的生命期， 那么闭包的引用将会空悬。例如，我们有一个容器，它的元素是过滤函数，这种过滤函数接受一个 int，返回 bool 表示传入的值是否可以满足过滤条件： using FilterContainer = // see Item 9 for 	std::vector&amp;lt;std::function&amp;lt;bool(int)&amp;gt;&amp;gt;; // &amp;#34;using&amp;#34;, Item 2  // for std::function  FilterContainer filters; // filtering funcs    我们可以通过添加一个过滤器，过滤掉 5 的倍数，像这样： filters.emplace_back( // see Item 42 for 	[](int value) { return value % 5 == 0; } // info on 	); // emplace_back    但是，我们可能需要在运行期间计算被除数，而不是直接把硬编码 5 写到 lambda 中，所以添加过滤器的代码可能是这样的： void addDivisorFilter() { auto calc1 = computeSomeValue1(); auto calc2 = computeSomeValue2(); auto divisor = computeDivisor(calc1, calc2); filters.</description>
+      <description>Item31:对于 lambda 表达式，避免使用默认捕获模式 C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获</description>
     </item>
     
     <item>
@@ -89,7 +89,7 @@
       <pubDate>Tue, 09 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</guid>
-      <description>Item 30:熟悉完美转发失败的情况   完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现实中的“完美”有点出入。 C++11 的完美转发非常棒，但当且仅当你愿意忽略一两个特殊情况，才能真正得到完美。该条款就是为了让你熟悉那些特殊情况。  在着手探索我们的特殊情况之前，值得回顾一下“完美转发”的意思。“转发”的意思是一个函数传递——转发——它的参数到另一个函数， 目的是为了让第二个函数（被转发参数的函数）收到第一个函数（进行转发的函数）接受到的对象。这个规则排除值语义的形参， 因为它们只是拷贝原始调用者传递的参数，我们想要的是，接受转发参数的函数能够处理最开始传递进来的对象。指针形参也排除在外， 因为我们不想强迫调用者传递指针。通常，当发生有目的的转发时，我们都是处理形参为引用的参数。  完美转发意思是：我们不单单转发对象，我们还转发它们重要的特性：它们的类型，它们是右值还是左值，它们是否是 const 或者 volation 修饰的。 配合我们观察到的我们一般处理引用参数，这暗示着我们会把完美转发用到通用引用（看条款 24）上， 因为只有通用引用形参才会把传递给它们的实参的左值或右值信息进行编码。  假设我们有一些函数 f，然后我们写了个函数（事实上是模板函数），这个函数把参数转发到函数 f。我们需要的关键代码是这样的： template&amp;lt;typename T&amp;gt; void fwd(T&amp;amp;&amp;amp; param) // accept any argument  { f(std::forward&amp;lt;T&amp;gt;(param)); // forward it to f  }    按照本性，进行转发的函数是通用的。例如，fwd 模板，应该可以接受一些类型不同的参数，然后转发它所得到的。对于这种通用性的一种有逻辑的扩展是， fwd 不应该只是个模板，而是个可变参数模板，因此可以接受任意数目的参数，可变参数模板 fwd 看起来应该是这样的： template&amp;lt;typename... Ts&amp;gt; void fwd(Ts&amp;amp;&amp;amp;... params) // accept any arguments  { f(std::forward&amp;lt;Ts&amp;gt;(params)...); // forward them to f  }    这种形式的模板你能在其它地方见到，例如标准库容器的 emplace 函数（看条款 42），和智能指针工厂函数——std::make_shared 和 std::make_unique （看条款 21）。  给定我们的目标函数 f 和进行转发的函数 fwd，如果用某个实参调用 f 会做某件事，然后用同样的实参调用 fwd，但 fwd 里的 f 行为和前面那种情况不一样， 那么完美转发是失败的： f( expression ); // if this does one thing,  fwd( expression ); // but this does something else, fwd fails  // to perfectly forward expression to f    几种类型的实参会导致这种失败，知道它们是什么和如何工作是很重要的，让我们来观察这几种不能完美转发的类型吧。 大括号初始值   假如 f 的声明是这样的： void f(const std::vector&amp;lt;int&amp;gt;&amp;amp; v);    这种情况，用大括号初始值调用 f 是可以通过编译的： f({ 1, 2, 3 }); // fine, &amp;#34;{1, 2, 3}&amp;#34; implicitly  // converted to std::vector&amp;lt;int&amp;gt;    但如果把大括号初始值传递给 fwd 就不能通过编译： fwd({ 1, 2, 3 }); // error!</description>
+      <description>Item 30:熟悉完美转发失败的情况 完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现</description>
     </item>
     
     <item>
@@ -98,7 +98,7 @@
       <pubDate>Sun, 07 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</guid>
-      <description>Item 28:理解引用折叠   Item 23 说过，当一个参数被传给模板函数时，不管这个参数是左值还是右值，模板参数的类型推导都会对参数进行编码。 那个 Item 没有解释这样的情况只在实参被用在初始化一个 universal 引用类型的型参时才会发生， 但是它没有解释是有理由的：universal 引用在 Item24 之前没有被介绍过。 同时，这些关于 universal 引用以及左右值编码的观察报告说明了对于这个模板： template&amp;lt;typename T&amp;gt; void func(T&amp;amp;&amp;amp; param);    无论传给 param 的参数是左值还是右值，被推导出来的模板参数 T 将会被编码。  编码的机制很简单。 当一个左值做为一个参数传入时，T 被推导为一个左值引用。当一个右值被传入时，T 被推导为没有引用 。 （记住这种不对称：左值被编码成左值引用，但是右值被编码成没有引用。）因此： Widget widgetFactory(); // function returning rvalue  Widget w; // a variable (an lvalue)  func(w); // call func with lvalue; T deduced  // to be Widget&amp;amp;  func(widgetFactory()); // call func with rvalue; T deduced  // to be Widget    两个对 func 的调用中，Widget 都被传入了，但是因为一个 Widget 是左值，一个是右值，模板参数 T 被推导成了不同的类型 。就像我们马上要看到的一样，这个特性就是能决定 universal 引用成为右值引用或左值引用的关键，它同时也是 std::forward 能完成其工作的底层机制。  在我们进一步观察 std::forward 和 universal 引用之前，我们必须注意到，在 C++中对引用进行引用是非法的。也许你应该尝试去声明一个，你的编译器会谴责你： int x; … auto&amp;amp; &amp;amp; rx = x; // error!</description>
+      <description>Item 28:理解引用折叠 Item 23 说过，当一个参数被传给模板函数时，不管这个参数是左值还是右值，模板参数的类型推导都会对参数进行编码。 那个 Item 没有解释这</description>
     </item>
     
     <item>
@@ -107,7 +107,7 @@
       <pubDate>Fri, 05 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</guid>
-      <description>Item 27:明白什么时候选择重载，什么时候选择 universal 引用   Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系列的问题。 到目前为止，我也已经给出了好几个例子，如果它能表现得和我们期待的一样，这种重载也能很实用。 此 Item 会探索如何让这种重载能实现我们所需求的行为。我们可以设计出避免对 universal 引用进行重载的实现， 也可以通过限制参数的类型，来使得它们能够匹配。 抛弃重载   Item 26 中的第一个例子（logAndAdd）就是一个典型的例子，很多这样的函数如果想要避免对 universal 引用进行重载， 那只要简单地对即将重载的函数进行不同的命名即可。举个例子，两个 logAndAdd 重载能被分割成 logAndAddName 和 logAndAddNameIdx。可惜的是，这个方法不能在第二个例子（Person 构造函数）中工作，因为构造函数的名字是由语言固定的。 再说了，谁又想放弃重载呢？ 通过 const T&amp;amp;传参数   另一个选择是回到 C++98，并且把 pass-by-universal-reference（通过 universal 引用传参数） 替换成 pass-by-lvalue-reference-to-const（通过 const 左值引用传参数）。事实上，这是 Item 26 考虑的第一个方法。 这个办法的缺点是它的效率无法达到最优。要知道，对于我们现在所知道的 universal 引用和重载来说， 牺牲一些效率来保持事情的简单性可能是一个很有吸引力的方案。 传值   一个常常能让你提升效率并且不增加复杂性的办法是把传引用的参数替换成传值的参数。虽然这很不直观， 但这个设计遵守了 Item 41 的建议（当知道你需要拷贝一个对象时，直接通过传值来传递它）。 所以，对于它们怎么工作以及它们有多高效的细节部分，我会推迟到 Item 41 再讨论。 在这，我只是给你看一下这个技术怎么用在 Person 例子中去： classPerson { public: explicit Person(std::string n) // replaces T&amp;amp;&amp;amp; ctor; see 	: name(std::move(n)) {} // Item 41 for use of std::move 	explicit Person(int idx) // as before 	: name(nameFromIdx(idx)) {} … private: std::string name; };    因为 std::string 的构造函数接受类型为整型的参数，所以所有传给 Person 构造函数的 int 及类 int （比如，std::size_t, short, long）的参数讲调用 int 版本的重载。相似的，所有的 std::string 类型 （以及那些可以用来创建一个 std::string 的参数，比如字符串&amp;#34;Ruth&amp;#34;）会被传给以 std::string 为参数的构造函数。 因此对于调用者来说，这里没有意外发生。你能争论说“我觉得有些人还是会感到奇怪，他们使用 0 或 NULL 来代表 null 指针， 所以这会掉用 int 版本的重载”，但是这些人应该回到 Item 8，然后再读一次，直到他们觉得使用 0 或 NULL 来表示 null 指针会让他们觉得可怕。 使用 Tag dispatch（标签分发）   不管是通过 lvalue-reference-to-const 传递还是传值的方式来支持完美转发。如果使用 universal 引用的动机是完美转发的话， 我们没有其他的选择。我们还是不想抛弃重载。所以如果我们不想抛弃重载，也不想抛弃 universal 引用的话， 我们怎么才能避免对 universal 引用进行重载呢？  事实上没有这么困难。重载函数的调用是这样的：依次查看每个重载函数的参数（形参）以及调用点的参数（实参）， 然后选择最匹配的重载函数（匹配上所有的形参和实参）。一个 universal 引用参数通常提供一个格外的匹配，使得不管传入的是什么， 都能匹配上，但是如果 universal 引用只是参数列表的一部分，这个参数列表还包含其他不是 universal 引用的参数，那么， 即使不考虑 universal 引用，非 universal 引用参数就足够我们造成不匹配了。这就是 tag dispatch 方法背后的基础， 一个例子会让之前的描述更加好理解。  我们把 tag dispatch 永在 logAndAdd177 页的例子上去。为了避免你分神去找，这里给出那个例子的代码： std::multiset&amp;lt;std::string&amp;gt; names; // global data structure  template&amp;lt;typename T&amp;gt; // make log entry and add  void logAndAdd(T&amp;amp;&amp;amp; name) // name to data structure  { auto now = std::chrono::system_clock::now(); log(now, &amp;#34;logAndAdd&amp;#34;); names.</description>
+      <description>Item 27:明白什么时候选择重载，什么时候选择 universal 引用 Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系</description>
     </item>
     
     <item>
@@ -116,7 +116,7 @@
       <pubDate>Thu, 04 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</guid>
-      <description>Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward   右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道这个被绑定的对象可以被 move： classWidget { Widget(Widget&amp;amp;&amp;amp; rhs); // rhs definitely refers to an 	… // object eligible for moving  };    在这种情况下，你会想传这样一个对象给其他函数，来允许这些函数能利用对象的右值属性。为了达到这样的目的，需要把绑定到这些对象的参数转换成右值。 就像 Item 23 解释的那样，std::move 不仅是这么做了，它就是为了这个目的而被创造出来的： classWidget { public: Widget(Widget&amp;amp;&amp;amp; rhs) // rhs is rvalue reference 	: name(std::move(rhs.name)), p(std::move(rhs.p)) { … } … private: std::string name; std::shared_ptr&amp;lt;SomeDataStructure&amp;gt; p; };    在另一方面，一个 universal 引用可能被绑定到一个有资格被 move 的对象上去。universal 引用只在它由右值初始化的时候需要被转换成一个右值。 Item 23 解释了这就是 std::forward 具体做的事情： classWidget { public: template&amp;lt;typename T&amp;gt; void setName(T&amp;amp;&amp;amp; newName) // newName is 	{ name = std::forward&amp;lt;T&amp;gt;(newName); } // universal reference 	… };    总之，因为右值引用总是被绑定到右值，所以当它们被转发给别的函数的时候，应该被无条件地转换成右值（通过 std::move）， 而 universal 引用由于只是不定时地被绑定到右值，所以当转发它们时，它们应该被有条件地转换成右值（通过 std::forward）。  Item 23 解释了对右值引用使用 std::forward 能让它显示出正确的行为，但是源代码会因此变得冗长、易错、不符合习惯的， 所以你应该避免对右值引用使用 std::forward。对 universal 引用使用 std::move 是更加糟糕的想法，因为这样会对左值（比如，局部变量）产生非预期的修改： classWidget { public: template&amp;lt;typename T&amp;gt; void setName(T&amp;amp;&amp;amp; newName) // universal reference 	{ name = std::move(newName); } // compiles, but is 	… // bad, bad, bad!</description>
+      <description>Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward 右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道</description>
     </item>
     
     <item>
@@ -125,7 +125,7 @@
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/</guid>
-      <description>Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现   如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&amp;#34;point to implementation&amp;#34;,指向实现）机制很熟悉了。这种技术让你把类的数据成员替换成指向一个实现类（或结构）的指针， 把曾经放在主类中的数据成员放到实现类中去，然后通过指针间接地访问那些数据成员。举个例子，假设 Widget 看起来像这个样子： classWidget { // in header &amp;#34;widget.h&amp;#34;  public: Widget(); … private: std::string name; std::vector&amp;lt;double&amp;gt; data; Gadget g1, g2, g3; // Gadget is some user-  };    因为 Widget 的数据成员包含 std::string，std::vector 和 Gadget 类型，这些类型的头文件必须出现在 Widget 的编译中， 这就意味着 Widget 的客户必须#include &amp;lt;string&amp;gt;,&amp;lt;vector&amp;gt;,和 gadget.h。这些头文件增加了 Widget 客户的编译时间， 加上它们使得这些客户依赖于头文件的内容。如果头文件的内容改变了，Widget 的客户必须重编译。标准头文件&amp;lt;string&amp;gt;和&amp;lt;vector&amp;gt;不会经常改变， 但是 gadget.h 有频繁更替版本的倾向。  在 C++98 中应用 Pimpl 机制需要在 Widget 中把它的数据成员替换成一个原始指针，指向一个已经被声明却还没有定义的结构： classWidget { // still in header &amp;#34;widget.</description>
+      <description>Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&amp;#34;point to i</description>
     </item>
     
     <item>
@@ -134,7 +134,7 @@
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</guid>
-      <description>Item 23:理解 std::move 和 std::forward   根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在运行期，它们没有做任何事情。它们没有产生需要执行的代码，一 byte 都没有。  std::move 和 std::forward 只不过就是执行 cast 的两个函数（实际上是函数模板）。 std::move 无条件地把它的参数转换成一个右值，而 std::forward 只在特定条件满足的情况下执行这个转换。就是这样了， 我的解释又引申出一系列的新问题，但是，基本上来说，上面说的就是全部内容了。  为了让内容更加形象，这里给出 C++11 中 std::move 实现的一个例子。它没有完全遵循标准的细节，但是很接近了。 template&amp;lt;typename T&amp;gt; // in namespace std  typename remove_reference&amp;lt;T&amp;gt;::type&amp;amp;&amp;amp; move(T&amp;amp;&amp;amp; param) { using ReturnType = // alias declaration; 	typename remove_reference&amp;lt;T&amp;gt;::type&amp;amp;&amp;amp;; // see Item 9 	return static_cast&amp;lt;ReturnType&amp;gt;(param); }    我已经帮你把代码的两个部分高亮（move 和 static_cast）显示了。一个是函数的名字，因为返回值类型挺复杂的，我不想让你在这复杂的地方浪费时间。 另一个地方是包括了这个函数的本质（cast）。就像你看到的那样，std::move 需要一个对象的引用（准确地说是一个 universal 引用，看 Item 24）， 并且返回同一个对象的引用。  函数返回值类型的“&amp;amp;&amp;amp;”部分暗示了 std::move 返回一个右值引用，但是，就像 Item 28 解释的那样，如果类型 T 恰好是左值引用，T&amp;amp;&amp;amp;将成为一个左值引用。 为了防止这样的事情发生，type trait（看 Item 9）std::remove_reference 被用在 T 上了，因此能保证把“&amp;amp;&amp;amp;”加在不是引用的类型上。 这样能保证让 std::move 确切地返回一个右值引用，并且这是很重要的，因为由函数返回的右值引用是一个右值。 因此，std::move 所做的所有事情就是转换它的参数为一个右值。  说句题外话，在 C++14 中 std::move 能被实现得更简便一些。多亏了函数返回值类型推导（看 Item 3）以及标准库的别名模板 std::remove_reference_t（看 Item 9），std::move 能被写成这样： template&amp;lt;typename T&amp;gt; // C++14; still in  decltype(auto) move(T&amp;amp;&amp;amp; param) // namespace std  { using ReturnType = remove_reference_t&amp;lt;T&amp;gt;&amp;amp;&amp;amp;; return static_cast&amp;lt;ReturnType&amp;gt;(param); }    看上去更简单了，不是吗？  因为 std::move 值只转换它的参数为右值，这里有一些更好的名字，比如说 rvalue_cast。尽管如此，我们仍然使用 std::move 作为它的名字， 所以记住 std::move 做了什么和没做什么很重要。它做的是转换，没有做 move。  当然了，右值是 move 的候选人，所以把 std::move 应用在对象上能告诉编译器，这个对象是有资格被 move 的。 这也就是为什么 std::move 有这样的名字：能让指定的对象更容易被 move。  事实上，右值是 move 的唯一候选人。假设你写了一个代表注释的类。 这个类的构造函数有一个 std::string 的参数，并且它拷贝参数到一个数据成员中。根据 Item 41 中的信息，你声明一个传值的参数： classAnnotation { public: explicit Annotation(std::string text); // param to be copied, 	… // so per Item 41,  }; // pass by value    但是 Annotation 的构造函数只需要读取 text 的值。它不需要修改它。 为了符合历史传统（把 const 用在任何可以使用的地方），你修改了你的声明，因此 text 成为了 const 的： classAnnotation { public: explicit Annotation(const std::string text) … };    为了在拷贝 text 到数据成员的时候不把时间浪费在拷贝操作上，你保持 Item 41 的建议并且把 std::move 用在 text 上，因此产生了一个右值： classAnnotation { public: explicit Annotation(const std::string text) : value(std::move(text)) // &amp;#34;move&amp;#34; text into value; this code 	{ … } // doesn&amp;#39;t do what it seems to!</description>
+      <description>Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在</description>
     </item>
     
     <item>
@@ -143,7 +143,7 @@
       <pubDate>Tue, 02 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/</guid>
-      <description>Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&amp;lt;Widget&amp;gt;(); // the pointed-to Widget&amp;#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared.</description>
+      <description>Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换</description>
     </item>
     
     <item>
@@ -152,7 +152,7 @@
       <pubDate>Fri, 29 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/</guid>
-      <description>item 18: 使用 std::unique_ptr 来管理独占所有权的资源   当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是很合理的：std::unique_ptr 和原始指针的大小是一样的， 并且很多操作（包括解引用），它们执行的是完全相同的指令。这意味着你甚至能把它们用在对内存和时间都很紧的地方。如果一个原始指针对你来说足够的小和快， 那么一个 std::unique_ptr 也几乎可以肯定是这样的。  std::unique_ptr 表现出独占所有权的语义。一个非空的 std::unique_ptr 总是对它指向的资源拥有所有权。 move 一个 std::unique_ptr 将把所有权从源指针转交给目标指针（源指针将被设置为 null）。拷贝一个 std::unique_ptr 是不被允许的， 因为如果你拷贝一个 std::unique_ptr，你将得到两个 std::unique_ptr 指向同样的资源，然后这两个指针都认为它们拥有资源（因此应该释放资源）。 因此 std::unique_ptr 是一个 move-only（只能进行 move 操作的）类型。再看看资源的销毁，一个非空的 std::unique_ptr 销毁它的资源。 默认情况下，通过在 std::unique_ptr 中 delete 一个原始指针的方法来进行资源的销毁。  std::unique_ptr 的常用方法是作为一个工厂函数的返回类型（指向类层次中的对象），假设我们有一个投资类型的类层次（比如，股票，债券，不动产等等）， 这个类层次的基类是 Investment。 classInvestment { … }; classStock: public Investment { … }; classBond: public Investment { … }; classRealEstate: public Investment { … };    对于这样的类层次，一个工厂函数常常会在堆上分配一个对象，并且返回一个指向这个对象的指针，当这个对象不再需要被使用的时候，调用者有责任销毁这个对象。 这完全符合 std::unique_ptr 的概念，因为调用者要对工厂返回的资源负责（也就是，它独占了所有权），然后当 std::unique_ptr 被销毁的时候， std::unique_ptr 会自动销毁它指向的对象。对于 Investment 类层次，一个工厂函数能被声明成这样： template&amp;lt;typename.</description>
+      <description>item 18: 使用 std::unique_ptr 来管理独占所有权的资源 当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是</description>
     </item>
     
     <item>
@@ -161,7 +161,7 @@
       <pubDate>Wed, 27 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</guid>
-      <description>item 15: 只要有可能，就使用 constexpr   从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当 constexpr 应用在函数上时， 事情变得比看上去还要微妙。为了避免毁掉后面的惊喜，现在，我只能说你不能假设 constexpr 函数的返回值是 const 的，同时你也不能假设这些值能在编译期被知道。 也许最有趣的是，这些东西都是特性（是有用的）。对于 constexpr 函数来说，不需要产生 const 或能在编译期知道的返回结果是一件好事。  但是，让我们从 constexpr 对象开始。这些对象确实是常量，也确实能在编译期被知道。 （技术上来讲，它们的值是在翻译阶段被决定的，翻译阶段包含了编译期和链接期。除非你要写一个 C++的编译器或连接器，不然这都影响不到你， 所以你能在编程的时候，开心地假设为 constexpr 对象的值是在编译期被决定的） int sz; // non-constexpr variable  … constexpr auto arraySize1 = sz; // error! sz&amp;#39;s value not  // known at compilation  std::array&amp;lt;int, sz&amp;gt; data1; // error! same problem  constexpr auto arraySize2 = 10; // fine, 10 is a  // compile-time constant  std::array&amp;lt;int, arraySize2&amp;gt; data2; // fine, arraySize2  // is constexpr    记住，const 不能提供和 constexpr 一样的保证，因为 const 对象不需要用“在编译期就知道的”值初始化： int sz; // as before  … const auto arraySize = sz; // fine, arraySize is  // const copy of sz  std::array&amp;lt;int, arraySize&amp;gt; data; // error!</description>
+      <description>item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当</description>
     </item>
     
     <item>
@@ -170,7 +170,7 @@
       <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</guid>
-      <description>item 11: 优先考虑使用 deleted function 而非 private undefined   在 C++ 98 中禁止拷贝和赋值实现如下： template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp;amp; ); // not defined 	basic_ios&amp;amp; operator=(const basic_ios&amp;amp;); // not defined  };    In C++11,可使用 = delete template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … basic_ios(const basic_ios&amp;amp; ) = delete; basic_ios&amp;amp; operator=(const basic_ios&amp;amp;) = delete; … };    delete 还可以删除实例化模板 template&amp;lt;typename T&amp;gt; void processPointer(T* ptr); template&amp;lt;&amp;gt; void processPointer&amp;lt;void&amp;gt;(void*) = delete; template&amp;lt;&amp;gt; void processPointer&amp;lt;char&amp;gt;(char*) = delete;   记住     优先考虑使用 deleted function 而非 private undefined    任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数   item 12: 把重写函数声明为“override”   因为 overriding (重写)听起来有点像 overloading (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。 classBase { public: virtual void doWork(); // base class virtual function 	… }; classDerived: public Base { public: virtual void doWork(); // overrides Base::doWork 	… // (&amp;#34;virtual&amp;#34; is optional  }; // here)  std::unique_ptr&amp;lt;Base&amp;gt; upb = // create base class pointer 	std::make_unique&amp;lt;Derived&amp;gt;(); // to derived class object;  // see Item 21 for info on  … // std::make_unique  upb-&amp;gt;doWork(); // call doWork through base  // class ptr; derived class  // function is invoked    为了能够成功重写，必须要符合一些要求：    基类函数必须是 virtual 的。    基类函数和派生类函数的名字必须完全一样（除了析构函数）    基类函数和派生类函数的参数类型必须完全一样。    基类函数和派生类函数的 const 属性必须完全一样。    类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的    这些限制是 C++98 要求的，C++11 还增加了一条:    函数的引用限定符必须完全一样    “成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。 它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数： classWidget { public: void doWork() &amp;amp;; // this version of doWork applies  // only when *this is an lvalue 	void doWork() &amp;amp;&amp;amp;; // this version of doWork applies  }; // only when *this is an rvalue  Widget makeWidget(); // factory function (returns rvalue)  Widget w; // normal object (an lvalue)  w.</description>
+      <description>item 11: 优先考虑使用 deleted function 而非 private undefined 在 C++ 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp;amp; ); // not defined basic_ios&amp;amp; operator=(const basic_ios&amp;amp;); // not defined }; In C++1</description>
     </item>
     
     <item>
@@ -179,7 +179,7 @@
       <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</guid>
-      <description>item 7: 区别使用（）和{}创建对象  记住     括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++最令人头疼的解析有天生的免疫性.   double x, y, z; int sum1{ x + y + z }; // error! sum of doubles may  // not be expressible as int   Widget w2(); // most vexing parse! declares a function  // named w2 that returns a Widget!  Widget w3{}; // calls Widget ctor with no args      在构造函数重载决议中，括号初始化尽最大可能与 std::initializer_list 参数匹配，即便其他构造函数看起来是更好的选择.</description>
+      <description>item 7: 区别使用（）和{}创建对象 记住 括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++</description>
     </item>
     
     <item>
@@ -188,7 +188,7 @@
       <pubDate>Thu, 21 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/</guid>
-      <description>item 5: 尽量用 auto 代替显式类型声明  std::unordered_map&amp;lt;std::string, int&amp;gt; m; … for (const std::pair&amp;lt;std::string, int&amp;gt;&amp;amp; p : m) { … // do something with p 	}    上面代码看起来很完美，但是有个问题。std::unordered_map 的 * key * 部分的类型是* const *修饰的， 所以哈希表(std::unordered_map)中的 std::pair 类型不是 std::pair&amp;lt;std::string,int&amp;gt;，而是 std::pair&amp;lt;const std::string, int&amp;gt;。 导致的结果是，编译器会把 std::pair&amp;lt;const std::string,int&amp;gt;对象强制转换为 std::pair&amp;lt;std::string,int&amp;gt;对象(也就是 p 声明的类型)。 因此编译器为 m 哈希表中每一个元素的拷贝生成一个临时对象(key 为非 const 的 pair 类型)，然后 p 就引用了那些临时对象。当循环结束，那些临时对象被析构。 记住     auto 变量必须初始化，它通常不会类型不匹配，从而更轻便和更高效，还能减少重构的工作量，一般我们尽量用 auto 代替显式类型声明。    auto 类型变量会有 time 2 和条款 item 6 中的陷阱   item 6: 当 auto 推断出不想要的类型时，使用显示类型初始化语法  Widget w; … bool highPriority = features(w)[5]; // is w high priority?</description>
+      <description>item 5: 尽量用 auto 代替显式类型声明 1 2 3 4 5 6 std::unordered_map&amp;lt;std::string, int&amp;gt; m; … for (const std::pair&amp;lt;std::string, int&amp;gt;&amp;amp; p : m) { … // do something with p } 上面代码看起来很完美，但是有个问题。std::unordere</description>
     </item>
     
   </channel>

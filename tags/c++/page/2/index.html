@@ -1,445 +1,207 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; · Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43;">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/tags/c&#43;&#43;/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://hardy5012.github.io/tags/c++/index.xml" title="Learning Hardy" />
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="Hugo theme even example site." /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/tags/c&#43;&#43;/" />
+  <link href="https://hardy5012.github.io/tags/c&#43;&#43;/index.xml" rel="alternate" type="application/rss+xml" title="Leaning Hardy" />
+  <link href="https://hardy5012.github.io/tags/c&#43;&#43;/index.xml" rel="feed" type="application/rss+xml" title="Leaning Hardy" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43;" />
+<meta property="og:description" content="Hugo theme even example site." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hardy5012.github.io/tags/c&#43;&#43;/" />
+
+<meta property="og:updated_time" content="2018-01-17T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43;">
+<meta itemprop="description" content="Hugo theme even example site.">
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43;"/>
+<meta name="twitter:description" content="Hugo theme even example site."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://hardy5012.github.io/">
-                        Learning Hardy
-                    </a>
-                
-                
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <section id="archive" class="archive">
+  
+
+  <div class="archive-post">
+      <span class="archive-post-time">
+        2017-12-21
+      </span>
+      <span class="archive-post-title">
+        <a href="/post/c&#43;&#43;-ep02auto/" class="archive-post-link">
+          C&#43;&#43; Ep02:auto
+        </a>
+      </span>
+    </div><div class="archive-post">
+      <span class="archive-post-time">
+        2017-12-18
+      </span>
+      <span class="archive-post-title">
+        <a href="/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/" class="archive-post-link">
+          C&#43;&#43; Ep01:模板类型推导
+        </a>
+      </span>
     </div>
-</header>
+</section>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    
-                    <h3 class="archive-title">
-                        包含标签
-                        <span class="keyword">C&#43;&#43;</span>
-                        的文章
-                    </h3>
-                    
-
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/">C&#43;&#43; Ep07:Smart Pointers(2)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2018年1月2日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&lt;Widget&gt;(); // the pointed-to Widget&#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared.……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/">C&#43;&#43; Ep06:Smart Pointers(1)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月29日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                item 18: 使用 std::unique_ptr 来管理独占所有权的资源   当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是很合理的：std::unique_ptr 和原始指针的大小是一样的， 并且很多操作（包括解引用），它们执行的是完全相同的指令。这意味着你甚至能把它们用在对内存和时间都很紧的地方。如果一个原始指针对你来说足够的小和快， 那么一个 std::unique_ptr 也几乎可以肯定是这样的。  std::unique_ptr 表现出独占所有权的语义。一个非空的 std::unique_ptr 总是对它指向的资源拥有所有权。 move 一个 std::unique_ptr 将把所有权从源指针转交给目标指针（源指针将被设置为 null）。拷贝一个 std::unique_ptr 是不被允许的， 因为如果你拷贝一个 std::unique_ptr，你将得到两个 std::unique_ptr 指向同样的资源，然后这两个指针都认为它们拥有资源（因此应该释放资源）。 因此 std::unique_ptr 是一个 move-only（只能进行 move 操作的）类型。再看看资源的销毁，一个非空的 std::unique_ptr 销毁它的资源。 默认情况下，通过在 std::unique_ptr 中 delete 一个原始指针的方法来进行资源的销毁。  std::unique_ptr 的常用方法是作为一个工厂函数的返回类型（指向类层次中的对象），假设我们有一个投资类型的类层次（比如，股票，债券，不动产等等）， 这个类层次的基类是 Investment。 classInvestment { … }; classStock: public Investment { … }; classBond: public Investment { … }; classRealEstate: public Investment { … };    对于这样的类层次，一个工厂函数常常会在堆上分配一个对象，并且返回一个指向这个对象的指针，当这个对象不再需要被使用的时候，调用者有责任销毁这个对象。 这完全符合 std::unique_ptr 的概念，因为调用者要对工厂返回的资源负责（也就是，它独占了所有权），然后当 std::unique_ptr 被销毁的时候， std::unique_ptr 会自动销毁它指向的对象。对于 Investment 类层次，一个工厂函数能被声明成这样： template&lt;typename.……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月27日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                item 15: 只要有可能，就使用 constexpr   从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当 constexpr 应用在函数上时， 事情变得比看上去还要微妙。为了避免毁掉后面的惊喜，现在，我只能说你不能假设 constexpr 函数的返回值是 const 的，同时你也不能假设这些值能在编译期被知道。 也许最有趣的是，这些东西都是特性（是有用的）。对于 constexpr 函数来说，不需要产生 const 或能在编译期知道的返回结果是一件好事。  但是，让我们从 constexpr 对象开始。这些对象确实是常量，也确实能在编译期被知道。 （技术上来讲，它们的值是在翻译阶段被决定的，翻译阶段包含了编译期和链接期。除非你要写一个 C++的编译器或连接器，不然这都影响不到你， 所以你能在编程的时候，开心地假设为 constexpr 对象的值是在编译期被决定的） int sz; // non-constexpr variable  … constexpr auto arraySize1 = sz; // error! sz&#39;s value not  // known at compilation  std::array&lt;int, sz&gt; data1; // error! same problem  constexpr auto arraySize2 = 10; // fine, 10 is a  // compile-time constant  std::array&lt;int, arraySize2&gt; data2; // fine, arraySize2  // is constexpr    记住，const 不能提供和 constexpr 一样的保证，因为 const 对象不需要用“在编译期就知道的”值初始化： int sz; // as before  … const auto arraySize = sz; // fine, arraySize is  // const copy of sz  std::array&lt;int, arraySize&gt; data; // error!……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月26日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                item 11: 优先考虑使用 deleted function 而非 private undefined   在 C++ 98 中禁止拷贝和赋值实现如下： template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp; ); // not defined 	basic_ios&amp; operator=(const basic_ios&amp;); // not defined  };    In C++11,可使用 = delete template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … basic_ios(const basic_ios&amp; ) = delete; basic_ios&amp; operator=(const basic_ios&amp;) = delete; … };    delete 还可以删除实例化模板 template&lt;typename T&gt; void processPointer(T* ptr); template&lt;&gt; void processPointer&lt;void&gt;(void*) = delete; template&lt;&gt; void processPointer&lt;char&gt;(char*) = delete;   记住     优先考虑使用 deleted function 而非 private undefined    任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数   item 12: 把重写函数声明为“override”   因为 overriding (重写)听起来有点像 overloading (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。 classBase { public: virtual void doWork(); // base class virtual function 	… }; classDerived: public Base { public: virtual void doWork(); // overrides Base::doWork 	… // (&#34;virtual&#34; is optional  }; // here)  std::unique_ptr&lt;Base&gt; upb = // create base class pointer 	std::make_unique&lt;Derived&gt;(); // to derived class object;  // see Item 21 for info on  … // std::make_unique  upb-&gt;doWork(); // call doWork through base  // class ptr; derived class  // function is invoked    为了能够成功重写，必须要符合一些要求：    基类函数必须是 virtual 的。    基类函数和派生类函数的名字必须完全一样（除了析构函数）    基类函数和派生类函数的参数类型必须完全一样。    基类函数和派生类函数的 const 属性必须完全一样。    类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的    这些限制是 C++98 要求的，C++11 还增加了一条:    函数的引用限定符必须完全一样    “成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。 它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数： classWidget { public: void doWork() &amp;; // this version of doWork applies  // only when *this is an lvalue 	void doWork() &amp;&amp;; // this version of doWork applies  }; // only when *this is an rvalue  Widget makeWidget(); // factory function (returns rvalue)  Widget w; // normal object (an lvalue)  w.……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月22日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                item 7: 区别使用（）和{}创建对象  记住     括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++最令人头疼的解析有天生的免疫性.   double x, y, z; int sum1{ x + y + z }; // error! sum of doubles may  // not be expressible as int   Widget w2(); // most vexing parse! declares a function  // named w2 that returns a Widget!  Widget w3{}; // calls Widget ctor with no args      在构造函数重载决议中，括号初始化尽最大可能与 std::initializer_list 参数匹配，即便其他构造函数看起来是更好的选择.……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月21日
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                |
-                                
-                                    <a href="https://hardy5012.github.io/categories/modern">Modern</a>
-                                
-                                    <a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                item 5: 尽量用 auto 代替显式类型声明  std::unordered_map&lt;std::string, int&gt; m; … for (const std::pair&lt;std::string, int&gt;&amp; p : m) { … // do something with p 	}    上面代码看起来很完美，但是有个问题。std::unordered_map 的 * key * 部分的类型是* const *修饰的， 所以哈希表(std::unordered_map)中的 std::pair 类型不是 std::pair&lt;std::string,int&gt;，而是 std::pair&lt;const std::string, int&gt;。 导致的结果是，编译器会把 std::pair&lt;const std::string,int&gt;对象强制转换为 std::pair&lt;std::string,int&gt;对象(也就是 p 声明的类型)。 因此编译器为 m 哈希表中每一个元素的拷贝生成一个临时对象(key 为非 const 的 pair 类型)，然后 p 就引用了那些临时对象。当循环结束，那些临时对象被析构。 记住     auto 变量必须初始化，它通常不会类型不匹配，从而更轻便和更高效，还能减少重构的工作量，一般我们尽量用 auto 代替显式类型声明。    auto 类型变量会有 time 2 和条款 item 6 中的陷阱   item 6: 当 auto 推断出不想要的类型时，使用显示类型初始化语法  Widget w; … bool highPriority = features(w)[5]; // is w high priority?……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">C&#43;&#43; Ep01:模板类型推导</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2017年12月18日
-                            </date>
-                            
-                            <div class="post-content">
-                                Case 1:ParmaType 是引用或指针，但不是 Universal Referencs     如果 expr 类型是一个引用，忽略引用部分    expr 的类型和 ParamType 模式匹配的部分决定了 T    示例模板： template&lt;typename T&gt; void f(T&amp; param); // param is a reference    变量定义： int x = 27; // x is an int  const int cx = x; // cx is a const int  const int&amp; rx = x; // rx is a reference to x as a const int    param 和 T 的推导： f(x); // T is int, param&#39;s type is int&amp;  f(cx); // T is const int, 	// param&#39;s type is const int&amp;  f(rx); // T is const int, 	// param&#39;s type is const int&amp;   template&lt;typename T&gt; void f(const T&amp; param); // param is now a ref-to-const  int x = 27; // as before  const int cx = x; // as before  const int&amp; rx = x; // as before  f(x); // T is int, param&#39;s type is const int&amp;  f(cx); // T is int, param&#39;s type is const int&amp;  f(rx); // T is int, param&#39;s type is const int&amp;   Case 2:ParamType 是 Universal Reference     如果 expr 是个左值，T 和 ParamType 都被推导为左值引用。这里有两个地方不同寻常，第一，这是唯一一种场景下模板类型推导把 T 推导成一个引用。第二，尽管 ParamType 是使用了右值引用的语法来声明的，它的推导类型却是一个左值引用。    如果 expr 是个右值，则 Case 1 会适用。 template&lt;typename T&gt; void f(T&amp;&amp; param); // param is now a universal reference  int x = 27; // as before const int cx = x; // as before const int&amp; rx = x; // as before  f(x); // x is lvalue, so T is int&amp;,  // param&#39;s type is also int&amp; f(cx); // cx is lvalue, so T is const int&amp;, // param&#39;s type is also const int&amp; f(rx); // rx is lvalue, so T is const int&amp;,  // param&#39;s type is also const int&amp; f(27); // 27 is rvalue, so T is int,  // param&#39;s type is therefore int&amp;&amp;     Case 3:ParamType 既不是指针也不是引用   此时执行的是传值参数，这意味着无论传递什么，param 都会是个拷贝—一个新的对象    和之前一样，如果 expr 的类型是个引用，则引用部分被忽略。    如果忽略了引用部分后，expr 是一个 const 或 volatile，也都忽略。 template&lt;typename T&gt; void f(T param); // param is now passed by value  int x = 27; // as before const int cx = x; // as before const int&amp; rx = x; // as before  f(x); // T&#39;s and param&#39;s types are both int f(cx); // T&#39;s and param&#39;s types are again both int f(rx); // T&#39;s and param&#39;s types are still both int      注意，即使 cx 和 rx 都表示 const 值，param 也不是常量。这也讲得通，param 是个完全独立于 cx 或 rx 的对象—是 cx 和 rx 的拷贝。cx 和 rx 不能被修改而 param 可以被修改。 数组及函数参数   在模板类型推导时，数组和函数参数会退化成指针，除非它们被用做初始化引用 Universal Reference   当看起来像右值引用的 T&amp;&amp; 出现在 template 的中，他就是 universal reference，既不是 lvalue reference 也不是 rvalue reference。 universal reference 的实际效果就是，你给他一个 lvalue reference 的时候，他就是 lvalue reference，你给他 rvalue reference 的时候，他就是 rvalue reference。  auto 类型推导  auto 类型推导与模板规则类似,除大括号初始例如，auto 推导为 std::initializer_list 而模板则不支持  auto x = { 11, 23, 9 }; // x&#39;s type is // std::initializer_list&lt;int&gt;  template&lt;typename T&gt; // template with parameter void f(T param); // declaration equivalent to // x&#39;s declaration f({ 11, 23, 9 }); // error!……
-                                <p class="readmore"><a href="https://hardy5012.github.io/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">阅读全文</a></p>
-                            </div>
-                        </article>
-                    
-
-                    
-
-
-
-<ol class="page-navigator">
-    
-    <li class="prev">
-        <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">上一页</a>
-    </li>
-    
-
-    
-    <li >
-        <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">1</a>
-    </li>
-    
-    <li  class="current">
-        <a href="https://hardy5012.github.io/tags/c&#43;&#43;/page/2/">2</a>
-    </li>
-    
-
-    
-</ol>
-
-
-
-                </div>
-            </div>
-
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
-    
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<nav class="pagination">
+  <a class="prev" href="/tags/c&#43;&#43;/">
+      <i class="iconfont icon-left"></i>
+      <span class="prev-text">上一页</span>
+    </a>
+  
+</nav>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
 
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
 
 

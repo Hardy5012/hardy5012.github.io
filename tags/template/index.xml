@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Template on Learning Hardy</title>
+    <title>Template on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/template/</link>
-    <description>Recent content in Template on Learning Hardy</description>
+    <description>Recent content in Template on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Wed, 21 Feb 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/template/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</guid>
-      <description>使用  之前   在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 //一个参数  template&amp;lt;typename T1&amp;gt; //两个参数  template&amp;lt;typename T1, typename T2&amp;gt; //三个参数  template&amp;lt;typename T1, typename T2, typename T3&amp;gt; ....    无论是实现还是效率都非常差 可变参数版本（递归实现）   对于上面情况，使用可变参数模板实现： #include &amp;lt;sstream&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;vector&amp;gt; template&amp;lt;typename T&amp;gt; std::string to_string_impl(const T&amp;amp; t) { std::stringstream ss; ss &amp;lt;&amp;lt; t; return ss.str(); } std::vector&amp;lt;std::string&amp;gt; to_string(){ return {}; } template&amp;lt;typename P1, typename ...Param&amp;gt; std::vector&amp;lt;std::string&amp;gt; to_string(const P1 &amp;amp;p1, const Param&amp;amp; .</description>
+      <description>使用 之前 在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 1 2 3 4 5 6 7 //一个参数 template&amp;lt;typename T1&amp;gt; //两个参数 template&amp;lt;typename T1, typename T2&amp;gt; //三个参数 template&amp;lt;typename T1, typename T2, typename T3&amp;gt;</description>
     </item>
     
   </channel>

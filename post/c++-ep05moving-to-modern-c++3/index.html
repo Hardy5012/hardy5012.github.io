@@ -1,96 +1,168 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2017-12-27T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2017-12-27T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)" />
+<meta property="og:description" content="item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/" />
+<meta property="article:published_time" content="2017-12-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-12-27T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)">
+<meta itemprop="description" content="item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当">
+
+
+<meta itemprop="datePublished" content="2017-12-27T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2017-12-27T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="10061">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)"/>
+<meta name="twitter:description" content="item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://hardy5012.github.io/">
-                        Learning Hardy
-                    </a>
-                
-                
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-12-27 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        
+      </div>
+    </header>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2017年12月27日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                            
-                        </div>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">item 15: 只要有可能，就使用 constexpr</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">item 16: 让 const 成员函数做到线程安全</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">item 17: 理解特殊成员函数的生成规则</a>
+<ul>
+<li><a href="#headline-6">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-7">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
 <h1 id="headline-1">
 item 15: 只要有可能，就使用 constexpr
 </h1>
@@ -105,28 +177,55 @@ item 15: 只要有可能，就使用 constexpr
 所以你能在编程的时候，开心地假设为 constexpr 对象的值是在编译期被决定的）
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> sz; <span style="color:#75715e">// non-constexpr variable
-</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span>
-  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> arraySize1 <span style="color:#f92672">=</span> sz; <span style="color:#75715e">// error! sz&#39;s value not
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// known at compilation
-</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>array<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, sz<span style="color:#f92672">&gt;</span> data1; <span style="color:#75715e">// error! same problem
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> arraySize2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>; <span style="color:#75715e">// fine, 10 is a
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// compile-time constant
-</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>array<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, arraySize2<span style="color:#f92672">&gt;</span> data2; <span style="color:#75715e">// fine, arraySize2
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// is constexpr
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="n">sz</span><span class="p">;</span> <span class="c1">// non-constexpr variable
+</span><span class="c1"></span>  <span class="err">…</span>
+  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">arraySize1</span> <span class="o">=</span> <span class="n">sz</span><span class="p">;</span> <span class="c1">// error! sz&#39;s value not
+</span><span class="c1"></span>  <span class="c1">// known at compilation
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">sz</span><span class="o">&gt;</span> <span class="n">data1</span><span class="p">;</span> <span class="c1">// error! same problem
+</span><span class="c1"></span>  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">arraySize2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c1">// fine, 10 is a
+</span><span class="c1"></span>  <span class="c1">// compile-time constant
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">arraySize2</span><span class="o">&gt;</span> <span class="n">data2</span><span class="p">;</span> <span class="c1">// fine, arraySize2
+</span><span class="c1"></span>  <span class="c1">// is constexpr
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 记住，const 不能提供和 constexpr 一样的保证，因为 const 对象不需要用“在编译期就知道的”值初始化：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> sz; <span style="color:#75715e">// as before
-</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span>
-  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span> arraySize <span style="color:#f92672">=</span> sz; <span style="color:#75715e">// fine, arraySize is
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// const copy of sz
-</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>array<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, arraySize<span style="color:#f92672">&gt;</span> data; <span style="color:#75715e">// error! arraySize&#39;s value
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// not known at compilation
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="n">sz</span><span class="p">;</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="err">…</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">arraySize</span> <span class="o">=</span> <span class="n">sz</span><span class="p">;</span> <span class="c1">// fine, arraySize is
+</span><span class="c1"></span>  <span class="c1">// const copy of sz
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">arraySize</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span> <span class="c1">// error! arraySize&#39;s value
+</span><span class="c1"></span>  <span class="c1">// not known at compilation
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <!-- more -->
 <p>
@@ -150,27 +249,52 @@ std::array 是一个合理的选择。但是我们需要一个方法来在编译
 幸运的是，我们能自己写一个我们所需要的 pow，我马上就会告诉你怎么实现，但是现在先让我们看一下它是怎么声明以及怎么使用的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span> <span style="color:#75715e">// pow&#39;s a constexpr func
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> pow(<span style="color:#66d9ef">int</span> base, <span style="color:#66d9ef">int</span> exp) <span style="color:#66d9ef">noexcept</span> <span style="color:#75715e">// that never throws
-</span><span style="color:#75715e"></span>  {
-	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// impl is below
-</span><span style="color:#75715e"></span>		  }
-  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> numConds <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>; <span style="color:#75715e">// # of conditions
-</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>array<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, pow(<span style="color:#ae81ff">3</span>, numConds)<span style="color:#f92672">&gt;</span> results; <span style="color:#75715e">// results has
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// 3^numConds
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// elements
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span> <span class="c1">// pow&#39;s a constexpr func
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">pow</span><span class="p">(</span><span class="kt">int</span> <span class="n">base</span><span class="p">,</span> <span class="kt">int</span> <span class="n">exp</span><span class="p">)</span> <span class="k">noexcept</span> <span class="c1">// that never throws
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="err">…</span> <span class="c1">// impl is below
+</span><span class="c1"></span>		  <span class="p">}</span>
+  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">numConds</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// # of conditions
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">pow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">numConds</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">results</span><span class="p">;</span> <span class="c1">// results has
+</span><span class="c1"></span>  <span class="c1">// 3^numConds
+</span><span class="c1"></span>  <span class="c1">// elements
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 回忆一下，pow 前面的 constexpr 不是说 pow 返回一个 const 值，它意味着如果 base 和 exp 是编译期常量，pow 的返回结果能被视为编译期常量。
 如果 base 和/或 exp 不是编译期常量，pow 的结果将在运行期计算。这意味着 pow 不只能在编译阶段计算 std::array 的大小，它也可以在运行期的时候这么调用:
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> base <span style="color:#f92672">=</span> readFromDB(<span style="color:#e6db74">&#34;base&#34;</span>); <span style="color:#75715e">// get these values
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> exp <span style="color:#f92672">=</span> readFromDB(<span style="color:#e6db74">&#34;exponent&#34;</span>); <span style="color:#75715e">// at runtime
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> baseToExp <span style="color:#f92672">=</span> pow(base, exp); <span style="color:#75715e">// call pow function
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// at runtime
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">base</span> <span class="o">=</span> <span class="n">readFromDB</span><span class="p">(</span><span class="s">&#34;base&#34;</span><span class="p">);</span> <span class="c1">// get these values
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">readFromDB</span><span class="p">(</span><span class="s">&#34;exponent&#34;</span><span class="p">);</span> <span class="c1">// at runtime
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">baseToExp</span> <span class="o">=</span> <span class="n">pow</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">exp</span><span class="p">);</span> <span class="c1">// call pow function
+</span><span class="c1"></span>  <span class="c1">// at runtime
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 在 c++11 中，constexpr 函数只能包含一条简单的语句：一个 <strong>return</strong> 语句。
@@ -178,24 +302,46 @@ std::array 是一个合理的选择。但是我们需要一个方法来在编译
 第一，条件表达式 “?:”能用来替换 if-else 语句，然后第二，递归能用来替换循环。因此 pow 被实现成这样
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pow</span>(<span style="color:#66d9ef">int</span> base, <span style="color:#66d9ef">int</span> exp) <span style="color:#66d9ef">noexcept</span>
-  {
-	  <span style="color:#66d9ef">return</span> (exp <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> base <span style="color:#f92672">*</span> pow(base, exp <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>));
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span> <span class="kt">int</span> <span class="nf">pow</span><span class="p">(</span><span class="kt">int</span> <span class="n">base</span><span class="p">,</span> <span class="kt">int</span> <span class="n">exp</span><span class="p">)</span> <span class="k">noexcept</span>
+  <span class="p">{</span>
+	  <span class="k">return</span> <span class="p">(</span><span class="n">exp</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">base</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">));</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这确实可以工作，但是很难想象，除了写函数的人，还有谁会觉得这个函数写得很优雅。
 在 C++14 中，constexpr 函数的限制大幅度变小了，所以这让下面的实现成为了可能：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pow</span>(<span style="color:#66d9ef">int</span> base, <span style="color:#66d9ef">int</span> exp) <span style="color:#66d9ef">noexcept</span> <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>  {
-	  <span style="color:#66d9ef">auto</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-	  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> exp; <span style="color:#f92672">++</span>i) result <span style="color:#f92672">*=</span> base;
-	  <span style="color:#66d9ef">return</span> result;
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span> <span class="kt">int</span> <span class="nf">pow</span><span class="p">(</span><span class="kt">int</span> <span class="n">base</span><span class="p">,</span> <span class="kt">int</span> <span class="n">exp</span><span class="p">)</span> <span class="k">noexcept</span> <span class="c1">// C++14
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+	  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">exp</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">result</span> <span class="o">*=</span> <span class="n">base</span><span class="p">;</span>
+	  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 constexpr 函数由于限制，只能接受和返回 literal 类型（本质上来说就是，这个类型的值能在编译期决定）。
@@ -203,45 +349,87 @@ constexpr 函数由于限制，只能接受和返回 literal 类型（本质上�
 因为构造函数和其他函数也可能是 constexpr：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Point</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">constexpr</span> Point(<span style="color:#66d9ef">double</span> xVal <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">double</span> yVal <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">noexcept</span>
-	  <span style="color:#f92672">:</span> x(xVal), y(yVal)
-		  {}
-	  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">double</span> xValue() <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">noexcept</span> { <span style="color:#66d9ef">return</span> x; }
-	  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">double</span> yValue() <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">noexcept</span> { <span style="color:#66d9ef">return</span> y; }
-	  <span style="color:#66d9ef">void</span> setX(<span style="color:#66d9ef">double</span> newX) <span style="color:#66d9ef">noexcept</span> { x <span style="color:#f92672">=</span> newX; }
-	  <span style="color:#66d9ef">void</span> setY(<span style="color:#66d9ef">double</span> newY) <span style="color:#66d9ef">noexcept</span> { y <span style="color:#f92672">=</span> newY; }
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">double</span> x, y;
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Point</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">constexpr</span> <span class="n">Point</span><span class="p">(</span><span class="kt">double</span> <span class="n">xVal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">double</span> <span class="n">yVal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">noexcept</span>
+	  <span class="o">:</span> <span class="n">x</span><span class="p">(</span><span class="n">xVal</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">yVal</span><span class="p">)</span>
+		  <span class="p">{}</span>
+	  <span class="k">constexpr</span> <span class="kt">double</span> <span class="n">xValue</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="k">constexpr</span> <span class="kt">double</span> <span class="n">yValue</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">y</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="kt">void</span> <span class="n">setX</span><span class="p">(</span><span class="kt">double</span> <span class="n">newX</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="n">x</span> <span class="o">=</span> <span class="n">newX</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="kt">void</span> <span class="n">setY</span><span class="p">(</span><span class="kt">double</span> <span class="n">newY</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="n">y</span> <span class="o">=</span> <span class="n">newY</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这里，Point 的构造函数被声明为 constexpr，因为如果传入的参数能在编译期知道，则被构造的 Point 的成员变量的值也能在编译期知道。
 因此，Point 也能被初始化为 constexpr：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span> Point <span style="color:#a6e22e">p1</span>(<span style="color:#ae81ff">9.4</span>, <span style="color:#ae81ff">27.7</span>); <span style="color:#75715e">// fine, &#34;runs&#34; constexpr
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// ctor during compilation
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> Point <span style="color:#a6e22e">p2</span>(<span style="color:#ae81ff">28.8</span>, <span style="color:#ae81ff">5.3</span>); <span style="color:#75715e">// also fine
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span> <span class="n">Point</span> <span class="nf">p1</span><span class="p">(</span><span class="mf">9.4</span><span class="p">,</span> <span class="mf">27.7</span><span class="p">);</span> <span class="c1">// fine, &#34;runs&#34; constexpr
+</span><span class="c1"></span>  <span class="c1">// ctor during compilation
+</span><span class="c1"></span>  <span class="k">constexpr</span> <span class="n">Point</span> <span class="nf">p2</span><span class="p">(</span><span class="mf">28.8</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">);</span> <span class="c1">// also fine
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 同样地，getter（xValue 和 yValue）也能是 constexpr，因为如果用一个在编译期就知道的 Point 对象调用它们（比如，一个 constexpr Point 对象），
 则成员变量 x 和 y 的值都能在编译期知道。这使得一个 constexpr 函数能调用 Point 的 getter，然后用这个函数的返回值来初始化一个 constexpr 对象。
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span>
-  Point <span style="color:#a6e22e">midpoint</span>(<span style="color:#66d9ef">const</span> Point<span style="color:#f92672">&amp;</span> p1, <span style="color:#66d9ef">const</span> Point<span style="color:#f92672">&amp;</span> p2) <span style="color:#66d9ef">noexcept</span>
-  {
-	  <span style="color:#66d9ef">return</span> { (p1.xValue() <span style="color:#f92672">+</span> p2.xValue()) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>, <span style="color:#75715e">// call constexpr
-</span><span style="color:#75715e"></span>			  (p1.yValue() <span style="color:#f92672">+</span> p2.yValue()) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span> }; <span style="color:#75715e">// member funcs
-</span><span style="color:#75715e"></span>  }
-  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> mid <span style="color:#f92672">=</span> midpoint(p1, p2); <span style="color:#75715e">// init constexpr
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// object w/result of
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// constexpr function
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span>
+  <span class="n">Point</span> <span class="nf">midpoint</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p2</span><span class="p">)</span> <span class="k">noexcept</span>
+  <span class="p">{</span>
+	  <span class="k">return</span> <span class="p">{</span> <span class="p">(</span><span class="n">p1</span><span class="p">.</span><span class="n">xValue</span><span class="p">()</span> <span class="o">+</span> <span class="n">p2</span><span class="p">.</span><span class="n">xValue</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// call constexpr
+</span><span class="c1"></span>			  <span class="p">(</span><span class="n">p1</span><span class="p">.</span><span class="n">yValue</span><span class="p">()</span> <span class="o">+</span> <span class="n">p2</span><span class="p">.</span><span class="n">yValue</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">};</span> <span class="c1">// member funcs
+</span><span class="c1"></span>  <span class="p">}</span>
+  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">midpoint</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">);</span> <span class="c1">// init constexpr
+</span><span class="c1"></span>  <span class="c1">// object w/result of
+</span><span class="c1"></span>  <span class="c1">// constexpr function
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这是很激动人心的，它意味着，虽然 mid 对象的初始化需要调用构造函数，getter 函数和一个 non-member 函数，但是它还是能在 read-only 内存中创建！
@@ -255,42 +443,83 @@ constexpr 成员函数被隐式声明为 const。第二，它们的返回值类�
 在 C++14 中，两个限制都被移除了，所以 C++14 的 Point，能把它的 setter 也声明为 constexpr：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Point</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">void</span> setX(<span style="color:#66d9ef">double</span> newX) <span style="color:#66d9ef">noexcept</span> <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>		  { x <span style="color:#f92672">=</span> newX; }
-	  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">void</span> setY(<span style="color:#66d9ef">double</span> newY) <span style="color:#66d9ef">noexcept</span> <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>		  { y <span style="color:#f92672">=</span> newY; }
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Point</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="k">constexpr</span> <span class="kt">void</span> <span class="n">setX</span><span class="p">(</span><span class="kt">double</span> <span class="n">newX</span><span class="p">)</span> <span class="k">noexcept</span> <span class="c1">// C++14
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">x</span> <span class="o">=</span> <span class="n">newX</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="k">constexpr</span> <span class="kt">void</span> <span class="n">setY</span><span class="p">(</span><span class="kt">double</span> <span class="n">newY</span><span class="p">)</span> <span class="k">noexcept</span> <span class="c1">// C++14
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">y</span> <span class="o">=</span> <span class="n">newY</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这使得我们能写出这样的函数：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#75715e">// return reflection of p with respect to the origin (C++14)
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> Point <span style="color:#a6e22e">reflection</span>(<span style="color:#66d9ef">const</span> Point<span style="color:#f92672">&amp;</span> p) <span style="color:#66d9ef">noexcept</span>
-  {
-	  Point result; <span style="color:#75715e">// create non-const Point
-</span><span style="color:#75715e"></span>	  result.setX(<span style="color:#f92672">-</span>p.xValue()); <span style="color:#75715e">// set its x and y values
-</span><span style="color:#75715e"></span>	  result.setY(<span style="color:#f92672">-</span>p.yValue());
-	  <span style="color:#66d9ef">return</span> result; <span style="color:#75715e">// return copy of it
-</span><span style="color:#75715e"></span>  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="c1">// return reflection of p with respect to the origin (C++14)
+</span><span class="c1"></span>  <span class="k">constexpr</span> <span class="n">Point</span> <span class="nf">reflection</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span> <span class="k">noexcept</span>
+  <span class="p">{</span>
+	  <span class="n">Point</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// create non-const Point
+</span><span class="c1"></span>	  <span class="n">result</span><span class="p">.</span><span class="n">setX</span><span class="p">(</span><span class="o">-</span><span class="n">p</span><span class="p">.</span><span class="n">xValue</span><span class="p">());</span> <span class="c1">// set its x and y values
+</span><span class="c1"></span>	  <span class="n">result</span><span class="p">.</span><span class="n">setY</span><span class="p">(</span><span class="o">-</span><span class="n">p</span><span class="p">.</span><span class="n">yValue</span><span class="p">());</span>
+	  <span class="k">return</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// return copy of it
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 客户代码看起来像这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">constexpr</span> Point <span style="color:#a6e22e">p1</span>(<span style="color:#ae81ff">9.4</span>, <span style="color:#ae81ff">27.7</span>); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> Point <span style="color:#a6e22e">p2</span>(<span style="color:#ae81ff">28.8</span>, <span style="color:#ae81ff">5.3</span>);
-  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> mid <span style="color:#f92672">=</span> midpoint(p1, p2);
-  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span> reflectedMid <span style="color:#f92672">=</span> <span style="color:#75715e">// reflectedMid&#39;s value is
-</span><span style="color:#75715e"></span>	  reflection(mid); <span style="color:#75715e">// (-19.1 -16.5) and known
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// during compilation
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">constexpr</span> <span class="n">Point</span> <span class="nf">p1</span><span class="p">(</span><span class="mf">9.4</span><span class="p">,</span> <span class="mf">27.7</span><span class="p">);</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">constexpr</span> <span class="n">Point</span> <span class="nf">p2</span><span class="p">(</span><span class="mf">28.8</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">);</span>
+  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">midpoint</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">);</span>
+  <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">reflectedMid</span> <span class="o">=</span> <span class="c1">// reflectedMid&#39;s value is
+</span><span class="c1"></span>	  <span class="n">reflection</span><span class="p">(</span><span class="n">mid</span><span class="p">);</span> <span class="c1">// (-19.1 -16.5) and known
+</span><span class="c1"></span>  <span class="c1">// during compilation
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 本 Item 的建议是，只要有可能就使用 constexpr，并且现在我希望你能知道这是为什么：比起 non-constexpr 对象和 non-constexpr 函数，
@@ -337,38 +566,74 @@ item 16: 让 const 成员函数做到线程安全
 这个函数不会改变多项式，所以很自然就想到把它声明为 const：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Polynomial</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">using</span> RootsType <span style="color:#f92672">=</span> <span style="color:#75715e">// data structure holding values
-</span><span style="color:#75715e"></span>		  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span>; <span style="color:#75715e">// where polynomial evals to zero
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// (see Item 9 for info on &#34;using&#34;)
-</span><span style="color:#75715e"></span>	  RootsType roots() <span style="color:#66d9ef">const</span>;
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Polynomial</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">using</span> <span class="n">RootsType</span> <span class="o">=</span> <span class="c1">// data structure holding values
+</span><span class="c1"></span>		  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// where polynomial evals to zero
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// (see Item 9 for info on &#34;using&#34;)
+</span><span class="c1"></span>	  <span class="n">RootsType</span> <span class="n">roots</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 计算多项式的根代价可能很高，所以如果不必计算的话，我们就不想计算。如果我们必须要计算，那么我们肯定不想多次计算。因此，当我们必须要计算的时候，
 我们将计算后的多项式的根缓存起来，并且让 roots 函数返回缓存的根。这里给出最基本的方法：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Polynomial</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">using</span> RootsType <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span>;
-	  RootsType <span style="color:#a6e22e">roots</span>() <span style="color:#66d9ef">const</span>
-		  {
-			  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>rootsAreValid) { <span style="color:#75715e">// if cache not valid
-</span><span style="color:#75715e"></span>				  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// compute roots,
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// store them in rootVals
-</span><span style="color:#75715e"></span>					  rootsAreValid <span style="color:#f92672">=</span> true;
-			  }
-			  <span style="color:#66d9ef">return</span> rootVals;
-		  }
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">mutable</span> <span style="color:#66d9ef">bool</span> rootsAreValid{ false }; <span style="color:#75715e">// see Item 7 for info
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">mutable</span> RootsType rootVals{}; <span style="color:#75715e">// on initializers
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Polynomial</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">using</span> <span class="n">RootsType</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+	  <span class="n">RootsType</span> <span class="nf">roots</span><span class="p">()</span> <span class="k">const</span>
+		  <span class="p">{</span>
+			  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rootsAreValid</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// if cache not valid
+</span><span class="c1"></span>				  <span class="err">…</span> <span class="c1">// compute roots,
+</span><span class="c1"></span>  <span class="c1">// store them in rootVals
+</span><span class="c1"></span>					  <span class="n">rootsAreValid</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+			  <span class="p">}</span>
+			  <span class="k">return</span> <span class="n">rootVals</span><span class="p">;</span>
+		  <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">mutable</span> <span class="kt">bool</span> <span class="n">rootsAreValid</span><span class="p">{</span> <span class="nb">false</span> <span class="p">};</span> <span class="c1">// see Item 7 for info
+</span><span class="c1"></span>	  <span class="k">mutable</span> <span class="n">RootsType</span> <span class="n">rootVals</span><span class="p">{};</span> <span class="c1">// on initializers
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 概念上来说，roots 的操作不会改变 Polynomial 对象，但是，对于它的缓存行为来说，它可能需要修改 rootVals 和 rootsAreValid。
@@ -378,11 +643,21 @@ item 16: 让 const 成员函数做到线程安全
 现在想象一下有两个线程同时调用同一个 Polynomial 对象的 roots：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  Polynomial p;
-  <span style="color:#960050;background-color:#1e0010">…</span>
-  <span style="color:#75715e">/*----- Thread 1 ----- */</span> <span style="color:#75715e">/*------- Thread 2 ------- */</span>
-  <span style="color:#66d9ef">auto</span> rootsOfP <span style="color:#f92672">=</span> p.roots(); <span style="color:#66d9ef">auto</span> valsGivingZero <span style="color:#f92672">=</span> p.roots();
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Polynomial</span> <span class="n">p</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="cm">/*----- Thread 1 ----- */</span> <span class="cm">/*------- Thread 2 ------- */</span>
+  <span class="k">auto</span> <span class="n">rootsOfP</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">roots</span><span class="p">();</span> <span class="k">auto</span> <span class="n">valsGivingZero</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">roots</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 客户代码是完全合理的，roots 是 const 成员函数，这就意味着，它表示一个读操作。在多线程中非同步地执行一个读操作是安全的。
@@ -393,24 +668,47 @@ item 16: 让 const 成员函数做到线程安全
 现在的问题是 roots 被声明为 const，但是它却不是线程安全的(修改了 multable 成员的值)。解决这个问题最简单的方式就是最常用的办法：使用一个 mutex：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Polynomial</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">using</span> RootsType <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span>;
-	  RootsType <span style="color:#a6e22e">roots</span>() <span style="color:#66d9ef">const</span>
-		  {
-			  std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> g(m); <span style="color:#75715e">// lock mutex
-</span><span style="color:#75715e"></span>			  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>rootsAreValid) { <span style="color:#75715e">// if cache not valid
-</span><span style="color:#75715e"></span>				  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// compute/store roots
-</span><span style="color:#75715e"></span>					  rootsAreValid <span style="color:#f92672">=</span> true;
-			  }
-			  <span style="color:#66d9ef">return</span> rootVals;
-		  } <span style="color:#75715e">// unlock mutex
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">mutable</span> std<span style="color:#f92672">::</span>mutex m;
-	  <span style="color:#66d9ef">mutable</span> <span style="color:#66d9ef">bool</span> rootsAreValid{ false };
-	  <span style="color:#66d9ef">mutable</span> RootsType rootVals{};
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Polynomial</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">using</span> <span class="n">RootsType</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+	  <span class="n">RootsType</span> <span class="nf">roots</span><span class="p">()</span> <span class="k">const</span>
+		  <span class="p">{</span>
+			  <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">g</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="c1">// lock mutex
+</span><span class="c1"></span>			  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rootsAreValid</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// if cache not valid
+</span><span class="c1"></span>				  <span class="err">…</span> <span class="c1">// compute/store roots
+</span><span class="c1"></span>					  <span class="n">rootsAreValid</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+			  <span class="p">}</span>
+			  <span class="k">return</span> <span class="n">rootVals</span><span class="p">;</span>
+		  <span class="p">}</span> <span class="c1">// unlock mutex
+</span><span class="c1"></span>  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m</span><span class="p">;</span>
+	  <span class="k">mutable</span> <span class="kt">bool</span> <span class="n">rootsAreValid</span><span class="p">{</span> <span class="nb">false</span> <span class="p">};</span>
+	  <span class="k">mutable</span> <span class="n">RootsType</span> <span class="n">rootVals</span><span class="p">{};</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 std::mutex m 被声明为 mutable，因为对它加锁和解锁调用的都不是 const 成员函数，在 roots（一个 const 成员函数）中，如果不这么声明，
@@ -426,19 +724,37 @@ m 将被视为 const 对象。
 （事实上是不是更廉价，依赖于你跑代码的硬件和标准库中 mutex 的实现）这里给出怎么使用 std::atomic 来计算调用次数的例子：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Point</span> { <span style="color:#75715e">// 2D point
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">double</span> distanceFromOrigin() <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">noexcept</span> <span style="color:#75715e">// see Item 14
-</span><span style="color:#75715e"></span>		  { <span style="color:#75715e">// for noexcept
-</span><span style="color:#75715e"></span>			  <span style="color:#f92672">++</span>callCount; <span style="color:#75715e">// atomic increment
-</span><span style="color:#75715e"></span>			  <span style="color:#66d9ef">return</span> std<span style="color:#f92672">::</span>sqrt((x <span style="color:#f92672">*</span> x) <span style="color:#f92672">+</span> (y <span style="color:#f92672">*</span> y));
-		  }
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">mutable</span> std<span style="color:#f92672">::</span>atomic<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">unsigned</span><span style="color:#f92672">&gt;</span> callCount{ <span style="color:#ae81ff">0</span> };
-	  <span style="color:#66d9ef">double</span> x, y;
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Point</span> <span class="p">{</span> <span class="c1">// 2D point
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">double</span> <span class="n">distanceFromOrigin</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="c1">// see Item 14
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="c1">// for noexcept
+</span><span class="c1"></span>			  <span class="o">++</span><span class="n">callCount</span><span class="p">;</span> <span class="c1">// atomic increment
+</span><span class="c1"></span>			  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+		  <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span> <span class="n">callCount</span><span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	  <span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 和 std::mutex 相似，std::atomic 也是 move-only 类型，所以由于 callCount 的存在，Point 也是 move-only 的。
@@ -448,25 +764,49 @@ m 将被视为 const 对象。
 缓存一个“计算昂贵”的 int，你可能会尝试使用一对 std::atomic 变量来代替一个 mutex：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">int</span> magicValue() <span style="color:#66d9ef">const</span>
-		  {
-			  <span style="color:#66d9ef">if</span> (cacheValid) <span style="color:#66d9ef">return</span> cachedValue;
-			  <span style="color:#66d9ef">else</span> {
-				  <span style="color:#66d9ef">auto</span> val1 <span style="color:#f92672">=</span> expensiveComputation1();
-				  <span style="color:#66d9ef">auto</span> val2 <span style="color:#f92672">=</span> expensiveComputation2();
-				  cachedValue <span style="color:#f92672">=</span> val1 <span style="color:#f92672">+</span> val2; <span style="color:#75715e">// uh oh, part 1
-</span><span style="color:#75715e"></span>				  cacheValid <span style="color:#f92672">=</span> true; <span style="color:#75715e">// uh oh, part 2
-</span><span style="color:#75715e"></span>				  <span style="color:#66d9ef">return</span> cachedValue;
-			  }
-		  }
-  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">mutable</span> std<span style="color:#f92672">::</span>atomic<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span> cacheValid{ false };
-	  <span style="color:#66d9ef">mutable</span> std<span style="color:#f92672">::</span>atomic<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> cachedValue;
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">int</span> <span class="n">magicValue</span><span class="p">()</span> <span class="k">const</span>
+		  <span class="p">{</span>
+			  <span class="k">if</span> <span class="p">(</span><span class="n">cacheValid</span><span class="p">)</span> <span class="k">return</span> <span class="n">cachedValue</span><span class="p">;</span>
+			  <span class="k">else</span> <span class="p">{</span>
+				  <span class="k">auto</span> <span class="n">val1</span> <span class="o">=</span> <span class="n">expensiveComputation1</span><span class="p">();</span>
+				  <span class="k">auto</span> <span class="n">val2</span> <span class="o">=</span> <span class="n">expensiveComputation2</span><span class="p">();</span>
+				  <span class="n">cachedValue</span> <span class="o">=</span> <span class="n">val1</span> <span class="o">+</span> <span class="n">val2</span><span class="p">;</span> <span class="c1">// uh oh, part 1
+</span><span class="c1"></span>				  <span class="n">cacheValid</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// uh oh, part 2
+</span><span class="c1"></span>				  <span class="k">return</span> <span class="n">cachedValue</span><span class="p">;</span>
+			  <span class="p">}</span>
+		  <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">cacheValid</span><span class="p">{</span> <span class="nb">false</span> <span class="p">};</span>
+	  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">cachedValue</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这能工作，但是有时候它会工作得很辛苦，考虑一下：
@@ -490,22 +830,43 @@ m 将被视为 const 对象。
 这样的行为和我们使用缓存的目的是相违背的。换一下 cachedValue 和 CacheValid 赋值的顺序可以消除这个问题（不断进行重复计算），但是错的更加离谱了：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">int</span> magicValue() <span style="color:#66d9ef">const</span>
-		  {
-			  <span style="color:#66d9ef">if</span> (cacheValid) <span style="color:#66d9ef">return</span> cachedValue;
-			  <span style="color:#66d9ef">else</span> {
-				  <span style="color:#66d9ef">auto</span> val1 <span style="color:#f92672">=</span> expensiveComputation1();
-				  <span style="color:#66d9ef">auto</span> val2 <span style="color:#f92672">=</span> expensiveComputation2();
-				  cacheValid <span style="color:#f92672">=</span> true; <span style="color:#75715e">// uh oh, part 1
-</span><span style="color:#75715e"></span>				  <span style="color:#66d9ef">return</span> cachedValue <span style="color:#f92672">=</span> val1 <span style="color:#f92672">+</span> val2; <span style="color:#75715e">// uh oh, part 2
-</span><span style="color:#75715e"></span>			  }
-		  }
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">int</span> <span class="n">magicValue</span><span class="p">()</span> <span class="k">const</span>
+		  <span class="p">{</span>
+			  <span class="k">if</span> <span class="p">(</span><span class="n">cacheValid</span><span class="p">)</span> <span class="k">return</span> <span class="n">cachedValue</span><span class="p">;</span>
+			  <span class="k">else</span> <span class="p">{</span>
+				  <span class="k">auto</span> <span class="n">val1</span> <span class="o">=</span> <span class="n">expensiveComputation1</span><span class="p">();</span>
+				  <span class="k">auto</span> <span class="n">val2</span> <span class="o">=</span> <span class="n">expensiveComputation2</span><span class="p">();</span>
+				  <span class="n">cacheValid</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// uh oh, part 1
+</span><span class="c1"></span>				  <span class="k">return</span> <span class="n">cachedValue</span> <span class="o">=</span> <span class="n">val1</span> <span class="o">+</span> <span class="n">val2</span><span class="p">;</span> <span class="c1">// uh oh, part 2
+</span><span class="c1"></span>			  <span class="p">}</span>
+		  <span class="p">}</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 想象一下 cacheValid 是 false 的情况：
@@ -530,28 +891,55 @@ m 将被视为 const 对象。
 但是一旦你需要处理两个或更多的变量或内存单元，并把它们视为一个整体，那么你就应该使用 mutex。对于 Widget::magicValue，看起来应该是这样的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">int</span> magicValue() <span style="color:#66d9ef">const</span>
-		  {
-			  std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> guard(m); <span style="color:#75715e">// lock m
-</span><span style="color:#75715e"></span>			  <span style="color:#66d9ef">if</span> (cacheValid) <span style="color:#66d9ef">return</span> cachedValue;
-			  <span style="color:#66d9ef">else</span> {
-				  <span style="color:#66d9ef">auto</span> val1 <span style="color:#f92672">=</span> expensiveComputation1();
-				  <span style="color:#66d9ef">auto</span> val2 <span style="color:#f92672">=</span> expensiveComputation2();
-				  cachedValue <span style="color:#f92672">=</span> val1 <span style="color:#f92672">+</span> val2;
-				  cacheValid <span style="color:#f92672">=</span> true;
-				  <span style="color:#66d9ef">return</span> cachedValue;
-			  }
-		  } <span style="color:#75715e">// unlock m
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">mutable</span> std<span style="color:#f92672">::</span>mutex m;
-	  <span style="color:#66d9ef">mutable</span> <span style="color:#66d9ef">int</span> cachedValue; <span style="color:#75715e">// no longer atomic
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">mutable</span> <span style="color:#66d9ef">bool</span> cacheValid{ false }; <span style="color:#75715e">// no longer atomic
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">int</span> <span class="n">magicValue</span><span class="p">()</span> <span class="k">const</span>
+		  <span class="p">{</span>
+			  <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">guard</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="c1">// lock m
+</span><span class="c1"></span>			  <span class="k">if</span> <span class="p">(</span><span class="n">cacheValid</span><span class="p">)</span> <span class="k">return</span> <span class="n">cachedValue</span><span class="p">;</span>
+			  <span class="k">else</span> <span class="p">{</span>
+				  <span class="k">auto</span> <span class="n">val1</span> <span class="o">=</span> <span class="n">expensiveComputation1</span><span class="p">();</span>
+				  <span class="k">auto</span> <span class="n">val2</span> <span class="o">=</span> <span class="n">expensiveComputation2</span><span class="p">();</span>
+				  <span class="n">cachedValue</span> <span class="o">=</span> <span class="n">val1</span> <span class="o">+</span> <span class="n">val2</span><span class="p">;</span>
+				  <span class="n">cacheValid</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+				  <span class="k">return</span> <span class="n">cachedValue</span><span class="p">;</span>
+			  <span class="p">}</span>
+		  <span class="p">}</span> <span class="c1">// unlock m
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m</span><span class="p">;</span>
+	  <span class="k">mutable</span> <span class="kt">int</span> <span class="n">cachedValue</span><span class="p">;</span> <span class="c1">// no longer atomic
+</span><span class="c1"></span>	  <span class="k">mutable</span> <span class="kt">bool</span> <span class="n">cacheValid</span><span class="p">{</span> <span class="nb">false</span> <span class="p">};</span> <span class="c1">// no longer atomic
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 现在，这个 Item 是基于“多线程可能同时执行一个对象的 const 成员函数”的假设。如果你要写一个 const 成员函数，
@@ -592,14 +980,27 @@ C++的官方说法中，特殊成员函数(<strong>special member functions</str
 在 C++11 中，特殊成员函数“俱乐部”有两个新成员：move 构造函数和 move operator=。这里给出它们的函数签名：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  Widget(Widget<span style="color:#f92672">&amp;&amp;</span> rhs); <span style="color:#75715e">// move constructor
-</span><span style="color:#75715e"></span>	  Widget<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(Widget<span style="color:#f92672">&amp;&amp;</span> rhs); <span style="color:#75715e">// move assignment operator
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// move constructor
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// move assignment operator
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 控制它们的生成和行为的规则和它们的“copying 兄弟”很像。move 操作只有在被需要的时候生成，并且如果它们被生成出来，
@@ -675,17 +1076,33 @@ copy 操作可能不应该被自动生成，因为它们可能将作出一些不
 如果编译器生成的函数提供的行为是正确的（也就是，如果 memberwise copy 就是你想要的），你的工作就很简单了，因为 C++11 的“=default”让你能明确地声明：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#f92672">~</span>Widget(); <span style="color:#75715e">// user-declared dtor
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// default copy ctor
-</span><span style="color:#75715e"></span>	  Widget(<span style="color:#66d9ef">const</span> Widget<span style="color:#f92672">&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>; <span style="color:#75715e">// behavior is OK
-</span><span style="color:#75715e"></span>	  Widget<span style="color:#f92672">&amp;</span> <span style="color:#75715e">// default copy assign
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> Widget<span style="color:#f92672">&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>; <span style="color:#75715e">// behavior is OK
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="o">~</span><span class="n">Widget</span><span class="p">();</span> <span class="c1">// user-declared dtor
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// default copy ctor
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// behavior is OK
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="c1">// default copy assign
+</span><span class="c1"></span>	  <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// behavior is OK
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这种方法在多态基类（也就是，定义“派生类对象需要被调用的”接口的类）中常常是有用的。多态基类通常拥有 virtual 析构函数，因为如果它们没有，一些操作
@@ -696,16 +1113,31 @@ copy 操作可能不应该被自动生成，因为它们可能将作出一些不
 新一轮的“=deafult”能做这样的工作:
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Base</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Base() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>; <span style="color:#75715e">// make dtor virtual
-</span><span style="color:#75715e"></span>	  Base(Base<span style="color:#f92672">&amp;&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>; <span style="color:#75715e">// support moving
-</span><span style="color:#75715e"></span>	  Base<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(Base<span style="color:#f92672">&amp;&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
-	  Base(<span style="color:#66d9ef">const</span> Base<span style="color:#f92672">&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>; <span style="color:#75715e">// support copying
-</span><span style="color:#75715e"></span>	  Base<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> Base<span style="color:#f92672">&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="o">~</span><span class="n">Base</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// make dtor virtual
+</span><span class="c1"></span>	  <span class="n">Base</span><span class="p">(</span><span class="n">Base</span><span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// support moving
+</span><span class="c1"></span>	  <span class="n">Base</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Base</span><span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+	  <span class="n">Base</span><span class="p">(</span><span class="k">const</span> <span class="n">Base</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// support copying
+</span><span class="c1"></span>	  <span class="n">Base</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Base</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 事实上，即使你有一个类，编译器愿意为这个类生成 copy 和 move 操作，并且生成的函数的行为是你想要的，
@@ -713,33 +1145,64 @@ copy 操作可能不应该被自动生成，因为它们可能将作出一些不
 避开一些很微妙的错误。举个例子，假设你有一个类代表一个 string 表格，也就是一个数据结构，它允许用一个整形 ID 来快速查阅 string：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">StringTable</span>{
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  StringTable() {}
-	  ...                     <span style="color:#75715e">//插入，删除，查找函数等等，但是没有
-</span><span style="color:#75715e"></span>	  <span style="color:#75715e">//copy/move/析构函数
-</span><span style="color:#75715e"></span>
-	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  std<span style="color:#f92672">::</span>map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> values;
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">StringTable</span><span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">StringTable</span><span class="p">()</span> <span class="p">{}</span>
+	  <span class="p">...</span>                     <span class="c1">//插入，删除，查找函数等等，但是没有
+</span><span class="c1"></span>	  <span class="c1">//copy/move/析构函数
+</span><span class="c1"></span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">values</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 假设这个类没有声明 copy 操作，move 操作，以及析构函数，这样编译器就会自动生成这些函数如果它们被使用了。这样非常方便。
 但是假设过了一段时间后，我们觉得记录默认构造函数以及析构函数会很有用，并且添加这样的功能也很简单：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">StringTable</span> {
-  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-	  StringTable()
-		  { makeLogEntry(<span style="color:#e6db74">&#34;Creating StringTable object&#34;</span>); } <span style="color:#75715e">// added
-</span><span style="color:#75715e"></span>	  <span style="color:#f92672">~</span>StringTable() <span style="color:#75715e">// also
-</span><span style="color:#75715e"></span>		  { makeLogEntry(<span style="color:#e6db74">&#34;Destroying StringTable object&#34;</span>); } <span style="color:#75715e">// added
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// other funcs as before
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-	  std<span style="color:#f92672">::</span>map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> values; <span style="color:#75715e">// as before
-</span><span style="color:#75715e"></span>  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">StringTable</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">StringTable</span><span class="p">()</span>
+		  <span class="p">{</span> <span class="n">makeLogEntry</span><span class="p">(</span><span class="s">&#34;Creating StringTable object&#34;</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// added
+</span><span class="c1"></span>	  <span class="o">~</span><span class="n">StringTable</span><span class="p">()</span> <span class="c1">// also
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">makeLogEntry</span><span class="p">(</span><span class="s">&#34;Destroying StringTable object&#34;</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// added
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// other funcs as before
+</span><span class="c1"></span>	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">values</span><span class="p">;</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这看起来很合理，但是声明一个析构函数有一个重大的潜在副作用：它阻止 move 操作被生成。但是 copy 操作的生成不受影响。
@@ -783,15 +1246,29 @@ move 构造函数和 move operator=：每个都对 non-static 成员变量执行
 注意关于成员函数模板的存在，这里没有规则规定它会阻止编译器生成特殊成员函数。这意味着如果 Widget 看起来像这样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
-	  <span style="color:#960050;background-color:#1e0010">…</span>
-	  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// construct Widget
-</span><span style="color:#75715e"></span>	  Widget(<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> rhs); <span style="color:#75715e">// from anything
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// assign Widget
-</span><span style="color:#75715e"></span>	  Widget<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> rhs); <span style="color:#75715e">// from anything
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-  };
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+	  <span class="err">…</span>
+	  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// construct Widget
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// from anything
+</span><span class="c1"></span>	  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// assign Widget
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// from anything
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 即使这些 template 能实例化出拷贝构造函数和拷贝 operator=的函数签名（就是 T 是 Widget 的情况），编译器仍然会为 Widget 生成 copy 和 move 操作
@@ -831,231 +1308,113 @@ Item 26 说明了这是有很重要的原因的。
 翻译：<a href="http://www.cnblogs.com/boydfd/">http://www.cnblogs.com/boydfd/</a>
 </p>
 
-                        </div>
+    </div>
 
-                        
-
-
-                        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2017-12-27
         
-        <li><a href="/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">C&#43;&#43; Ep01:模板类型推导</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  
 </div>
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://hardy5012.github.io/tags/c&#43;&#43;">C&#43;&#43;</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
-    
-
-    
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
-    
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/c&#43;&#43;_ep06_smart_pointers_1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep06:Smart Pointers(1)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">
+            <span class="next-text nav-default">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
     window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
+      showProcessingMessages: false,
+      messageStyle: 'none'
     };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
 
 
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>logistic on Learning Hardy</title>
+    <title>logistic on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/logistic/</link>
-    <description>Recent content in logistic on Learning Hardy</description>
+    <description>Recent content in logistic on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Thu, 27 Apr 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/logistic/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
-      <description> Decision Boundary   决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集属性”，这是因为能作出“划清”类间界限的只有$h_θ(x)$ ，而训练集只是用来训练和调节参数的。 Hypothesis   在逻辑回归中，定义预测函数为: $$h_θ (x) = g(z)$$ 其中，$z=θ^Tx$ 是分类边界，且 $g(z)=\frac{1}{1+e-z}$ Cost Function   \begin{gather*} &amp;amp; J(θ) = \dfrac{1}{m} ∑i=1^m \mathrm{Cost}(h_θ(x(i)),y(i)) ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(h_θ(x)) \; &amp;amp; \text{if y = 1} ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) = -log(1-h_θ(x)) \; &amp;amp; \text{if y = 0} \end{gather*}  \begin{gather*} &amp;amp; \mathrm{Cost}(h_θ(x),y) = 0 \text{ if } h_θ(x) = y ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 0 \; \mathrm{and} \; h_θ(x) → 1 ≠wline &amp;amp; \mathrm{Cost}(h_θ(x),y) → ∞ \text{ if } y = 1 \; \mathrm{and} \; h_θ(x) → 0 ≠wline \end{gather*} Simplified Cost Function   $$\mathrm{Cost}(h_θ(x),y) = - y \; log(h_θ(x)) - (1 - y) log(1 - h_θ(x))$$ $$J(θ) = - \frac{1}{m} \displaystyle ∑i=1^m [y(i)log (h_θ (x(i))) + (1 - y(i))log (1 - h_θ(x(i)))]$$ \begin{gather*} &amp;amp; h = g(Xθ)≠wline &amp;amp; J(θ) = \frac{1}{m} ⋅ ≤ft(-yTlog(h)-(1-y)Tlog(1-h)\right) \end{gather*} Gradient Descent   \begin{gather*}&amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - α \dfrac{∂}{∂ θ_j}J(θ) ≠wline &amp;amp; \rbrace\end{gather*} \begin{gather*} &amp;amp; Repeat \; \lbrace ≠wline &amp;amp; \; θ_j := θ_j - \frac{α}{m} ∑i=1^m (h_θ(x(i)) - y(i)) x_j(i) ≠wline &amp;amp; \rbrace \end{gather*} A vectorized implementation is: $$θ := θ - \frac{α}{m} XT (g(X θ ) - \vec{y})$$ Multi-class classification   多分类问题通常采用 One-vs-All ，亦称 One-vs-the Rest 方法来实现多分类，其将多分类问题转化为了多次二分类问题 overfitting   过拟合：如果太多的特征时，预测函数能拟合训练集，即代价函数的值非常小，但无法正确预测新的新的样本。 解决方案：    减少特征    正规化   </description>
+      <description>Decision Boundary 决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集</description>
     </item>
     
   </channel>

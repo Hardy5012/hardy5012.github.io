@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>makefile on Learning Hardy</title>
+    <title>makefile on Leaning Hardy</title>
     <link>https://hardy5012.github.io/tags/makefile/</link>
-    <description>Recent content in makefile on Learning Hardy</description>
+    <description>Recent content in makefile on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-cn</language>
     <lastBuildDate>Thu, 02 Mar 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/makefile/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/post/2017-04-25-makefile/</guid>
-      <description> undefined reference 问题  多个库文件连接顺序问题   在链接命令中给出所依赖的库时，需要注意库之间的依赖顺序，依赖其他库的库一定要放到被依赖库的前面，这样才能真正避免 undefined reference 的错误  {{{more}}} </description>
+      <description>undefined reference 问题 多个库文件连接顺序问题 在链接命令中给出所依赖的库时，需要注意库之间的依赖顺序，依赖其他库的库一定要放到被依赖库的前面，这样才能真正避</description>
     </item>
     
   </channel>

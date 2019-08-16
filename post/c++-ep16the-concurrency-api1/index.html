@@ -1,96 +1,162 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep16:The Concurrency API(1) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.57.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C&#43;&#43; Ep16:The Concurrency API(1) | Learning Hardy</title>
-    <meta property="og:title" content="C&#43;&#43; Ep16:The Concurrency API(1) - Learning Hardy">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content="2018-01-15T00:00:00&#43;08:00">
-        
-        
-    <meta property="article:modified_time" content="2018-01-15T00:00:00&#43;08:00">
-        
-    <meta name="Keywords" content="">
-    <meta name="description" content="C&#43;&#43; Ep16:The Concurrency API(1)">
-        
-    <meta name="author" content="">
-    <meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep16:The Concurrency API(1)" />
+<meta property="og:description" content="Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/" />
+<meta property="article:published_time" content="2018-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-15T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep16:The Concurrency API(1)">
+<meta itemprop="description" content="Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr">
+
+
+<meta itemprop="datePublished" content="2018-01-15T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-15T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5236">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep16:The Concurrency API(1)"/>
+<meta name="twitter:description" content="Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-<header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://hardy5012.github.io/">
-                        Learning Hardy
-                    </a>
-                
-                
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep16:The Concurrency API(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-15 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://hardy5012.github.io/">首页</a>
-                    
-                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        
+      </div>
+    </header>
 
-
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">C&#43;&#43; Ep16:The Concurrency API(1)</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2018年1月15日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
-                            
-                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
-                            
-                        </div>
-                        
-                        
-                        
-                        <div class="post-content">
-                            
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 35:优先考虑基于任务编程，而不是线程编程</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">Item 36:如果异步执行是必需的，指定 std::launch::async 策略</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
 <h1 id="headline-1">
 Item 35:优先考虑基于任务编程，而不是线程编程
 </h1>
@@ -99,16 +165,31 @@ Item 35:优先考虑基于任务编程，而不是线程编程
 用它来运行 doAsyncWork，因此这是基于线程（ <strong>thread-based</strong> ）的方法：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">doAsyncWork</span>();
-  std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t(doAsyncWork);
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="nf">doAsyncWork</span><span class="p">();</span>
+  <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t</span><span class="p">(</span><span class="n">doAsyncWork</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 或者你把 doAsynWork 传递给 std::async，一个叫做基于任务（ <strong>task-based</strong> ）的策略：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(doAsyncWork); <span style="color:#75715e">// &#34;fut&#34; for &#34;future&#34;
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">doAsyncWork</span><span class="p">);</span> <span class="c1">// &#34;fut&#34; for &#34;future&#34;
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 在这种调用中，传递给 std::async 的函数对象被认为是一个任务（task）。
@@ -146,16 +227,31 @@ Item 35:优先考虑基于任务编程，而不是线程编程
 例如，就算你把 doAsyncWork 声明为 noexcept，
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">doAsyncWork</span>() <span style="color:#66d9ef">noexcept</span>; <span style="color:#75715e">// see Item 14 for noexcept
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="nf">doAsyncWork</span><span class="p">()</span> <span class="k">noexcept</span><span class="p">;</span> <span class="c1">// see Item 14 for noexcept
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这语句还是可能会抛出异常：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t(doAsyncWork); <span style="color:#75715e">// throws if no more
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// threads are available
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t</span><span class="p">(</span><span class="n">doAsyncWork</span><span class="p">);</span> <span class="c1">// throws if no more
+</span><span class="c1"></span>  <span class="c1">// threads are available
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 写得好的软件必须想个办法解决这个可能性，但如何解决呢？一个办法是在当前线程运行 doAsyncWork，但这会导致负载不均衡的问题，
@@ -178,10 +274,19 @@ oversubscription（保持硬件繁忙工作），也不能保证在另一种机�
 如果你把这些问题扔给某个人去做，你的生活就很惬意啦，然后使用 std::async 就能显式地做这件事：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(doAsyncWork); <span style="color:#75715e">// onus of thread mgmt is
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// on implementer of
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// the Standard Library
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">doAsyncWork</span><span class="p">);</span> <span class="c1">// onus of thread mgmt is
+</span><span class="c1"></span>  <span class="c1">// on implementer of
+</span><span class="c1"></span>  <span class="c1">// the Standard Library
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这个调用把线程管理的责任转交给 C++标准库的实现者。例如，得到线程超标的异常的可能性绝大幅度减少，因为这个调用可能从不产生这个异常。
@@ -274,13 +379,25 @@ Item 36:如果异步执行是必需的，指定 std::launch::async 策略
 可能很奇怪，std::async 的默认发射策略——它的默认策略是你不能显式指定的——不是两者其中的一种，相反，是两者进行或运算。下面两个函数完全是相同的意思：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(f); <span style="color:#75715e">// run f using
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// default launch
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// policy
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> fut2 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async <span style="color:#f92672">|</span> <span style="color:#75715e">// run f either
-</span><span style="color:#75715e"></span>						 std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>deferred, <span style="color:#75715e">// async or
-</span><span style="color:#75715e"></span>						 f); <span style="color:#75715e">// deferred
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut1</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// run f using
+</span><span class="c1"></span>  <span class="c1">// default launch
+</span><span class="c1"></span>  <span class="c1">// policy
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">fut2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">async</span> <span class="o">|</span> <span class="c1">// run f either
+</span><span class="c1"></span>						 <span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">deferred</span><span class="p">,</span> <span class="c1">// async or
+</span><span class="c1"></span>						 <span class="n">f</span><span class="p">);</span> <span class="c1">// deferred
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 默认的发射策略允许异步或同步执行函数 f，就如条款 35 指出，这个灵活性让 std::async 与标准库的线程管理组件一起承担线程创建和销毁、避免过载、
@@ -290,8 +407,15 @@ Item 36:如果异步执行是必需的，指定 std::launch::async 策略
 但用 std::async 的默认发射策略会有一些有趣的含义。这语句给定一个线程 t 执行 f，
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(f); <span style="color:#75715e">// run f using default launch policy
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// run f using default launch policy
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <ul>
 <li>
@@ -314,31 +438,60 @@ Item 36:如果异步执行是必需的，指定 std::launch::async 策略
 默认发射策略的调度灵活性经常会混淆使用 <strong>thread_local</strong> 变量，这意味着如果 f 写或读这种线程本地存储(Thread Local Storage，TLS)，预知取到哪个线程的本地变量是不可能的：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(f); <span style="color:#75715e">// TLS for f possibly for
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// independent thread, but
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// possibly for thread
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// invoking get or wait on fut
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// TLS for f possibly for
+</span><span class="c1"></span>  <span class="c1">// independent thread, but
+</span><span class="c1"></span>  <span class="c1">// possibly for thread
+</span><span class="c1"></span>  <span class="c1">// invoking get or wait on fut
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 它也影响了基于 wait 循环中的超时情况，因为对一个推迟（策略为 deferred）的任务（看条款 35）调用 <strong>wait_for</strong> 或者 <strong>wait_until</strong> 
 会返回值 <strong>std::launch::deferred</strong> 。这意味着下面的循环，看起来最终会停止，但是，实际上可能会一直运行：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std<span style="color:#f92672">::</span>literals; <span style="color:#75715e">// for C++14 duration
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// suffixes; see Item 34
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">f</span>() <span style="color:#75715e">// f sleeps for 1 second,
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// then returns
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>this_thread<span style="color:#f92672">::</span>sleep_for(<span style="color:#ae81ff">1</span>s);
-  }
-  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(f); <span style="color:#75715e">// run f asynchronously
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (conceptually)
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (fut.wait_for(<span style="color:#ae81ff">100</span>ms) <span style="color:#f92672">!=</span> <span style="color:#75715e">// loop until f has
-</span><span style="color:#75715e"></span>		 std<span style="color:#f92672">::</span>future_status<span style="color:#f92672">::</span>ready) <span style="color:#75715e">// finished running...
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// which may never happen!
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
-		  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">literals</span><span class="p">;</span> <span class="c1">// for C++14 duration
+</span><span class="c1"></span>  <span class="c1">// suffixes; see Item 34
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">f</span><span class="p">()</span> <span class="c1">// f sleeps for 1 second,
+</span><span class="c1"></span>  <span class="p">{</span> <span class="c1">// then returns
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">1</span><span class="n">s</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// run f asynchronously
+</span><span class="c1"></span>  <span class="c1">// (conceptually)
+</span><span class="c1"></span>  <span class="k">while</span> <span class="p">(</span><span class="n">fut</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">)</span> <span class="o">!=</span> <span class="c1">// loop until f has
+</span><span class="c1"></span>		 <span class="n">std</span><span class="o">::</span><span class="n">future_status</span><span class="o">::</span><span class="n">ready</span><span class="p">)</span> <span class="c1">// finished running...
+</span><span class="c1"></span>  <span class="p">{</span> <span class="c1">// which may never happen!
+</span><span class="c1"></span>	  <span class="err">…</span>
+		  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 如果 f 与调用 std::async 的线程并发执行（即，使用 std::launch::async 发射策略），这里就没有问题（假设 f 能结束执行，不会一直死循环）。
@@ -355,22 +508,43 @@ Item 36:如果异步执行是必需的，指定 std::launch::async 策略
 你不用等待任何事情，你只是要看看返回值是否为 std::future_status::deferred，所以请相信这迂回的话语和用 0 来调用  <strong>wait_for</strong> ：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(f); <span style="color:#75715e">// as above
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (fut.wait_for(<span style="color:#ae81ff">0</span>s) <span style="color:#f92672">==</span> <span style="color:#75715e">// if task is
-</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>future_status<span style="color:#f92672">::</span>deferred) <span style="color:#75715e">// deferred...
-</span><span style="color:#75715e"></span>  {
-  <span style="color:#75715e">// ...use wait or get on fut
-</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// to call f synchronously
-</span><span style="color:#75715e"></span>		  } <span style="color:#66d9ef">else</span> { <span style="color:#75715e">// task isn&#39;t deferred
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">while</span> (fut.wait_for(<span style="color:#ae81ff">100</span>ms) <span style="color:#f92672">!=</span> <span style="color:#75715e">// infinite loop not
-</span><span style="color:#75715e"></span>			 std<span style="color:#f92672">::</span>future_status<span style="color:#f92672">::</span>ready) { <span style="color:#75715e">// possible (assuming
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// f finishes)
-</span><span style="color:#75715e"></span>		  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// task is neither deferred nor ready,
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// so do concurrent work until it&#39;s ready
-</span><span style="color:#75715e"></span>			  }
-	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// fut is ready
-</span><span style="color:#75715e"></span>		  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">fut</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="mi">0</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="c1">// if task is
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">future_status</span><span class="o">::</span><span class="n">deferred</span><span class="p">)</span> <span class="c1">// deferred...
+</span><span class="c1"></span>  <span class="p">{</span>
+  <span class="c1">// ...use wait or get on fut
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// to call f synchronously
+</span><span class="c1"></span>		  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// task isn&#39;t deferred
+</span><span class="c1"></span>	  <span class="k">while</span> <span class="p">(</span><span class="n">fut</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">)</span> <span class="o">!=</span> <span class="c1">// infinite loop not
+</span><span class="c1"></span>			 <span class="n">std</span><span class="o">::</span><span class="n">future_status</span><span class="o">::</span><span class="n">ready</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// possible (assuming
+</span><span class="c1"></span>  <span class="c1">// f finishes)
+</span><span class="c1"></span>		  <span class="err">…</span> <span class="c1">// task is neither deferred nor ready,
+</span><span class="c1"></span>  <span class="c1">// so do concurrent work until it&#39;s ready
+</span><span class="c1"></span>			  <span class="p">}</span>
+	  <span class="err">…</span> <span class="c1">// fut is ready
+</span><span class="c1"></span>		  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 考虑多种因素的结论是，只要满足了下面的条件，以默认发射策略对任务使用 std::async 能正常工作：
@@ -401,25 +575,48 @@ Item 36:如果异步执行是必需的，指定 std::launch::async 策略
 如果其中一个条件没有满足，你很可能是想要确保任务能异步执行。而那样做的方法是，当你调用 std::async 时，把 std::launch::async 作为第一个参数传递给它：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, f); <span style="color:#75715e">// launch f
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// asynchronously
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">async</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span> <span class="c1">// launch f
+</span><span class="c1"></span>  <span class="c1">// asynchronously
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 事实上， 如果有一个函数的行为像 std::async 那样，但它会自动使用 std::launch::async 作为发射策略，
 那样就是一个方便的工作啦！它很容易写出来，棒极了。这是 C++11 的版本：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> F, <span style="color:#66d9ef">typename</span>... Ts<span style="color:#f92672">&gt;</span>
-  <span style="color:#66d9ef">inline</span>
-  std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> std<span style="color:#f92672">::</span>result_of<span style="color:#f92672">&lt;</span>F(Ts...)<span style="color:#f92672">&gt;::</span>type<span style="color:#f92672">&gt;</span>
-  reallyAsync(F<span style="color:#f92672">&amp;&amp;</span> f, Ts<span style="color:#f92672">&amp;&amp;</span>... params) <span style="color:#75715e">// return future
-</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// for asynchronous
-</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">return</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, <span style="color:#75715e">// call to f(params...)
-</span><span style="color:#75715e"></span>						std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span>F<span style="color:#f92672">&gt;</span>(f),
-						std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span>Ts<span style="color:#f92672">&gt;</span>(params)...);
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">F</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
+  <span class="kr">inline</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">std</span><span class="o">::</span><span class="n">result_of</span><span class="o">&lt;</span><span class="n">F</span><span class="p">(</span><span class="n">Ts</span><span class="p">...)</span><span class="o">&gt;::</span><span class="n">type</span><span class="o">&gt;</span>
+  <span class="n">reallyAsync</span><span class="p">(</span><span class="n">F</span><span class="o">&amp;&amp;</span> <span class="n">f</span><span class="p">,</span> <span class="n">Ts</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span> <span class="c1">// return future
+</span><span class="c1"></span>  <span class="p">{</span> <span class="c1">// for asynchronous
+</span><span class="c1"></span>	  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">async</span><span class="p">,</span> <span class="c1">// call to f(params...)
+</span><span class="c1"></span>						<span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+						<span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这个函数接收一个可调用对象 f 和零个或多个参数 params，并且把它们完美转发（看条款 25）给 std::async，传递 std::launch::async 作为发射策略。
@@ -430,25 +627,49 @@ type trait 可以把结果给你。
 reallyAsync 用起来就像 std::async 那样：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">auto</span> fut <span style="color:#f92672">=</span> reallyAsync(f); <span style="color:#75715e">// run f asynchronously;
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// throw if std::async
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// would throw
-</span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">fut</span> <span class="o">=</span> <span class="n">reallyAsync</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// run f asynchronously;
+</span><span class="c1"></span>  <span class="c1">// throw if std::async
+</span><span class="c1"></span>  <span class="c1">// would throw
+</span></code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 在 C++14 中，推断 reallyAsync 返回值类型的能力简化了函数声明：
 </p>
 <div class="src src-c++">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> F, <span style="color:#66d9ef">typename</span>... Ts<span style="color:#f92672">&gt;</span>
-  <span style="color:#66d9ef">inline</span>
-  <span style="color:#66d9ef">auto</span> <span style="color:#75715e">// C++14
-</span><span style="color:#75715e"></span>  reallyAsync(F<span style="color:#f92672">&amp;&amp;</span> f, Ts<span style="color:#f92672">&amp;&amp;</span>... params)
-  {
-	  <span style="color:#66d9ef">return</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async,
-						std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span>F<span style="color:#f92672">&gt;</span>(f),
-						std<span style="color:#f92672">::</span>forward<span style="color:#f92672">&lt;</span>Ts<span style="color:#f92672">&gt;</span>(params)...);
-  }
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">F</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
+  <span class="kr">inline</span>
+  <span class="k">auto</span> <span class="c1">// C++14
+</span><span class="c1"></span>  <span class="n">reallyAsync</span><span class="p">(</span><span class="n">F</span><span class="o">&amp;&amp;</span> <span class="n">f</span><span class="p">,</span> <span class="n">Ts</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">async</span><span class="p">,</span>
+						<span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+						<span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <p>
 这个版本很清楚地让你知道 reallyAsync 除了使用 std::launch::async 发射策略调用 std::async 外，没做任何东西。
@@ -481,233 +702,113 @@ std::async 的默认发射策略既允许任务异步执行，又允许任务同
 翻译：<a href="http://blog.csdn.net/big_yellow_duck/article/category/635234">http://blog.csdn.net/big_yellow_duck/article/category/635234</a>
 </p>
 
-                        </div>
+    </div>
 
-                        
-
-
-                        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-15
         
-        <li><a href="/post/c&#43;&#43;-ep15lambda-epressions2/">C&#43;&#43; Ep15:Lambda Epressions(2)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep14lambda-epressions1/">C&#43;&#43; Ep14:Lambda Epressions(1)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</a></li>
-        
-        <li><a href="/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  
 </div>
-
-
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://hardy5012.github.io/tags/c&#43;&#43;">C&#43;&#43;</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
-    
-
-    
-    
-                </div>
-            </div>
-            <div id="secondary">
-    <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
-    </li>
-    
-    <li>
-        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
-    
-    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
-    
-    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
-    
-    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
-    
-    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
-    
-    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
-    
-    <a href="https://hardy5012.github.io/tags/git/">git</a>
-    
-    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
-    
-    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
-    
-    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
-    
-    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
-    
-    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
-    
-    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
-    
-    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
-    
-    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
-    
-    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
-    
-    <a href="https://hardy5012.github.io/tags/python/">python</a>
-    
-    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
-    
-    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
-    
-    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
-    
-    <a href="https://hardy5012.github.io/tags/static/">static</a>
-    
-    <a href="https://hardy5012.github.io/tags/template/">template</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/c&#43;&#43;-ep17the-concurrency-api2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep17:The Concurrency API(2)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/c&#43;&#43;-ep15lambda-epressions2/">
+            <span class="next-text nav-default">C&#43;&#43; Ep15:Lambda Epressions(2)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
     window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
+      showProcessingMessages: false,
+      messageStyle: 'none'
     };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
 
 
 
