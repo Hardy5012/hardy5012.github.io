@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Tweaks(1) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式 有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2018/02/05/tweaks1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Tweaks(1)" />
+<meta property="og:description" content="Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式 有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2018/02/05/tweaks1/" />
+<meta property="article:published_time" content="2018-02-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-02-05T00:00:00+00:00" />
+<meta itemprop="name" content="Tweaks(1)">
+<meta itemprop="description" content="Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式 有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来">
+
+
+<meta itemprop="datePublished" content="2018-02-05T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-02-05T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5052">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tweaks(1)"/>
+<meta name="twitter:description" content="Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式 有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Tweaks(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-02-05 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Item 41:对于那些移动廉价总是被拷贝的形参使用传值方式
+</h1>
+<p>
+有些函数参数是要复制的。(在这个项目中，“复制”参数通常意味着将其用作复制或移动操作的来源。)
+例如，成员函数 addName 可能会将其参数复制到私有容器中。
+为了提高效率，这样的函数应该复制左值参数，但移动右值参数：
+</p>
+<!-- more -->
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">newName</span><span class="p">)</span> <span class="c1">// take lvalue;
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">newName</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// copy it
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;&amp;</span> <span class="n">newName</span><span class="p">)</span> <span class="c1">// take rvalue;
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="p">}</span> <span class="c1">// move it; see
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// Item 25 for use
+</span><span class="c1"></span>	  <span class="c1">// of std::move
+</span><span class="c1"></span>	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这是有效的，但是它需要编写两个基本相同的功能。
+这个功能：两个功能声明，两个功能实现，两个功能文件，两个功能维护。啊。
+</p>
+<p>
+此外，在目标代码中将会有两个功能 - 如果您担心程序的占用空间，您可能会关心这些功能。在这种情况下，两个函数都可能被内联，
+这可能会消除与两个函数的存在相关的任何膨胀问题，但是如果这些函数不是内联到处，那么在对象代码中实际上会得到两个函数。
+</p>
+<p>
+另一种方法是使 addName 成为一个通用的函数模板参考（见 item 24）：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// take lvalues
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">newName</span><span class="p">)</span> <span class="c1">// and rvalues;
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="c1">// copy lvalues,
+</span><span class="c1"></span>			  <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="c1">// move rvalues;
+</span><span class="c1"></span>		  <span class="p">}</span> <span class="c1">// see Item 25
+</span><span class="c1"></span>  <span class="c1">// for use of
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// std::forward
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这减少了你必须处理的源代码，但使用通用引用会导致其他复杂性。作为模板，addName 的实现通常必须位于头文件中。
+它可能在对象代码中产生几个函数，因为它不仅对于左值和右值实例化不同，对于 std::string 和可转换为 std::string 的类型（item 25）也有不同的实例化。
+同时，有通用引用无法传递的参数类型（item 30），如果客户端传递了不正确的参数类型，则编译器错误消息可能会令人生畏（item 27）。
+</p>
+<p>
+如果有一种方法来编写像 addName 这样的函数，那么复制左值，右值被移动，只有一个函数需要处理（在源代码和目标代码中），而避免通用引用的特质？
+碰巧，有。 你所要做的就是放弃你可能作为 C ++程序员学到的第一条规则。该规则是为了避免按值传递用户定义类型的对象。
+对于像 addName 这样的函数中的 newName 参数，传递值可能是一个完全合理的策略。
+</p>
+<p>
+在我们讨论为什么按值传递可能非常适合 newName 和 addName 之前，让我们看看它将如何实现：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">newName</span><span class="p">)</span> <span class="c1">// take lvalue or
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="p">}</span> <span class="c1">// rvalue; move it
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这个代码中唯一不明显的部分是将 <strong>std::move</strong> 应用到参数 newName。
+通常，std::move 与右值引用一起使用，但在这种情况下，我们知道这一点(1)newName 是一个完全独立的对象，无论调用者传入什么，所以更改 newName 不会影响调用者
+(2)这是 newName 的最后一个使用，所以移动它不会对函数的其他部分产生任何影响。
+</p>
+<p>
+只有一个 addName 函数的事实解释了我们如何避免代码重复，无论是在源代码和目标代码。
+我们没有使用通用引用，所以这种方法不会导致头文件膨胀，奇怪的失败情况或混淆的错误消息。 但是这个设计的效率呢？
+我们正在值传递。 这不是很贵吗？
+</p>
+<p>
+addName 将只为左值复制构造。 对于 rvalues，它将被移动构建。 在这里，看看：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">(</span><span class="s">&#34;Bart&#34;</span><span class="p">);</span>
+  <span class="n">w</span><span class="p">.</span><span class="n">addName</span><span class="p">(</span><span class="n">name</span><span class="p">);</span> <span class="c1">// call addName with lvalue
+</span><span class="c1"></span>  <span class="err">…</span>
+  <span class="n">w</span><span class="p">.</span><span class="n">addName</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;Jenne&#34;</span><span class="p">);</span> <span class="c1">// call addName with rvalue
+</span><span class="c1"></span>  <span class="c1">// (see below)
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在第一次调用 addName 时（当 name 被传递时），参数 newName 用一个左值初始化。
+在第二次调用中，newName 用 std::string（即 append 操作）调用 operator +来得到 std::string 对象进行初始化。 该对象是一个右值，newName 因此被移动构建。
+</p>
+<p>
+因此左值被复制，右值被移动，就像我们想要的那样。 整洁，嗯？
+</p>
+<p>
+它是整洁的，但有一些注意事项，你需要记住。 如果我们回顾一下我们考虑过的 addName 的三个版本，这样做会更容易：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// Approach 1:
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// overload for
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">newName</span><span class="p">)</span> <span class="c1">// lvalues and
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">newName</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// rvalues
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;&amp;</span> <span class="n">newName</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="p">}</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// Approach 2:
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// use universal
+</span><span class="c1"></span>	  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// reference
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">newName</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="p">}</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// Approach 3:
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// pass by value
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">newName</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span> <span class="p">}</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+我把前两个版本称为“by-reference methods”，因为它们都是基于引用传递参数。
+</p>
+<p>
+以下是我们所研究的两种调用场景：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">(</span><span class="s">&#34;Bart&#34;</span><span class="p">);</span>
+  <span class="n">w</span><span class="p">.</span><span class="n">addName</span><span class="p">(</span><span class="n">name</span><span class="p">);</span> <span class="c1">// pass lvalue
+</span><span class="c1"></span>  <span class="err">…</span>
+  <span class="n">w</span><span class="p">.</span><span class="n">addName</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;Jenne&#34;</span><span class="p">);</span> <span class="c1">// pass rvalue
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+现在考虑复制和移动操作的成本，为两个调用方案和我们讨论的三个 addName 实现中的每一个添加一个名称到 Widget。
+计算将很大程度上忽视编译器优化复制和移动操作的可能性，因为这样的优化是依赖于上下文和编译器的，并且在实践中不会改变分析的本质。
+</p>
+<ul>
+<li>
+<p>
+重载。无论是左值还是右值，调用者的参数都被绑定到名为 newName 的引用。就复制和移动操作而言，这没有任何成本。在左值重载中，newName 被复制到 Widget::names 中。在右值重载，它被移动。成本：一个左值拷贝，一个右值移动。
+</p>
+</li>
+<li>
+<p>
+使用通用引用。这个是无成本操作。由于使用了 std::forward，左值 std::string 参数被复制到 Widget::names 中，而右值 std::string 参数被移动。参数是 std::string 时成本与重载一样。对于非 std::string 成本会更低（见 Item 25）。
+</p>
+</li>
+<li>
+<p>
+传递值。不管传递了左值或右值，都必须构造参数 newName。如果传递左值，复制构造成本。 如果传递右值，则需移动构造成本。在函数的主体中，newName 被无条件地移入 Widget::names。因此，成本汇总是左值的一个副本加一个移动，右值的两个移动。与引用方法相比，左值和右值都有一个额外的移动操作。
+</p>
+</li>
+</ul>
+<p>
+再看看本章标题。
+</p>
+<p>
+它的措辞是有道理的。 原因有四：
+</p>
+<ol>
+<li>
+<p>
+你只应该考虑使用传值。它只需要编写一个函数。它只在目标代码中生成一个函数。它避免了与通用引用相关的问题。但是，它的成本比其它的要高，而且，正如我们下面所看到的，在某些情况下，还有一些我们还没有讨论过的费用。
+</p>
+</li>
+<li>
+<p>
+考虑只通过值传递可复制的参数。失败这个测试的参数必须是只可移动，因为如果它们不可复制，但函数总是复制，复制必须通过移动构造函数创建。回想一下，通过传递值的优点是只要写入一个函数。但对于只移动类型，不需要为左值参数提供重载，因为复制左值需要调用复制构造函数，而仅移动类型的复制构造函数被禁用。这意味着只有右值参数需要被支持，在这种情况下，“重载”解决方案只需要一个重载：一个取右值引用。
+</p>
+</li>
+</ol>
+<p>
+考虑一个具有 std::unique_ptr &lt;std::string&gt;数据成员的类以及一个 setter。std::unique_ptr 是一个移动类型，所以它的 setter 的“重载”方法由一个单一的函数组成：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">void</span> <span class="n">setPtr</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&amp;&amp;</span> <span class="n">ptr</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="n">p</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span> <span class="p">}</span>
+  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+可以这样调用它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="n">w</span><span class="p">.</span><span class="n">setPtr</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;Modern C++&#34;</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在这里，从 std::make_unique 返回的 rvalue std::unique_ptr &lt;std::string&gt;（见 Itme 21）通过右值引用传递给 setPtr，在那里它被移入数据成员 p 中。总成本只有一次移动。
+</p>
+<p>
+如果 setPtr 是通过值取其参数
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">void</span> <span class="n">setPtr</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">ptr</span><span class="p">)</span>
+		  <span class="p">{</span> <span class="n">p</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span> <span class="p">}</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+相同的调用会移动构造参数 ptr，然后将 ptr 移动到数据成员 p 中。总成本因此将是两个移动－重载方法的两倍。
+</p>
+<ol>
+<li>
+<p>
+按值传递值得考虑的只是移动便宜的参数。当移动便宜时，额外的成本可能是可以接受的，但是当它们不成功时，执行不必要的移动类似于执行不必要的复制，避免不必要的复制操作的重要性是导致 C ++ 98 关于避免值传递的规则！
+</p>
+</li>
+<li>
+<p>
+您应该考虑只传递总是被复制的参数。要明白为什么这很重要，假设在将其参数复制到 names 容器之前，addName 会检查新名称是太短还是太长。如果是，则添加 name 的请求将被忽略。按值实现可以这样写：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="kt">void</span> <span class="n">addName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">newName</span><span class="p">)</span>
+ <span class="p">{</span>
+	 <span class="k">if</span> <span class="p">((</span><span class="n">newName</span><span class="p">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">minLen</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+		 <span class="p">(</span><span class="n">newName</span><span class="p">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">maxLen</span><span class="p">))</span>
+	 <span class="p">{</span>
+		 <span class="n">names</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newName</span><span class="p">));</span>
+	 <span class="p">}</span>
+ <span class="p">}</span>
+<span class="err">…</span>
+<span class="k">private</span><span class="o">:</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+</ol>
+<p>
+即使没有添加任何名字，这个函数也会产生构造和销毁 newName 的代价。这是一个引用方法不会被要求支付。
+</p>
+<p>
+即使你正在处理一个函数执行一个可移动的可复制类型的无条件拷贝，有时候通过价值可能不合适。这是因为函数可以通过两种方式复制参数：
+通过构造（即复制构造或移动构造）和通过赋值（即复制赋值或移动赋值）。
+addName 使用构造：其参数 newName 被传递给 vector::push_back，并且在该函数中，newName 被复制到在 std::vector 结尾创建的新元素中。
+对于使用构造来复制参数的函数，我们之前看到的分析是完整的：使用按值传递会导致左值和右值参数的额外移动的代价。
+</p>
+<p>
+当使用赋值复制参数时，情况会更复杂。假设，例如，我们有一个代表密码的类。由于密码可以改变，我们提供了一个 setter 函数 changeTo。使用传值策略，我们可以像这样实现密码类
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Password</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">explicit</span> <span class="n">Password</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pwd</span><span class="p">)</span> <span class="c1">// pass by value
+</span><span class="c1"></span>		  <span class="o">:</span> <span class="n">text</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">pwd</span><span class="p">))</span> <span class="p">{}</span> <span class="c1">// construct text
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="n">changeTo</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">newPwd</span><span class="p">)</span> <span class="c1">// pass by value
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="n">text</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newPwd</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// assign text
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">text</span><span class="p">;</span> <span class="c1">// text of password
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+考虑下面的代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">initPwd</span><span class="p">(</span><span class="s">&#34;Supercalifragilisticexpialidocious&#34;</span><span class="p">);</span>
+  <span class="n">Password</span> <span class="nf">p</span><span class="p">(</span><span class="n">initPwd</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这里没有什么惊喜：p.text 是使用给定的密码构造的，并且在构造函数中使用按值传递会产生 std::string 移动构造的成本，如果使用重载或完美转发，则不需要这样做。一切都很好。
+</p>
+<p>
+当执行下面代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">newPassword</span> <span class="o">=</span> <span class="s">&#34;Beware the Jabberwock&#34;</span><span class="p">;</span>
+  <span class="n">p</span><span class="p">.</span><span class="n">changeTo</span><span class="p">(</span><span class="n">newPassword</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+changeTo 使用赋值来复制参数 newPwd 可能导致该函数的传值策略爆发成本。
+传递给 changeTo 的参数是一个左值（newPassword），所以当参数 newPwd 被构造时，调用 std::string 拷贝构造函数。该构造函数分配内存来保存新的密码。
+newPwd 然后被移动赋值给 text，这导致已经由 text 保存的内存被释放。
+因此在 changeTo 中有两个动态的内存管理动作：一个为新密码分配内存，一个为旧密码释放内存。
+</p>
+<p>
+但在这种情况下，旧密码比新的长，所以不需要分配或释放任何东西。如果使用重载方法，则很可能不会发生：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Password</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">void</span> <span class="n">changeTo</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">newPwd</span><span class="p">)</span> <span class="c1">// the overload
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="c1">// for lvalues
+</span><span class="c1"></span>			  <span class="n">text</span> <span class="o">=</span> <span class="n">newPwd</span><span class="p">;</span> <span class="c1">// can reuse text&#39;s memory if
+</span><span class="c1"></span>  <span class="c1">// text.capacity() &gt;= newPwd.size()
+</span><span class="c1"></span>		  <span class="p">}</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">text</span><span class="p">;</span> <span class="c1">// as above
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在这种情况下，按值传递的代价包括额外的内存分配和释放 - 成本可能超过 std::string 移动操作的数量级。
+</p>
+<p>
+有趣的是，如果旧密码比新密码短，在赋值过程中通常不可能避免分配 - 释放，在这种情况下，按值传递的速度将与通过引用的速度大致相同。
+基于赋值的参数复制的代价因此取决于参与赋值的对象的值！这种分析适用于在动态分配的内存中保存值的任何参数类型。
+不是所有的类型都有符合，但是很多，包括 std::string 和 std::vector。
+</p>
+<p>
+这种潜在的成本增加通常只适用于传递了左值参数的情况，因为通常只在执行真正的复制操作（即不移动）时才会发生执行内存分配和释放的需求。
+对于右值，移动几乎总是足够的。
+</p>
+<p>
+结果是，使用赋值复制参数的函数传递值的附加成本取决于要传递的类型，左值与右值参数的比率，类型是否使用动态分配的内存，
+如果是，则实现该类型的赋值运算符以及与赋值目标关联的内存不小于赋值源相关联的内存的可能性。
+对于 std::string，还取决于实现是否使用小字符串优化（SSO-请参见 item 29），如果是，则分配的值是否适合 SSO 缓冲区。
+</p>
+<p>
+所以，正如我所说的，当通过赋值复制参数时，分析按值传递的成本是复杂的。
+通常情况下，最实际的方法是采取“有罪直到证明无辜”的政策，即使用重载或通用引用而不是传值，除非已经证明按值传递会为您需要的参数类型生成可接受的高效代码。
+</p>
+<p>
+现在，对于那些必须尽可能快的软件来说，传递价值可能不是一个可行的方法
+战略，因为避免更廉价的移动可能是重要的。此外，有多少移动将会发生并不总是很清楚。
+在 Widget::addName 例子中，通过值传递只需要一个额外的移动操作，但是假设 Widget::addName 调用了 Widget::validateName，
+并且这个函数也通过了值传递。（推测它有一个总是复制它的参数的原因，例如，将它存储在它所验证的所有值的数据结构中。）并假定 validateName 调用第三个函数，它也通过值传递…
+当存在函数调用链时，每个函数都使用价值传递，因为“它只花费一个便宜的移动”，整个调用链的成本可能不是你能容忍的。使用引用参数传递，调用链不会产生这种累积的开销。
+</p>
+<p>
+与效率无关的问题，但仍值得记住的是，不同于引用传递，值传递容易受到切片问题的影响。
+这是很好的 C ++ 98 的基础，所以我不会详谈，但是如果你有一个函数被设计来接受一个基类类型或从它派生的任何类型的参数，
+你不希望 要声明该类型的传值参数，因为您将“切割”可能传入的任何派生类型对象的派生类特征：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span> <span class="c1">// base class
+</span><span class="c1"></span>  <span class="k">class</span><span class="err"> </span><span class="nc">SpecialWidget</span><span class="o">:</span> <span class="k">public</span> <span class="n">Widget</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span> <span class="c1">// derived class
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">processWidget</span><span class="p">(</span><span class="n">Widget</span> <span class="n">w</span><span class="p">);</span> <span class="c1">// func for any kind of Widget,
+</span><span class="c1"></span>  <span class="c1">// including derived types;
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// suffers from slicing problem
+</span><span class="c1"></span>  <span class="n">SpecialWidget</span> <span class="n">sw</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="n">processWidget</span><span class="p">(</span><span class="n">sw</span><span class="p">);</span> <span class="c1">// processWidget sees a
+</span><span class="c1"></span>  <span class="c1">// Widget, not a SpecialWidget!
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果你不熟悉切割问题，搜索引擎和互联网是你的朋友们; 有很多可用的信息。
+你会发现切割问题的存在是另一个原因（在效率命中之上），为什么按值传递在 C ++ 98 中有一个阴暗的名声。
+这也是为什么您可能了解到 C ++编程的第一件事就是为了避免按值传递用户定义类型的对象。
+</p>
+<p>
+C++ 11 并没有从根本上改变 C++ 98 关于值传递的智慧。 在一般来说，按值传递仍然需要一个你更喜欢避免的性能问题，而传递值依然会导致切割问题。
+C++ 11 的新特性是左值和右值的区别。实现利用可复制类型的右值的移动语义的函数需要重载或使用通用引用，这两者都有缺点。
+对于可复制的移动廉价的类型的特殊情况，传递给总是复制它们的函数以及切割不是问题的地方，
+按值传递可以提供一个易于实现的替代方法，与引用有同样的效率，但是避免了它们的缺点。
+</p>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+对于可复制的，移动廉价的，同时总是被复制的参数，按值传递几乎与通过引用有一样的效率，同时它更容易实现可以生成更少的对象代码。
+</p>
+</li>
+<li>
+<p>
+通过构建复制参数可能比通过赋值复制参数要昂贵得多。
+</p>
+</li>
+<li>
+<p>
+按值传递受限于切割问题，所以对于基类参数类型通常是不合适的。
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-02-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2018/02/06/tweaks2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Tweaks(2)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2018/02/02/c-ep19the-concurrency-api4/">
+            <span class="next-text nav-default">C&#43;&#43; Ep19:The Concurrency API(4)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

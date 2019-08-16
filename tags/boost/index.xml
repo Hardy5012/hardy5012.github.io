@@ -13,10 +13,10 @@
     
     <item>
       <title>learning boost</title>
-      <link>https://hardy5012.github.io/post/2016-11-03-learning-boost/</link>
+      <link>https://hardy5012.github.io/2016/11/03/2016-11-03-learning-boost/</link>
       <pubDate>Thu, 03 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2016-11-03-learning-boost/</guid>
+      <guid>https://hardy5012.github.io/2016/11/03/2016-11-03-learning-boost/</guid>
       <description>MSM 执行顺序: start state on_exit -&amp;gt; action -&amp;gt; next state on_entry 状态转换判断顺序： 按转表换插入的反序来判断，即在从转换表后面开始判断,同样满足条件的，执行后面 事件只能激活子状</description>
     </item>
     

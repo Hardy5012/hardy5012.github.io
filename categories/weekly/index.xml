@@ -13,37 +13,37 @@
     
     <item>
       <title>C&#43;&#43; Ep23: constexpr if</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</link>
+      <link>https://hardy5012.github.io/2018/03/07/c-ep23-if-constexpt/</link>
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</guid>
+      <guid>https://hardy5012.github.io/2018/03/07/c-ep23-if-constexpt/</guid>
       <description>以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep22: Fibonacci</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/</link>
+      <link>https://hardy5012.github.io/2018/02/28/c-ep22-fibonacci/</link>
       <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/</guid>
+      <guid>https://hardy5012.github.io/2018/02/28/c-ep22-fibonacci/</guid>
       <description>Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本 1 2 3 4 5 6 7 int fib(const int i) { if(i == 0) return 0; if(i == 1) return</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep21: variadic Templates</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</link>
+      <link>https://hardy5012.github.io/2018/02/21/c-ep21-variadic-templates/</link>
       <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/</guid>
+      <guid>https://hardy5012.github.io/2018/02/21/c-ep21-variadic-templates/</guid>
       <description>使用 之前 在使用可变参数模板之前，如果有几个参数，就需要对应的模块。 1 2 3 4 5 6 7 //一个参数 template&amp;lt;typename T1&amp;gt; //两个参数 template&amp;lt;typename T1, typename T2&amp;gt; //三个参数 template&amp;lt;typename T1, typename T2, typename T3&amp;gt;</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep20: Static Variable</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</link>
+      <link>https://hardy5012.github.io/2018/02/13/c-ep20-static-variable/</link>
       <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</guid>
+      <guid>https://hardy5012.github.io/2018/02/13/c-ep20-static-variable/</guid>
       <description>C++ static 变量 初始化顺序 全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化 局部静态变量在第一次被使用时初始化 线程安全 从 C++ 11 起局部静态变</description>
     </item>
     

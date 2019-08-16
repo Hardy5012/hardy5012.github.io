@@ -13,10 +13,10 @@
     
     <item>
       <title>C&#43;&#43; Ep20: Static Variable</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</link>
+      <link>https://hardy5012.github.io/2018/02/13/c-ep20-static-variable/</link>
       <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/</guid>
+      <guid>https://hardy5012.github.io/2018/02/13/c-ep20-static-variable/</guid>
       <description>C++ static 变量 初始化顺序 全局变量、文件域的 static 变量和类的 static 成员变量在 main 函数执行之前初始化 局部静态变量在第一次被使用时初始化 线程安全 从 C++ 11 起局部静态变</description>
     </item>
     

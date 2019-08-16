@@ -13,10 +13,10 @@
     
     <item>
       <title>Machine Learning(1)Linear Regression</title>
-      <link>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</link>
+      <link>https://hardy5012.github.io/2017/04/21/2017-04-21-maching-learing-normal-equation/</link>
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</guid>
+      <guid>https://hardy5012.github.io/2017/04/21/2017-04-21-maching-learing-normal-equation/</guid>
       <description>Hypothesis $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function $$ J(θ)=\frac{1}{2m}∑limitsi=</description>
     </item>
     

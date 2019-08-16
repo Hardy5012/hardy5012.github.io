@@ -13,10 +13,10 @@
     
     <item>
       <title>Machine Learning(2）Logistic Regression</title>
-      <link>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
+      <link>https://hardy5012.github.io/2017/04/27/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
+      <guid>https://hardy5012.github.io/2017/04/27/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
       <description>Decision Boundary 决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集</description>
     </item>
     

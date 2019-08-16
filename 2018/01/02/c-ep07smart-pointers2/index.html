@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep07:Smart Pointers(2) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2018/01/02/c-ep07smart-pointers2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep07:Smart Pointers(2)" />
+<meta property="og:description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2018/01/02/c-ep07smart-pointers2/" />
+<meta property="article:published_time" content="2018-01-02T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-02T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep07:Smart Pointers(2)">
+<meta itemprop="description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换">
+
+
+<meta itemprop="datePublished" content="2018-01-02T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-02T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="7848">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep07:Smart Pointers(2)"/>
+<meta name="twitter:description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep07:Smart Pointers(2)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-02 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">Item  21:优先考虑使用 std::make_unique 和 std::make_shared 而不是直接使用 new</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针
+</h1>
+<p>
+矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。
+换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr
+来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂
+（也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。
+</p>
+<p>
+你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。
+std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。
+它是 std::shared_ptr 的附加物。
+</p>
+<p>
+它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和
+std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数：
+</p>
+<!-- more -->
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">spw</span> <span class="o">=</span> <span class="c1">// after spw is constructed,
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// the pointed-to Widget&#39;s
+</span><span class="c1"></span>  <span class="c1">// ref count (RC) is 1. (See
+</span><span class="c1"></span>  <span class="c1">// Item 21 for info on
+</span><span class="c1"></span>  <span class="c1">// std::make_shared.)
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">wpw</span><span class="p">(</span><span class="n">spw</span><span class="p">);</span> <span class="c1">// wpw points to same Widget
+</span><span class="c1"></span>  <span class="c1">// as spw. RC remains 1
+</span><span class="c1"></span>  <span class="err">…</span>
+  <span class="n">spw</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">// RC goes to 0, and the
+</span><span class="c1"></span>  <span class="c1">// Widget is destroyed.
+</span><span class="c1"></span>  <span class="c1">// wpw now dangles
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+悬挂的 std::weak_ptr 被称为失效的（expired）。你能直接检查它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">if</span> <span class="p">(</span><span class="n">wpw</span><span class="p">.</span><span class="n">expired</span><span class="p">())</span> <span class="err">…</span> <span class="c1">// if wpw doesn&#39;t point
+</span><span class="c1"></span>  <span class="c1">// to an object…
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是为了访问 std::weak_ptr 指向的对象，你常常需要检查看这个 std::weak_ptr 是否已经失效了或者还没有失效
+（也就是，它没有悬挂）。想法总是比做起来简单，因为 std::weak_ptr 没有解引用操作，所以没办法写出相应的代码。
+即使能写出来，把解引用和检查分离开来会造成竞争条件：在调用 expired 和解引用操作中间，另外一个线程可能重新赋值或者销毁
+std::shared_ptr 之前指向的对象，因此，会造成你想解引用的对象被销毁。这样的话，你的解引用操作将产生未定义行为
+</p>
+<p>
+你需要的是一个原子操作，它能检查看 std::weak_ptr 是否失效了，并让你能访问它指向的对象。
+从一个 std::weak_ptr 来创造 std::shared_ptr 就能达到这样的目的。你拥有的 std::shared_ptr 是什么样的，
+依赖于在你用 std::weak_ptr 来创建 std::shared_ptr 时是否已经失效了。操作有两种形式，
+一种是 std::weak_ptr::lock，它返回一个 std::shared_ptr。如果 std::weak_ptr 已经失效了，
+std::shared_ptr 会是 null:
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw1</span> <span class="o">=</span> <span class="n">wpw</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span> <span class="c1">// if wpw&#39;s expired,
+</span><span class="c1"></span>  <span class="c1">// spw1 is null
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">spw2</span> <span class="o">=</span> <span class="n">wpw</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span> <span class="c1">// same as above,
+</span><span class="c1"></span>  <span class="c1">// but uses auto
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+另一种形式是参数为 std::weak_ptr 的 std::shared_ptr 的构造函数。这样情况下，如果 std::weak_ptr 已经失效了，会有一个异常抛出：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw3</span><span class="p">(</span><span class="n">wpw</span><span class="p">);</span> <span class="c1">// if wpw&#39;s expired,
+</span><span class="c1"></span>  <span class="c1">// throw std::bad_weak_ptr
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是你可能还是对 std::weak_ptr 的用途感到奇怪。考虑一个工厂函数，这个函数根据唯一的 ID，产生一个指向只读对象的智能指针。
+与 Item 18 的建议相符合，考虑工厂函数的返回类型，它返回一个 std::unique_ptr：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&gt;</span> <span class="n">loadWidget</span><span class="p">(</span><span class="n">WidgetID</span> <span class="n">id</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果 loadWidget 是一个昂贵的调用（比如，它执行文件操作或者 I/O 操作）并且对 ID 的反复使用是允许的，
+我们可以做一个合理的优化：写一个函数，这个函数做 loadWidget 做的事，但是它也缓存下它返回的结果。
+但是把所有请求的 Widget 都缓存下来会造成效率问题，所以另一个合理的优化是：当 Widget 不再使用时，销毁它的缓存。
+</p>
+<p>
+对于这个缓存工厂函数，一个 std::unique_ptr 的返回类型是不够合适的。调用者应该收到一个指向缓存对象的智能指针，
+但是缓存也需要一个指针来指向对象。缓存的指针需要在他悬挂的时候能够察觉到，因为当工厂的客户把工厂返回的指针用完之后，
+对象将会被销毁，然后在缓存中相应的指针将会悬挂。因此缓存指针应该是一个 std::weak_ptr（当指针悬挂的之后能够有所察觉）。
+这意味着工厂的返回值类型应该是一个 std::shared_ptr，因为 std::weak_ptr 只有在对象的生命周期被
+std::shared_ptr 管理的时候，才能检查自己是否悬挂。
+</p>
+<p>
+这里给出一个缓存版本的 loadWidget 的快速实现：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&gt;</span> <span class="n">fastLoadWidget</span><span class="p">(</span><span class="n">WidgetID</span> <span class="n">id</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">WidgetID</span><span class="p">,</span>
+								<span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&gt;&gt;</span> <span class="n">cache</span><span class="p">;</span>
+	  <span class="k">auto</span> <span class="n">objPtr</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lock</span><span class="p">();</span> <span class="c1">// objPtr is std::shared_ptr
+</span><span class="c1"></span>  <span class="c1">// to cached object (or null
+</span><span class="c1"></span>  <span class="c1">// if object&#39;s not in cache)
+</span><span class="c1"></span>	  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">objPtr</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// if not in cache,
+</span><span class="c1"></span>		  <span class="n">objPtr</span> <span class="o">=</span> <span class="n">loadWidget</span><span class="p">(</span><span class="n">id</span><span class="p">);</span> <span class="c1">// load it
+</span><span class="c1"></span>		  <span class="n">cache</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">objPtr</span><span class="p">;</span> <span class="c1">// cache it
+</span><span class="c1"></span>	  <span class="p">}</span>
+	  <span class="k">return</span> <span class="n">objPtr</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+astLoadWidget 的实现忽略了一个事实，那就是缓存可能积累一些失效了的 std::weak_ptr
+（对应的 Widget 已经不再被使用（因此这些 Widget 已经销毁了））。实现能被进一步优化，
+但是比起花费时间在这个问题（对 std::weak_ptr 的理解没有额外的提升）上，让我们考虑第二个使用场景：观察者设计模式。
+这个设计模式最重要的组件就是目标（subject，目标的状态可能会发生改变）和
+观察者（observer，当目标的状态发生改变时，观察者会被通知）。
+大多数实现中，每个目标包含一个数据成员，这个成员持有指向观察者的指针。这使得目标在状态发生改变的时候，
+通知起来更容易。目标对于控制他们的观察者的生命周期没有兴趣（也就是，当他们销毁时），
+但是它们对它们的观察者是否已经销毁了很有兴趣，这样它们就不会尝试去访问观察者了。一个合理的设计是：让每个目标持有一个容器，
+这个容器中装了指向它观察者的 std::weak_ptr，因此，这让目标在使用一个指针前能确定它是否悬挂的。
+</p>
+<p>
+最后一个 std::weak_ptr 的使用例子是：考虑一个关于 A，B，C 的数据结构，A 和 C 共享 B 的所有权，因此都持有 std::shared_ptr 指向 B：
+</p>
+<p>
+<img src="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-10.png" alt="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-10.png" title="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-10.png" />
+假设从 B 指向 A 的指针同样有用，这个指针应该是什么类型的呢？
+</p>
+<p>
+<img src="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-22.png" alt="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-22.png" title="C++ Ep07:Smart Pointers(2)/screenshot_2018-01-02_11-27-22.png" />
+这里有三种选择：
+</p>
+<ul>
+<li>
+<p>
+一个原始指针。用这种方法，如果 A 销毁了，但是 C 仍然指向 B，B 将持有指向 A 的悬挂指针。B 不会发现，所以 B 可能无意识地解引用这个悬挂指针。这将产生未定义的行为。
+</p>
+</li>
+<li>
+<p>
+一个 std::shared_ptr。在这种设计下，A 和 B 互相持有指向对方的 std::shared_ptr。这产生了 std::shared_ptr 的循环引用（A 指向 B，B 指向 A），这会阻止 A 和 B 被销毁。即使 A 和 B 无法从其他数据结构获得（比如，C 不再指向 B），A 和 B 的引用计数都还是 1.如果这发生了，A 和 B 将被泄露，实际上：程序将不再能访问它们，这些资源也将不能被回收。
+</p>
+</li>
+<li>
+<p>
+一个 std::weak_ptr。这避免了上面的两个问题。如果 A 被销毁了，B 中，指向 A 的指针将悬挂，但是 B 能察觉到。此外，尽管 A 和 B 会互相指向对方，B 的指针也不会影响 A 的引用计数，因此 A 不再被指向时，B 也不会阻止 A 被销毁。
+</p>
+</li>
+</ul>
+<p>
+使用 std::weak_ptr 是三个选择中最好的一个。但是，使用 std::weak_ptr 来预防 std::shared_ptr 的不常见的循环引用是不值得的。
+在严格分层的数据结构中，比如树，子节点通常只被它们的父节点拥有。当一个父节点被销毁时，它的子节点也应该被销毁。
+因此从父节点到子节点的连接通常被表示为 std::unique_ptr。从子节点到父节点的链接能被安全地实现为原始指针，
+因为一个子节点的生命周期不应该比它们的父节点长。因此这里没有子节点对悬挂的父指针进行解引用的风险。
+</p>
+<p>
+当然，不是所有基于指针的数据结构都是严格分层的，当这种情况发生时，就像上面的缓存和观察者链表的实现一样，
+我们知道 std::weak_ptr 已经跃跃欲试了。
+</p>
+<p>
+从效率的观点来看，std::weak_ptr 和 std::shared_ptr 在本质上是相同的。std::weak_ptr 对象和
+std::shared_ptr 一样大，它们和 std::shared_ptr 使用相同的控制块（看 Item 19），
+并且构造，析构，赋值等操作也涉及到引用计数的原子操作。这可能会让你感到奇怪，
+因为我在这个 Item 的一开始就写了 std::weak_ptr 不参与引用计数的计算。我写的其实不是那个意思，
+我写的是，std::weak_ptr 不参与共享对象的所有权，因此不会影响被指向对象的引用计数。控制块中其实还有第二个引用计数，
+这第二个引用计数是 std::weak_ptr 所维护的。细节部分，请继续看 Item 21。
+</p>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+使用 std::weak_ptr 替换那些会造成悬挂的 std::shared_ptr-like 指针
+</p>
+</li>
+<li>
+<p>
+使用 std::weak_ptr 的潜在情况包括缓存，观察者链表，以及防止 std::shared_ptr 的循环引用。
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+Item  21:优先考虑使用 std::make_unique 和 std::make_shared 而不是直接使用 new
+</h1>
+<p>
+std::make_shared 是 C++11 的部分，但是，不幸的是，std::make_unique 不是。它是在 C++14 中才被加入到标准库的。
+如果你使用的是 C++11，不要怕，因为一个 std::make_unique 的基础版本很容易写。看这里：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">make_unique</span><span class="p">(</span><span class="n">Ts</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...));</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+std::make_unique 和 std::make_shared 是三个 make 函数（这种函数能传入任意集合的参数，然后完美转发它们给构造函数，
+并动态创建一个对象，然后返回指向这个对象的智能指针）中的两个。
+第三个 make 函数是 std::allocate_shared。它的行为和 std::make_shared 一样，
+唯一的不同就是它的第一个参数是一个分配器（allocator）对象，这个对象是用来动态申请内存的。
+</p>
+<p>
+考虑一下：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="nf">upw1</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">());</span> <span class="c1">// with make func
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">upw2</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">);</span> <span class="c1">// without make func
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="nf">spw1</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">());</span> <span class="c1">// with make func
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw2</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">);</span> <span class="c1">// without make func
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+我已经把本质上不同的地方高亮显示了：使用 new 的版本要重复写两次将创造的类型。
+重复写与软件工程的一个关键原则冲突了：避免代码的重复。重复的源代码增加了编译时间，会导致目标代码变得肿胀，
+并且通常使得代码变得更难和别的代码一起工作。它常常会变成前后不一致的代码，然后代码中的前后不一致会造成 bug。
+另外，写两次代码比写一次要更累，没有人会想要增加自己的负担。
+</p>
+<p>
+优先使用 make 函数的第二个理由和异常安全有关。假设我们有一个函数来处理 Widget，并且需要和优先级关联起来：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">processWidget</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw</span><span class="p">,</span> <span class="kt">int</span> <span class="n">priority</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+传入一个 std::shared_ptr（以传值的方式）看起来可能有点奇怪，但是 Item 41 会解释，如果 processWidget
+总是要复制一个 std::shared_ptr（比如，通过在一个数据结构中存储它来记录处理过的 Widget），
+那这就是一个合理的设计选择。
+</p>
+<p>
+现在假设我们有一个函数来计算相关的优先级，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="nf">computePriority</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+然后我们在调用 processWidget 的时候使用它，并且用 new 而不是 std::make_shared：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">),</span> <span class="c1">// potential
+</span><span class="c1"></span>				<span class="n">computePriority</span><span class="p">());</span> <span class="c1">// resource
+</span><span class="c1"></span>  <span class="c1">// leak!
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+就像注释指示的那样，上面的代码会导致 new 创造出来的 Widget 发生泄露。那么到底是怎么泄露的呢？
+调用代码和被调用函数都用到了 std::shared_ptr，并且 std::shared_ptr 就是被设计来阻止资源泄露的。
+当最后一个指向这儿的 std::shared_ptr 消失时，它们会自动销毁它们指向的资源。
+如果每个人在每个地方都使用 std::shared_ptr，那么这段代码是怎么导致资源泄露的呢？
+</p>
+<p>
+答案和编译器的翻译有关，编译器把源代码翻译到目标代码，在运行期，函数的参数必须在函数被调用前被估值，
+所以在调用 processWidget 时，下面的事情肯定发生在 processWidget 能开始执行之前：
+</p>
+<ul>
+<li>
+<p>
+表达式“new Widget”必须被估值，也就是，一个 Widget 必须被创建在堆上。
+</p>
+</li>
+<li>
+<p>
+std::shared_ptr（负责管理由 new 创建的指针）的构造函数必须被执行。
+</p>
+</li>
+<li>
+<p>
+computePriority 必须跑完
+</p>
+</li>
+</ul>
+<p>
+编译器不需要必须产生这样顺序的代码。但“new Widget”必须在 std::shared_ptr 的构造函数被调用前执行，
+因为 new 的结构被用为构造函数的参数，但是 computePriority 可能在这两个调用前（后，或很奇怪地，中间）被执行。
+也就是，编译器可能产生出这样顺序的代码：
+</p>
+<ol>
+<li>
+<p>
+执行“new Widget”。
+</p>
+</li>
+<li>
+<p>
+执行 computePriority。
+</p>
+</li>
+<li>
+<p>
+执行 std::shared_ptr 的构造函数。
+</p>
+</li>
+</ol>
+<p>
+如果这样的代码被产生出来，并且在运行期，computePriority 产生了一个异常，则在第一步动态分配的 Widget 就会泄露了，
+因为它永远不会被存放到在第三步才开始管理它的 std::shared_ptr 中。
+</p>
+<p>
+使用 std::make_shared 可以避免这样的问题。调用代码将看起来像这样：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">(),</span> <span class="c1">// no potential
+</span><span class="c1"></span>				<span class="n">computePriority</span><span class="p">());</span> <span class="c1">// resource leak
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在运行期，不管 std::make_shared 或 computePriority 哪一个先被调用。如果 std::make_shared 先被调用，
+则在 computePriority 调用前，指向动态分配出来的 Widget 的原始指针能安全地被存放到被返回的 std::shared_ptr 中。
+如果 computePriority 之后产生一个异常，std::shared_ptr 的析构函数将发现它持有的 Widget 需要被销毁。
+并且如果 computePriority 先被调用并产生一个异常，std::make_shared 就不会被调用，
+因此这里就不需要考虑动态分配的 Widget 了。
+</p>
+<p>
+如果使用 std::unique_ptr 和 std::make_unique 来替换 std::shared_ptr 和 std::make_shared，事实上，
+会用到同样的理由。因此，使用 std::make_unique 代替 new 就和“使用 std::make_shared 来写出异常安全的代码”一样重要。
+</p>
+<p>
+std::make_shared（比起直接使用 new）的一个特性是能提升效率。使用 std::make_shared 允许编译器产生更小，
+更快的代码，产生的代码使用更简洁的数据结构。考虑下面直接使用 new 的代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+很明显这段代码需要分配内存，但是它实际上要分配两次。Item 19 解释了每个 std::shared_ptr 都指向一个控制块，
+控制块包含被指向对象的引用计数以及其他东西。这个控制块的内存是在 std::shared_ptr 的构造函数中分配的
+。因此直接使用 new，需要一块内存分配给 Widget，还要一块内存分配给控制块。
+</p>
+<p>
+如果使用 std::make_shared 来替换，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">spw</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+一次分配就足够了。这是因为 std::make_shared 申请一个单独的内存块来同时存放 Widget 对象和控制块。
+这个优化减少了程序的静态大小，因为代码只包含一次内存分配的调用，并且这会加快代码的执行速度，因为内存只分配了一次。
+另外，使用 std::make_shared 消除了一些控制块需要记录的信息，这样潜在地减少了程序的总内存占用。
+</p>
+<p>
+对 std::make_shared 的效率分析可以同样地应用在 std::allocate_shared 上，
+所以 std::make_shared 的性能优点也可以扩展到这个函数上。
+</p>
+<p>
+尽管它们符合软件工程，异常安全，以及效率提升。然而，这个 Item 的引导说的是优先使用 make 函数，而不是只使用它们。
+这是因为这里有些它们无法或不该使用的情况。
+</p>
+<p>
+举个例子，没有一个 make 函数允许自定义 deleter（看 Item 18 和 Item 19），但是 std::unique_ptr 和
+std::shared_ptr 都有允许自定义 deleter 的构造函数.
+</p>
+<p>
+make 函数的第二个限制源自它们实现的语法细节。Item 7 解释了当创建一个对象时，
+这个对象的类型同时重载了包含和不包含 std::initializer_list 参数的构造函数，
+那么使用花括号创建一个对象会优先使用 std::initializer_list 版本的构造函数，
+使用圆括号创建的对象会调用 non-std::initializer_list 版本的构造函数。make 函数完美转发它的参数给一个对象的构造函数，
+但是它们应该使用圆括号还是花括号呢？对于一些类型，不同的答案会影响很大。举个例子，在这些调用中，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">upv</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">spv</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+结果是一个智能指针指向一个 std::vector,这个 std::vector 应该带有 10 个元素，每个元素的值是 20，
+还是说这个 std::vector 应该带 2 个元素，一个值是 10，一个值是 20？还是说结果应该是不确定的？
+</p>
+<p>
+一个好消息是，它不是不确定的：两个调用创建的 std::vector 都带 10 个元素，每个元素的值被设置为 20.
+这意味着使用 make 函数，完美转发代码使用圆括号，而不是花括号。坏消息是如果你想使用花括号来构造你要指向的对象，
+你必须直接使用 new。使用 make 函数就要求对初始化列表的完美转发，但是就像 Item 30 解释的那样，初始化列表不能完美转发。
+但是，Item 30 描述了一个变通方案：使用 auto 类型推导来从初始化列表（看 Item 2）创建一个 std::initializer_list 对象，
+然后传入“通过 auto 创建的”对象给 make 函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="c1">// create std::initializer_list
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">initList</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span> <span class="p">};</span>
+  <span class="c1">// create std::vector using std::initializer_list ctor
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">spv</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">initList</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+对于 std::unique_ptr，这两个情况（自定义 deleter 和初始化列表）就是 make 函数可能有问题的全部情况了。
+对于 std::shared_ptr 和它的 make 函数来说，还有两个问题。两个都是边缘情况，但是一些开发者是会遇到的，
+而且你可能就是其中一个。
+</p>
+<p>
+有些类定义了它们自己的 operator new 和 operator delete。这些函数的存在暗示了全局的内存分配和回收规则对这些类型不适用。
+常常，特定的类通常只被设计来分配和回收和这个类的对象大小完全一样的内存块，比如，
+Widget 类的 operator new 和 operator delete 常被设计来分配和回收 sizeof(Widget)大小的内存。
+这样的分配规则不适合 std::shared_ptr 对自定义分配（通过 std::allocate_shared）和回收（deallocation）
+（通过自定义 deleter）的支持，因为 std::allocate_shared 要求的总内存大小不是动态分配的对象大小，
+而是这个对象的大小加上控制块的大小。总的来说，如果一个对象的类型有特定版本的 operator new 和 operator delete，
+那么使用 make 函数来创建这个对象常常是一个糟糕的想法。
+</p>
+<p>
+std::make_shared 比起直接使用 new 在大小和速度方面上的提升源自于 std::shared_ptr 的控制块被放在和对象一起的
+同一块内存中。当对象的引用计数变成 0 的时候，对象被销毁了（也就是它的析构函数被调用了）。 <em>但是，直到控制块被销毁前，
+它占据的内存都不能被释放,因为动态分配的内存块同时包含了它们两者。</em>
+</p>
+<p>
+就像我说的，控制块除了包含引用计数以外，还包含了一些记录信息。引用计数记录了有多少 std::shared_ptr 引用了控制块，
+但是控制块包含第二个引用计数，这个引用计数记录了有多少 std::weak_ptr 引用这个控制块。第二个引用计数被称为 weak count。
+当一个 std::weak_ptr 检查自己是否失效（看 Item 19）时，它是通过检查它引用的控制块中的引用计数（不是 weak ount）
+来做到的。如果引用计数是 0（也就是如果它指向的对象没有 std::shared_ptr 引用它，这个对象因此已经被销毁了），
+那么 std::weak_ptr 就失效了，不然就没失效。
+</p>
+<p>
+只要 std::weak_ptr 引用一个控制块（也就是 weak count 大于 0），控制块就必须继续存在。并且只要控制块存在，
+那么包含它的内存块就必须不能释放（remain allocated，保持分配状态）。因此，
+直到引用这个控制块的最后一个 std::shared_ptr 和最后一个 std::weak_ptr 销毁前，由 std::shared_ptr 的 make
+函数分配的内存都不能被回收。
+</p>
+<p>
+如果对象类型很大，并且最后一个 std::shared_ptr 和最后一个 std::weak_ptr 销毁的间隔很大，
+那么一个对象销毁和它所占内存的释放之间，将会产生一定的延迟：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">ReallyBigType</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span>
+  <span class="k">auto</span> <span class="n">pBigObj</span> <span class="o">=</span> <span class="c1">// create very large
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">ReallyBigType</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// object via
+</span><span class="c1"></span>  <span class="c1">// std::make_shared
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// create std::shared_ptrs and std::weak_ptrs to
+</span><span class="c1"></span>  <span class="c1">// large object, use them to work with it
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// final std::shared_ptr to object destroyed here,
+</span><span class="c1"></span>  <span class="c1">// but std::weak_ptrs to it remain
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// during this period, memory formerly occupied
+</span><span class="c1"></span>  <span class="c1">// by large object remains allocated
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// final std::weak_ptr to object destroyed here;
+</span><span class="c1"></span>  <span class="c1">// memory for control block and object is released
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+当直接使用 new 时，只要最后一个指向 ReallyBigType 对象的 std::shared_ptr 销毁了，这个对象的内存就能被释放：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">ReallyBigType</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">ReallyBigType</span><span class="o">&gt;</span> <span class="n">pBigObj</span><span class="p">(</span><span class="k">new</span> <span class="n">ReallyBigType</span><span class="p">);</span>
+  <span class="c1">// create very large
+</span><span class="c1"></span>  <span class="c1">// object via new
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// as before, create std::shared_ptrs and
+</span><span class="c1"></span>  <span class="c1">// std::weak_ptrs to object, use them with it
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// final std::shared_ptr to object destroyed here,
+</span><span class="c1"></span>  <span class="c1">// but std::weak_ptrs to it remain;
+</span><span class="c1"></span>  <span class="c1">// memory for object is deallocated
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// during this period, only memory for the
+</span><span class="c1"></span>  <span class="c1">// control block remains allocated
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// final std::weak_ptr to object destroyed here;
+</span><span class="c1"></span>  <span class="c1">// memory for control block is released
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果你发现，当 std::make_shared 不可能或不适合使用时，你就会注意到我们之前看过的异常安全的问题。
+解决它的最好的办法就是确保当你直接使用 new 的时候，你是在一条语句中直接（没有做其他事）传入结果给一个智能指针的构造函数。
+这能阻止编译器在 new 和调用智能指针（之后会管理 new 出来的对象）的构造函数之间，产生会造成异常的代码。
+</p>
+<p>
+作为一个例子，对于之前我们看过的非异常安全的 processWidget 调用，考虑一下对它进行一个最简单的修改。这次，我们将指定一个自定义 deleter：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">processWidget</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw</span><span class="p">,</span> <span class="c1">// as before
+</span><span class="c1"></span>					 <span class="kt">int</span> <span class="n">priority</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">cusDel</span><span class="p">(</span><span class="n">Widget</span> <span class="o">*</span><span class="n">ptr</span><span class="p">);</span> <span class="c1">// custom
+</span><span class="c1"></span>  <span class="c1">// deleter
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这里给出一个非异常安全的调用：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span> <span class="c1">// as before,
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">,</span> <span class="n">cusDel</span><span class="p">),</span> <span class="c1">// potential
+</span><span class="c1"></span>	  <span class="n">computePriority</span><span class="p">()</span> <span class="c1">// resource
+</span><span class="c1"></span>	  <span class="p">);</span> <span class="c1">// leak!
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+回忆一下：如果 computePriority 在 new Widget 之后 std::shared_ptr 构造函数之前调用，
+并且如果 computePriority 产生了一个异常，那么动态分配的 Widget 将会泄露。
+</p>
+<p>
+这里自定义 deleter 的使用阻碍了 std::make_shared 的使用，
+所以避免这个问题的方法就是把 Widget 的分配和 std::shared_ptr 的构造放在单独的语句中，
+然后用产生的 std::shared_ptr 调用 processWidget。虽然，和之后看到的一样，我们能提升它的性能，
+但是这里先给出这个技术的本质部分：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">spw</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">,</span> <span class="n">cusDel</span><span class="p">);</span>
+  <span class="n">processWidget</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">computePriority</span><span class="p">());</span> <span class="c1">// correct, but not
+</span><span class="c1"></span>  <span class="c1">// optimal; see below
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这能工作，因为一个 std::shared_ptr 承担传给构造函数的原始指针的所有权，
+即使是这个构造函数会产生一个异常。在这个例子中，如果 spw 的构造函数抛出一个异常
+（比如，由于不能动态分控制块的内存），它还是能保证用 new Widget 产生的指针来调用 cusDel。
+</p>
+<p>
+最小的性能障碍是，在非异常安全调用中，我们传一个右值给 processWidget，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">Widget</span><span class="p">,</span> <span class="n">cusDel</span><span class="p">),</span> <span class="c1">// arg is rvalue
+</span><span class="c1"></span>	  <span class="n">computePriority</span><span class="p">()</span>
+	  <span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是在异常安全的调用中，我们传入了一个左值：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">computePriority</span><span class="p">());</span> <span class="c1">// arg is lvalue
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+因为 processWidget 的 std::shared_ptr 参数是以传值（by value）方式传递的，
+所以从右值构造对象只需要 move，从左值来构造对象需要 copy。对于 std::shared_ptr，
+它们的不同会造成很大的影响，因为拷贝一个 std::shared_ptr 要求对它的引用计数进行一个原子的自增操作，
+但是 move 一个 std::shared_ptr 不需要维护引用计数。要让异常安全的代码实现同非异常安全的代码一样级别的性能，
+我们需要把 std::move 应用到 spw 中，把它变成右值（看 Item23）：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">processWidget</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">spw</span><span class="p">),</span> <span class="c1">// both efficient and
+</span><span class="c1"></span>				<span class="n">computePriority</span><span class="p">());</span> <span class="c1">// exception safe
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这很有趣并且值得知道，但是它常常是不重要的，因为你很少有原因不使用 make 函数。
+并且除非你有迫不得已的理由不使用 make 函数，不然你应该多使用 make 函数。
+</p>
+<h2 id="headline-4">
+记住
+</h2>
+<ul>
+<li>
+<p>
+对比直接使用 new，make 函数消除了源代码的重复，提升了异常安全性，并且对于 std::make_shared 和 std::allocate_shared，产生的代码更小更快。
+</p>
+</li>
+<li>
+<p>
+不适合使用 make 函数的情况包括：需要指定自定义 deleter，需要传入初始化列表。
+</p>
+</li>
+<li>
+<p>
+对于 std::shared_ptr，额外使用 make 函数的欠考虑的情况包括（1）有自定义内存管理的类和（2）需要关心内存，对象很大，std::weak_ptr 比对应的 std::shared_ptr 存在得久的系统。
+</p>
+</li>
+</ul>
+<h1 id="headline-5">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+翻译：<a href="http://www.cnblogs.com/boydfd/">http://www.cnblogs.com/boydfd/</a>
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-02
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2017/12/29/c-_ep06_smart_pointers_1/">
+            <span class="next-text nav-default">C&#43;&#43; Ep06:Smart Pointers(1)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

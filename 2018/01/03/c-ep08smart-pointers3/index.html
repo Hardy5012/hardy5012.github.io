@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep08:Smart Pointers(3) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&amp;#34;point to i" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2018/01/03/c-ep08smart-pointers3/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep08:Smart Pointers(3)" />
+<meta property="og:description" content="Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to i" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2018/01/03/c-ep08smart-pointers3/" />
+<meta property="article:published_time" content="2018-01-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-03T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep08:Smart Pointers(3)">
+<meta itemprop="description" content="Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to i">
+
+
+<meta itemprop="datePublished" content="2018-01-03T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-03T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="4376">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep08:Smart Pointers(3)"/>
+<meta name="twitter:description" content="Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to i"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep08:Smart Pointers(3)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-03 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现
+</h1>
+<p>
+如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to implementation&#34;,指向实现）机制很熟悉了。这种技术让你把类的数据成员替换成指向一个实现类（或结构）的指针，
+把曾经放在主类中的数据成员放到实现类中去，然后通过指针间接地访问那些数据成员。举个例子，假设 Widget 看起来像这个样子：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// in header &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span>
+	  <span class="n">Gadget</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">;</span> <span class="c1">// Gadget is some user-
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+因为 Widget 的数据成员包含 std::string，std::vector 和 Gadget 类型，这些类型的头文件必须出现在 Widget 的编译中，
+这就意味着 Widget 的客户必须#include &lt;string&gt;,&lt;vector&gt;,和 gadget.h。这些头文件增加了 Widget 客户的编译时间，
+加上它们使得这些客户依赖于头文件的内容。如果头文件的内容改变了，Widget 的客户必须重编译。标准头文件&lt;string&gt;和&lt;vector&gt;不会经常改变，
+但是 gadget.h 有频繁更替版本的倾向。
+</p>
+<!-- more -->
+<p>
+在 C++98 中应用 Pimpl 机制需要在 Widget 中把它的数据成员替换成一个原始指针，指向一个已经被声明却还没有定义的结构：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// still in header &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="o">~</span><span class="n">Widget</span><span class="p">();</span> <span class="c1">// dtor is needed—see below
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span> <span class="c1">// declare implementation struct
+</span><span class="c1"></span>	  <span class="n">Impl</span> <span class="o">*</span><span class="n">pImpl</span><span class="p">;</span> <span class="c1">// and pointer to it
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+因为 Widget 不在涉及类型 std::string, std::vector 和 Gadget，所以 Widget 的客户不再需要#include 这些类型的头文件了。
+这加快了编译速度，并且这也意味着如果头文件有了一些变化，Widget 的客户是不受影响的。
+</p>
+<p>
+一个被声明却还没有定义的类型被称为一个 <strong>不完整类型</strong> （incomplete type）。Widget::Impl 就是这样的类型。
+对于一个不完整类型，你能做的事情很少，但是定义一个指针指向它们是可以的。Pimpl 机制就是利用了这一点。
+</p>
+<p>
+Pimpl 机制的第一步就是声明一个数据成员指向一个不完整类型。第二步是动态分配和释放这个类型的对象，
+这个对象持有曾经在源类（没使用 Pimpl 机制时的类）中的数据成员。分配和释放代码写在实现文件中，比如，对于 Widget 来说，就在 widget.cpp 中:
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="cp">#include</span> <span class="cpf">&#34;widget.h&#34; // in impl. file &#34;widget.cpp&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&#34;gadget.h&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="k">struct</span> <span class="n">Widget</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span> <span class="c1">// definition of Widget::Impl
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span> <span class="c1">// with data members formerly
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span> <span class="c1">// in Widget
+</span><span class="c1"></span>	  <span class="n">Gadget</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// allocate data members for
+</span><span class="c1"></span>	  <span class="o">:</span> <span class="n">pImpl</span><span class="p">(</span><span class="k">new</span> <span class="n">Impl</span><span class="p">)</span> <span class="c1">// this Widget object
+</span><span class="c1"></span>  <span class="p">{}</span>
+  <span class="n">Widget</span><span class="o">::~</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// destroy data members for
+</span><span class="c1"></span>  <span class="p">{</span> <span class="k">delete</span> <span class="n">pImpl</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// this object
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这里我显示的#include 指令表明了，总的来说，对 std::string, std::vector, 和 Gadget 的头文件的依赖性还是存在的，
+但是，这些依赖性已经从 widget.h（这是对 Widget 客户可见以及被他使用的）转移到了 widget.cpp
+（这是只对 Widget 的实现者可见以及只被实现者所使用的）。我已经高亮了代码中动态分配和释放 Impl 对象的地方。
+为了当 Widget 销毁的时候释放这个对象，我们就需要使用 Widget 的析构函数。
+</p>
+<p>
+但是我显示给你的是 C++98 的代码，并且这散发着浓浓的旧时代的气息。它使用原始指针和原始的 new，delete，怎么说呢，就是太原始了。
+这一章的主题是智能指针优于原始指针，所以如果我们想在 Widget 构造函数中动态分配一个 Widget::Impl 对象，并且让它的销毁时间和 Widget 一样，
+std::unique_ptr(看 Item 18)这个工具完全符合我们的需要。把原始 pImpl 指针替换成 std::unique_ptr 在头文件中产生出这样的代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// in &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">Item</span> <span class="mi">22</span> <span class="o">|</span> <span class="mi">149</span>
+	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span> <span class="c1">// use smart pointer
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+然后在实现文件中是这样的:
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="cp">#include</span> <span class="cpf">&#34;widget.h&#34; // in &#34;widget.cpp&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&#34;gadget.h&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="k">struct</span> <span class="n">Widget</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span>
+	  <span class="n">Gadget</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// per Item 21, create
+</span><span class="c1"></span>	  <span class="o">:</span> <span class="n">pImpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">())</span> <span class="c1">// std::unique_ptr
+</span><span class="c1"></span>  <span class="p">{}</span> <span class="c1">// via std::make_unique
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+你应该已经注意到 Widget 的析构函数不存在了。这是因为我们没有任何代码要放到它里面。当 std::unique_ptr 销毁时，它自动销毁它指向的对象，
+所以我们自己没必要再 delete 任何东西。这是智能指针吸引人的一个地方：它们消除了手动释放资源的需求。
+</p>
+<p>
+这段代码能编译通过，但是，可悲的是，客户无法使用：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="cp">#include</span> <span class="cpf">&#34;widget.h&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span> <span class="c1">// error!
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+你收到的错误信息取决于你使用的编译器，但是它通常涉及到把 sizeof 或 delete 用到一个不完整类型上。这些操作都不是你使用这种类型（不完整类型）能做的操作。
+</p>
+<p>
+使用 std::unique_ptr 造成的这种表面上的错误是很令人困扰的，因为（1)std::unique_ptr 声称自己是支持不完整类型的，并且
+（2）Pimpl 机制是 std::unique_ptr 最常见的用法。幸运的是，让代码工作起来是很容易的。所有需要做的事就是理解什么东西造成了这个问题。
+</p>
+<p>
+问题发生在 w 销毁的时候产生的代码（比如，离开了作用域）。在这个时候，它的析构函数被调用。在类定义中使用 std::unique_ptr，我们没有声明一个析构函数，
+因为我们不需要放任何代码进去。同通常的规则（看 Item 17）相符合，编译器为我们产生出析构函数。在析构函数中，
+编译器插入代码调用 Widget 的数据成员 pImpl 的析构函数。pImpl 是一个 std::unique_ptr，也就是一个使用了默认 deleter 的 std::unique_ptr。
+默认 deleter 是一个函数，这个函数在 std::unqieu_ptr 中把 delete 用在原始指针上，但是，实现中，
+常常让默认 deleter 调用 C++11 的 static_assert 来确保原始指针没有指向一个不完整类型。
+然后，当编译器为 Widget w 产生析构函数的代码时，它就碰到一个失败的 static_assert，这也就是导致错误消息的原因了。
+这个错误消息应该指向 w 销毁的地方，但是因为 Widget 的析构函数和所有的“编译器产生的”特殊成员函数一样，是 <strong>隐式内联的</strong> 。
+所以错误消息常常指向 w 创建的那一行，因为它的源代码显式创建的对象之后会导致隐式的销毁调用。
+</p>
+<p>
+调整起来很简单，在 widget.h 中声明 Widget 的的析构函数，但是不在这定义它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// as before, in &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="o">~</span><span class="n">Widget</span><span class="p">();</span> <span class="c1">// declaration only
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+然后在 widget.cpp 中于 Widget::Impl 之后进行定义:
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="cp">#include</span> <span class="cpf">&#34;widget.h&#34; // as before, in &#34;widget.cpp&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&#34;gadget.h&#34;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>  <span class="k">struct</span> <span class="n">Widget</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span> <span class="c1">// as before, definition of
+</span><span class="c1"></span>	  <span class="n">Item</span> <span class="mi">22</span> <span class="o">|</span> <span class="mi">151</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span> <span class="c1">// Widget::Impl
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span>
+	  <span class="n">Gadget</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="o">:</span> <span class="n">pImpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">())</span>
+  <span class="p">{}</span>
+  <span class="n">Widget</span><span class="o">::~</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// ~Widget definition
+</span><span class="c1"></span>  <span class="p">{}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这工作得很好，并且它要码的字最少，但是如果你想要强调“编译器产生的”析构函数可以做到正确的事情
+（也就是你声明它的唯一原因就是让它的定义在 Widget 的实现文件中产生），那么你就能在定义析构函数的时候使用“=default”：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span><span class="o">::~</span><span class="n">Widget</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// same effect as above
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+使用 Pimpl 机制的类是可以支持 move 操作的，因为“编译器产生的”move 操作是我们需要的：执行一个 move 操作在 std::unique_ptr 上。
+就像 Item 17 解释的那样，在 Widget 中声明一个析构函数会阻止编译器产生 move 操作，所以如果你想支持 move 操作，
+你必须自己声明这些函数。如果“编译器产生的”版本是正确的行为，你可能会尝试像下面这样实现：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// still in
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// &#34;widget.h&#34;
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="o">~</span><span class="n">Widget</span><span class="p">();</span>
+	  <span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// right idea,
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// wrong code!
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这个方法将导致和不声明析构函数同样的问题，并且是出于同样的根本性的原因。“编译器产生的”operator move 在重新赋值前，
+需要销毁被 pImpl 指向的对象，但是在 Widget 的头文件中，pImpl 指向一个不完整类型。move 构造函数的情况和赋值函数是不同的。
+构造函数的问题是，万一一个异常在 move 构造函数中产生，编译器通常要产生出代码来销毁 pImpl，然后销毁 pImpl 需要 Impl 是完整的。
+</p>
+<p>
+因为问题和之前一样，所以修复方法也一样：把 move 操作的定义移动到实现文件中去：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// still in &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="o">~</span><span class="n">Widget</span><span class="p">();</span>
+	  <span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// declarations
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// only
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="cp">#include</span> <span class="cpf">&lt;string&gt; // as before,</span><span class="cp">
+</span><span class="cp"></span>  <span class="err">…</span> <span class="c1">// in &#34;widget.cpp&#34;
+</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">Widget</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">()</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="o">:</span> <span class="n">pImpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">())</span>
+  <span class="p">{}</span>
+  <span class="n">Widget</span><span class="o">::~</span><span class="n">Widget</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// defini-
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">Widget</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// tions
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+Pimpl 机制是减少类的实现和类的客户之间的编译依赖性的方法，但是从概念上来说，使用这个机制不会改变类所代表的东西。
+源 Widget 类包含 std::string，std::vector 和 Gadet 数据成员，并且，假设 Gadget 和 std::string 以及 std::vector 一样，是能拷贝的，
+那么让 Widget 支持拷贝操作是有意义的。我们必须自己写这些函数，因为（1）编译器不会为“只能移动的类型”（比如 std::unique_ptr）产生出拷贝操作，
+（2）即使他们会这么做，产生的函数也只会拷贝 std::unique_ptr（也就是执行浅拷贝），但是我们想要拷贝指针指向的东西（也就是执行深拷贝）。
+</p>
+<p>
+按照我们已经熟悉的惯例，我们在头文件中声明函数，并且在实现文件中实现它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// still in &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span> <span class="c1">// other funcs, as before
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// declarations
+</span><span class="c1"></span>	  <span class="n">Widget</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// only
+</span><span class="c1"></span>  <span class="k">private</span><span class="o">:</span> <span class="c1">// as before
+</span><span class="c1"></span>	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="cp">#include</span> <span class="cpf">&#34;widget.h&#34; // as before,</span><span class="cp">
+</span><span class="cp"></span>  <span class="err">…</span> <span class="c1">// in &#34;widget.cpp&#34;
+</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">Widget</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span> <span class="err">…</span> <span class="p">};</span> <span class="c1">// as before
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">::~</span><span class="n">Widget</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// other funcs, as before
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">::</span><span class="n">Widget</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="c1">// copy ctor
+</span><span class="c1"></span>	  <span class="o">:</span> <span class="n">pImpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">rhs</span><span class="p">.</span><span class="n">pImpl</span><span class="p">))</span>
+  <span class="p">{}</span>
+  <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">Widget</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="c1">// copy operator=
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="p">,</span><span class="o">*</span><span class="n">pImpl</span> <span class="o">=</span> <span class="o">*</span><span class="n">rhs</span><span class="p">.</span><span class="n">pImpl</span><span class="p">;</span>
+	  <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+两个函数的实现都很方便。每种情况，我们都只是简单地从源对象（rhs）中把 Impl 结构拷贝到目标对象（*this）。
+比起一个个地拷贝成员，我们利用了一个事实，也就是编译器会为 Impl 创造出拷贝操作，然后这些操作会自动地拷贝每一个成员。
+因此我们是通过调用 Widget::Impl 的“编译器产生的”拷贝操作来实现 Widget 的拷贝操作的，记住，我们还是要遵循 Item 21 的建议，
+比起直接使用 new，优先使用 std::make_unique。
+</p>
+<p>
+为了实现 Pimpl 机制，std::unique_ptr 是被使用的智能指针，因为对象（也就是 Widget）内部的 pImpl 指针对相应的实现对象（比如，Widget::Impl 对象）
+有独占所有权的语义。这很有趣，所以记住，如果我们使用 std::shared_ptr 来代替 std::unique_ptr 用在 pImpl 身上，
+我们将发现对于本 Item 的建议不再使用了。我们不需要声明 Widget 的析构函数，并且如果没有自定义的析构函数，
+编译器将很高兴地为我们产生出 move 操作，这些都是我们想要的。给出 widget.h 中的代码，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span> <span class="c1">// in &#34;widget.h&#34;
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">();</span>
+	  <span class="err">…</span> <span class="c1">// no declarations for dtor
+</span><span class="c1"></span>	  <span class="c1">// or move operations
+</span><span class="c1"></span>	  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">struct</span> <span class="n">Impl</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span> <span class="n">pImpl</span><span class="p">;</span> <span class="c1">// std::shared_ptr
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+所有的东西都能编译并执行得和我们希望的一样：w1 将被默认构造，它的值将移动到 w2 中去，
+这个值之后将移动回 w1，并且最后 w1 和 w2 都将销毁（因此造成指向的 Widget::Impl 对象被销毁）。
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w1</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="nf">w2</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">w1</span><span class="p">));</span> <span class="c1">// move-construct w2
+</span><span class="c1"></span>  <span class="n">w1</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">w2</span><span class="p">);</span> <span class="c1">// move-assign w1
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+std::unique_ptr 和 std::shared_ptr 对于 pImpl 指针行为的不同源于这两个智能指针对于自定义 deleter 的不同的支持方式。
+<span style="text-decoration: underline;">对于 std::unique_ptr 来说，deleter 的类型是智能指针类型的一部分</span> ，并且这让编译器产生出更小的运行期数据结构和更快的运行期代码成为可能。
+这样的高效带来的结果就是，当“编译器产生的”特殊函数（也就是，析构函数和 move 操作)被使用的时候，指向的类型必须是完整的。
+对于 std::shared_ptr，deleter 的类型不是智能指针的一部分。这就需要更大的运行期数据结构和更慢的代码，
+但是当“编译器产生的”特殊函数被使用时，指向的类型不需要是完整的 
+</p>
+<p>
+对于 Pimpl 机制来说，std::unique_ptr 和 std::shared_ptr 之间没有明确的抉择，因为 Widget 和 Widget::Impl 之间的关系是独占所有权的关系，
+所以这使得 std::unique_ptr 成为更合适的工具。但是，值得我们注意的是另外一种情况，这种情况下共享所有权是存在的
+（因此 std::shared_ptr 是更合适的设计选择），我们就不需要做那么多的函数定义了（如果使用 std::unique_ptr 的话是要做的）。
+</p>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+Pimpl 机制通过降低类客户和类实现之间的编译依赖性来降低编译时间。
+</p>
+</li>
+<li>
+<p>
+对于 std::unique_ptr 的 pImpl 指针，在头文件中声明特殊成员函数，但是实现他们的时候要放在实现文件中实现。即使编译器提供的默认函数实现是满足设计需要，我们还是要这么做。
+</p>
+</li>
+<li>
+<p>
+上面的建议能用在 std::unique_ptr 上面，但是不能用在 std::shared_ptr 上面。
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+翻译：<a href="http://www.cnblogs.com/boydfd/">http://www.cnblogs.com/boydfd/</a>
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/01/04/c-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/">
+            <span class="next-text nav-default">C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="item 11: 优先考虑使用 deleted function 而非 private undefined 在 C&#43;&#43; 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp;amp; ); // not defined basic_ios&amp;amp; operator=(const basic_ios&amp;amp;); // not defined }; In C&#43;&#43;1" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2017/12/26/c-ep04moving-to-modern-c-2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)" />
+<meta property="og:description" content="item 11: 优先考虑使用 deleted function 而非 private undefined 在 C&#43;&#43; 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp; ); // not defined basic_ios&amp; operator=(const basic_ios&amp;); // not defined }; In C&#43;&#43;1" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2017/12/26/c-ep04moving-to-modern-c-2/" />
+<meta property="article:published_time" content="2017-12-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-12-26T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)">
+<meta itemprop="description" content="item 11: 优先考虑使用 deleted function 而非 private undefined 在 C&#43;&#43; 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp; ); // not defined basic_ios&amp; operator=(const basic_ios&amp;); // not defined }; In C&#43;&#43;1">
+
+
+<meta itemprop="datePublished" content="2017-12-26T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2017-12-26T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="4247">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)"/>
+<meta name="twitter:description" content="item 11: 优先考虑使用 deleted function 而非 private undefined 在 C&#43;&#43; 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp; ); // not defined basic_ios&amp; operator=(const basic_ios&amp;); // not defined }; In C&#43;&#43;1"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-12-26 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">item 11: 优先考虑使用 deleted function 而非 private undefined</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">item 12: 把重写函数声明为“override”</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">item 13: 优先考虑 const_iterators 而非 iterators</a>
+<ul>
+<li><a href="#headline-6">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-7">item 14: 如果函数不会抛出异常就把它们声明为 noexcept</a>
+<ul>
+<li><a href="#headline-8">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-9">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+item 11: 优先考虑使用 deleted function 而非 private undefined
+</h1>
+<p>
+在 C++ 98 中禁止拷贝和赋值实现如下：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="err"> </span><span class="nc">charT</span><span class="p">,</span> <span class="k">class</span><span class="err"> </span><span class="nc">traits</span> <span class="o">=</span> <span class="n">char_traits</span><span class="o">&lt;</span><span class="n">charT</span><span class="o">&gt;</span> <span class="o">&gt;</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">basic_ios</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ios_base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">basic_ios</span><span class="p">(</span><span class="k">const</span> <span class="n">basic_ios</span><span class="o">&amp;</span> <span class="p">);</span> <span class="c1">// not defined
+</span><span class="c1"></span>	  <span class="n">basic_ios</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">basic_ios</span><span class="o">&amp;</span><span class="p">);</span> <span class="c1">// not defined
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+In C++11,可使用 <strong>= delete</strong>
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="err"> </span><span class="nc">charT</span><span class="p">,</span> <span class="k">class</span><span class="err"> </span><span class="nc">traits</span> <span class="o">=</span> <span class="n">char_traits</span><span class="o">&lt;</span><span class="n">charT</span><span class="o">&gt;</span> <span class="o">&gt;</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">basic_ios</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ios_base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="n">basic_ios</span><span class="p">(</span><span class="k">const</span> <span class="n">basic_ios</span><span class="o">&amp;</span> <span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+	  <span class="n">basic_ios</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">basic_ios</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<!-- more -->
+<p>
+delete 还可以删除实例化模板
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">processPointer</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">ptr</span><span class="p">);</span>
+
+  <span class="k">template</span><span class="o">&lt;&gt;</span>
+  <span class="kt">void</span> <span class="n">processPointer</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+  <span class="k">template</span><span class="o">&lt;&gt;</span>
+  <span class="kt">void</span> <span class="n">processPointer</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+优先考虑使用 deleted function 而非 private undefined
+</p>
+</li>
+<li>
+<p>
+任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+item 12: 把重写函数声明为“override”
+</h1>
+<p>
+因为 <strong>overriding</strong> (重写)听起来有点像 <strong>overloading</strong> (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">doWork</span><span class="p">();</span> <span class="c1">// base class virtual function
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">Derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">doWork</span><span class="p">();</span> <span class="c1">// overrides Base::doWork
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// (&#34;virtual&#34; is optional
+</span><span class="c1"></span>  <span class="p">};</span> <span class="c1">// here)
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Base</span><span class="o">&gt;</span> <span class="n">upb</span> <span class="o">=</span> <span class="c1">// create base class pointer
+</span><span class="c1"></span>	  <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Derived</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// to derived class object;
+</span><span class="c1"></span>  <span class="c1">// see Item 21 for info on
+</span><span class="c1"></span>  <span class="err">…</span> <span class="c1">// std::make_unique
+</span><span class="c1"></span>  <span class="n">upb</span><span class="o">-&gt;</span><span class="n">doWork</span><span class="p">();</span> <span class="c1">// call doWork through base
+</span><span class="c1"></span>  <span class="c1">// class ptr; derived class
+</span><span class="c1"></span>  <span class="c1">// function is invoked
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+为了能够成功重写，必须要符合一些要求：
+</p>
+<ul>
+<li>
+<p>
+基类函数必须是 virtual 的。
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的名字必须完全一样（除了析构函数）
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的参数类型必须完全一样。
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的 const 属性必须完全一样。
+</p>
+</li>
+<li>
+<p>
+类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的
+</p>
+</li>
+</ul>
+<p>
+这些限制是 C++98 要求的，C++11 还增加了一条:
+</p>
+<ul>
+<li>
+<p>
+函数的引用限定符必须完全一样
+</p>
+</li>
+</ul>
+<p>
+“成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。
+它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+
+	  <span class="kt">void</span> <span class="n">doWork</span><span class="p">()</span> <span class="o">&amp;</span><span class="p">;</span> <span class="c1">// this version of doWork applies
+</span><span class="c1"></span>  <span class="c1">// only when *this is an lvalue
+</span><span class="c1"></span>	  <span class="kt">void</span> <span class="nf">doWork</span><span class="p">()</span> <span class="o">&amp;&amp;</span><span class="p">;</span> <span class="c1">// this version of doWork applies
+</span><span class="c1"></span>  <span class="p">};</span> <span class="c1">// only when *this is an rvalue
+</span><span class="c1"></span>
+  <span class="n">Widget</span> <span class="nf">makeWidget</span><span class="p">();</span> <span class="c1">// factory function (returns rvalue)
+</span><span class="c1"></span>  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span> <span class="c1">// normal object (an lvalue)
+</span><span class="c1"></span>  <span class="n">w</span><span class="p">.</span><span class="n">doWork</span><span class="p">();</span> <span class="c1">// calls Widget::doWork for lvalues
+</span><span class="c1"></span>  <span class="c1">// (i.e., Widget::doWork &amp;)
+</span><span class="c1"></span>  <span class="n">makeWidget</span><span class="p">().</span><span class="n">doWork</span><span class="p">();</span> <span class="c1">// calls Widget::doWork for rvalues
+</span><span class="c1"></span>  <span class="c1">// (i.e., Widget::doWork &amp;&amp;)
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+写需要这么多的的要求，就意味着一个小的差错就会有很大影响。举个例子，下面的代码完全没有问题，并且乍一看也很合理，
+但是它们没有包含虚函数重写
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">mf1</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf2</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">);</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf3</span><span class="p">()</span> <span class="o">&amp;</span><span class="p">;</span>
+	  <span class="kt">void</span> <span class="nf">mf4</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="k">class</span><span class="err"> </span><span class="nc">Derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">mf1</span><span class="p">();</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf2</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x</span><span class="p">);</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf3</span><span class="p">()</span> <span class="o">&amp;&amp;</span><span class="p">;</span>
+	  <span class="kt">void</span> <span class="nf">mf4</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<ul>
+<li>
+<p>
+mf1 在基类中声明为 const，但是在派生类中却不是
+</p>
+</li>
+<li>
+<p>
+mf2 在基类中的参数类型是 int，但是在派生类中的参数类型是 unsigned
+</p>
+</li>
+<li>
+<p>
+mf3 在基类中是左值限定的，但是在派生类中是右值限定的
+</p>
+</li>
+<li>
+<p>
+mf4 在基类中没声明为 virtual
+</p>
+</li>
+</ul>
+<p>
+在派生类中，声明出正确的重写函数很重要，但是它们总是很容易出错，
+所以 C++11 给了你一个方法来明确一个派生类函数需要重写一个基类函数，这个方法就是把函数声明为 <strong>override</strong> 的
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">mf1</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf2</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf3</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="k">override</span><span class="p">;</span>
+	  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">mf4</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+把所有的派生类中的重写函数都声明为 override，这个准则不仅能让编译器告诉你什么地方声明了 override 却没有重写任何东西。
+而且当你考虑改变基类中虚函数的签名，它（这个准则）还能帮助你评估出影响大不大。如果派生类所有的地方都使用了 override，
+你只需要改变函数签名，然后再编译一次你的系统，看看你造成了多大的损害（也就是，各个派生类中有多少函数不能编译），
+然后再决定这些问题是否值得你去改变函数签名。
+</p>
+<p>
+C++11 介绍了两个和上下文相关的关键字(<strong>contextual keywords</strong>)，override 和 final。
+这两个关键字的特点是，只在特定的上下文中它们是保留的。
+比如 override 的情况，只有当它出现在成员函数声明的最后时，它才是保留的。
+这意味着如果你有历史遗留的代码，代码中已经使用了 override 作为 name，你不需要因为你使用了 C++11 而改变它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Warning</span> <span class="p">{</span> <span class="c1">// potential legacy class from C++98
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="err">…</span>
+	  <span class="kt">void</span> <span class="k">override</span><span class="p">();</span> <span class="c1">// legal in both C++98 and C++11
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// (with the same meaning)
+</span><span class="c1"></span>  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+需要引用限定功能的成员函数不常见，但是它是存在的。
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">using</span> <span class="n">DataType</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// see Item 9 for
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// info on &#34;using&#34;
+</span><span class="c1"></span>	  <span class="n">DataType</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">values</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">DataType</span> <span class="n">values</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="k">auto</span> <span class="n">vals1</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">data</span><span class="p">();</span> <span class="c1">// copy w.values into vals1
+</span><span class="c1"></span>
+  <span class="n">Widget</span> <span class="nf">makeWidget</span><span class="p">();</span>
+  <span class="k">auto</span> <span class="n">vals2</span> <span class="o">=</span> <span class="n">makeWidget</span><span class="p">().</span><span class="n">data</span><span class="p">();</span> <span class="c1">// copy values inside the
+</span><span class="c1"></span>  <span class="c1">// Widget into vals2
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+从 makeWidget 返回的临时对象（一个左值，），拷贝它的 std::vector 浪费时间，我们最好的做法是 move 它，
+但是因为 data 返回一个左值引用，所以 C++的规则要求编译器生成拷贝的代码。
+</p>
+<p>
+我们需要一个方法来明确一点，那就是当 data 被一个右值 Widget 调用时，结果也应该是一个右值。
+使用引用限定符来重载 data 的左值和右值版本让之成为可能：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">using</span> <span class="n">DataType</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+	  
+	  <span class="n">DataType</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">()</span> <span class="o">&amp;</span> <span class="c1">// for lvalue Widgets,
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">values</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// return lvalue
+</span><span class="c1"></span>	  <span class="n">DataType</span> <span class="n">data</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="c1">// for rvalue Widgets,
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">values</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// return rvalue
+</span><span class="c1"></span>	  
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">DataType</span> <span class="n">values</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-4">
+记住
+</h2>
+<ul>
+<li>
+<p>
+把重写函数声明为 override 的
+</p>
+</li>
+<li>
+<p>
+成员函数引用限定符能区别对待左值和右值对象（*this）
+</p>
+</li>
+</ul>
+<h1 id="headline-5">
+item 13: 优先考虑 const_iterators 而非 iterators
+</h1>
+<p>
+const_iterators 在 C++11 比 98 好用多了，但 C++11 只添加了 non-member 版本的 begin 和 end 函数，
+而没有添加相应的 cbegin，cend，rbegin，rend，crbegin，crend。C++14 更正了这个问题。C++ 11 自己实现
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="err"> </span><span class="nc">C</span><span class="o">&gt;</span>
+  <span class="k">auto</span> <span class="n">cbegin</span><span class="p">(</span><span class="k">const</span> <span class="n">C</span><span class="o">&amp;</span> <span class="n">container</span><span class="p">)</span><span class="o">-&gt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">container</span><span class="p">))</span>
+  <span class="p">{</span>
+		  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">container</span><span class="p">);</span> <span class="c1">// see explanation below
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+看到 non-member 版本的 cbegin 没有调用 member 版本的 cbegin，你觉得很奇怪是吧？我也觉得奇怪，但是跟着代码看下来。
+cbegin 模板接受任何类型的参数来表示一个“类容器”（C），并且它通过它的 reference-to-const 形参（container）来使用实参。
+如果 C 是一个普通的容器类型（比如，一个 std::vector），container 将成为一个指向 const 容器的引用（也就是，const std::vector&lt;int&gt;&amp;）。
+用 const 容器调用 non-member 版本的 begin 函数（由 C++11 提供）就能产生一个 const_iterator，
+并且这个 iterator 就是这个模板的返回值。用这样的方式来实现的优点是，对于那些提供了 begin 成员函数，但是没有提供 cbegin 成员函数的容器，
+能更好地工作（在 C++11 的 non-member 版本的 begin 中，会调用这个容器的 begin 成员函数）。
+因此，你能对只提供 begin 成员函数的容器，使用这个 non-member 版本的 cbegin。
+</p>
+<p>
+如果 C 是一个 built-in 数组类型，这个模板也能工作。在这种情况下，container 成为一个指向 const 数组的引用。C++11 在 non-member 版本的 begin 中，
+为数组提供了一个特殊的版本，这个版本的 begin 返回一个指向数组中第一个元素的指针。一个 const 数组的元素是 const 的，所以 non-member 版本的 begin 为
+const 数组返回一个 point-to-const 的指针，并且事实上，一个 point-to-const 的指针对于数组来说就是一个 const_iterator。
+（为了深入了解一个模板怎么为 built-in 数组特殊化，请看 Item 1 中，以指向数组的引用为参数的 template 类型推导的讨论）
+</p>
+<h2 id="headline-6">
+记住
+</h2>
+<ul>
+<li>
+<p>
+优先考虑 const_iterators 而非 iterators
+</p>
+</li>
+<li>
+<p>
+在最大限度的通用代码中，优先考虑 begin，end，rbegin 等非成员版本的成员函数。
+</p>
+</li>
+</ul>
+<h1 id="headline-7">
+item 14: 如果函数不会抛出异常就把它们声明为 noexcept
+</h1>
+<p>
+在设计接口的时候，一个函数是不是应该这么声明（noexcept）是一个需要考虑的问题。函数的异常抛出行为是客户最感兴趣的部分。
+调用者能查询一个函数的 noexcept 状态，并且这个查询的结果能影响异常安全（exception safety）或着调用代码的性能。
+因此，一个函数是否是 noexcept 就和一个成员函数是否是 cosnt 同样重要。当你知道一个函数不会抛出异常的时候却不声明它为 noexcept，
+就属于一个不好的接口设计。
+</p>
+<p>
+但是，这里还有一个额外的动机让我们把 noexcept 应用到不会产生异常的函数上：它允许编译器产生更好的目标代码。
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="k">throw</span><span class="p">();</span> <span class="c1">// no exceptions from f: C++98 style
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="k">noexcept</span><span class="p">;</span> <span class="c1">// no exceptions from f: C++11 style
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果，运行时期，一个异常逃离了 f，这违反了 f 的异常规范。在 C++98 的异常规范下，f 的调用者的调用栈被解开了，然后经过一些不相关的动作，程序终止执行。
+在 C++11 的异常规范下，运行期行为稍微有些不同：调用栈只有在程序终止前才有可能被解开。
+</p>
+<p>
+解开调用栈的时机，以及解开的可能性的不同，对于代码的产生有很大的影响。在一个 noexcept 函数中，如果一个异常能传到函数外面去，
+优化器不需要保持运行期栈为解开的状态，也不需要确保 noexcept 函数中的对象销毁的顺序和构造的顺序相反（因为 noexcept 是不应该抛出异常的）。
+</p>
+<p>
+我们值得去注意一些库的接口设计区分了宽接口（ <strong>wide contract</strong> ）和窄接口（ <strong>narrow contract</strong> ）。
+一个带宽接口的函数没有前提条件。这样的函数被调用时不需要注意程序的状态，它在传入的参数方面没有限制。
+带宽接口的函数永远不会展现未定义行为。
+</p>
+<p>
+不带宽接口条件的函数就是窄接口函数。对这些函数来说，如果传入的参数违反了前提条件，结果将是未定义的。
+</p>
+<p>
+如果你在写一个宽接口的函数，并且你知道你不会抛出一个异常，那就遵循本 Item 的建议，把它声明为 noexcept。对于那些窄接口的函数，
+情况将变得很棘手。举个例子，假设你正在写一个函数 f，这个函数接受一个 std::string 参数，并且它假设 f 的实现永远不会产生一个异常。
+这个假设建议把 f 声明为 noexcept。
+</p>
+<p>
+现在假设 f 有一个前提条件：std::string 参数的数据长度不会超过 32 个字节。如果用一个超过 32 字节的 std::string 来调用 f，f 的行为将是未定义的，
+因为一个不符合前提条件的参数会导致未定义行为。f 没有义务去检查前提条件，因为函数假设它们的前提条件是被满足的（调用者有责任确保这些假设是有效的）。
+由于前提条件的存在，把 f 声明为 noexcept 看起来是合理的。
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="k">noexcept</span><span class="p">;</span> <span class="c1">// precondition:
+</span><span class="c1"></span>  <span class="c1">// s.length() &lt;= 32
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是假设 f 的实现选择检查前提条件是否被违反了。检查本不是必须的，但是它也不是被禁止的，并且检查一下前提条件是有用的（比如，在进行系统测试的时候）。
+调试时，捕捉一个抛出的异常总是比尝试找出未定义行为的原因要简单很多。但是要怎么报道出前提条件被违反了呢？
+只有报道了才能让测试工具或客户端的错误处理机制来捕捉到它。一个直接的方法就是抛出一个“前提条件被违反”的异常，但是如果 f 被声明为 noexcept，
+那么这个方法就不可行了，抛出一个异常就会导致程序终止。因此，区分宽接口和窄接口的库设计者通常只为宽接口函数提供 noexcept 声明。
+</p>
+<p>
+编译器通常不能帮助识别函数实现与异常规范之间的不一致性。下段代码是完全合法的
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">setup</span><span class="p">();</span> <span class="c1">// functions defined elsewhere
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">cleanup</span><span class="p">();</span>
+  <span class="kt">void</span> <span class="nf">doWork</span><span class="p">()</span> <span class="k">noexcept</span>
+  <span class="p">{</span>
+	  <span class="n">setup</span><span class="p">();</span> <span class="c1">// set up work to be done
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// do the actual work
+</span><span class="c1"></span>		  <span class="n">cleanup</span><span class="p">();</span> <span class="c1">// perform cleanup actions
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在这里，尽管 doWork 调用了 non-noexcept 函数（setup 和 cleanup），doWork 还是被声明为 noexcept。这看起来很矛盾，
+但是有可能 setup 和 cleanup 在说明文档中说了它们永远不会抛出异常。就算它们没有在说明文档中说明，
+我们 还是有多理由来解释他们的声明式为什么是 non-noexcept。举个例子，它们可能是用 C 写的。（
+也可能是从 C 标准库移动到 std 命名空间但缺少异常规范的函数，比如，std::strlen 没有声明为 noexcept）或者它们可能是 C++98 标准库的一部分，
+没有使用 C++98 的异常规范，并且到目前为止还没有被修改成 C++11 的版本。
+</p>
+<p>
+因为这里有很多合适的理由来解释为什么 noexcept 函数可以调用缺乏 noexcept 保证的函数，所以 C++允许这样的代码，并且编译器通常不会对此发出警告。
+</p>
+<h2 id="headline-8">
+记住
+</h2>
+<ul>
+<li>
+<p>
+noexcept 是函数接口的一部分，并且调用者可能会依赖这个接口
+</p>
+</li>
+<li>
+<p>
+比起 non-noexcept 函数，noexcept 函数可以更好地被优化
+</p>
+</li>
+<li>
+<p>
+noexcept 对于 move 操作，swap，内存释放函数和析构函数是特别有价值的
+</p>
+</li>
+<li>
+<p>
+大部分函数是异常中立的而不是 noexcept
+</p>
+</li>
+</ul>
+<h1 id="headline-9">
+参考
+</h1>
+<p>
+effective-modern-c++
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2017-12-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2017/12/27/c-ep05moving-to-modern-c-3/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2017/12/22/c-ep03moving-to-modern-c-1/">
+            <span class="next-text nav-default">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)" />
+<meta property="og:description" content="Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/" />
+<meta property="article:published_time" content="2018-01-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-03T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)">
+<meta itemprop="description" content="Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在">
+
+
+<meta itemprop="datePublished" content="2018-01-03T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-03T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="6581">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)"/>
+<meta name="twitter:description" content="Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-03 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 23:理解 std::move 和 std::forward</a>
+<ul>
+<li><a href="#headline-2">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-3">Item 24: 区分右值引用和 universal 引用</a>
+<ul>
+<li><a href="#headline-4">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Item 23:理解 std::move 和 std::forward
+</h1>
+<p>
+根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。
+在运行期，它们没有做任何事情。它们没有产生需要执行的代码，一 byte 都没有。
+</p>
+<p>
+std::move 和 std::forward 只不过就是执行 cast 的两个函数（实际上是函数模板）。
+std::move 无条件地把它的参数转换成一个右值，而 std::forward 只在特定条件满足的情况下执行这个转换。就是这样了，
+我的解释又引申出一系列的新问题，但是，基本上来说，上面说的就是全部内容了。
+</p>
+<!-- more -->
+<p>
+为了让内容更加形象，这里给出 C++11 中 std::move 实现的一个例子。它没有完全遵循标准的细节，但是很接近了。
+</p>
+<!-- more -->
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// in namespace std
+</span><span class="c1"></span>  <span class="k">typename</span> <span class="n">remove_reference</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">type</span><span class="o">&amp;&amp;</span>
+  <span class="n">move</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">)</span>
+  <span class="p">{</span>
+	  <span class="k">using</span> <span class="n">ReturnType</span> <span class="o">=</span> <span class="c1">// alias declaration;
+</span><span class="c1"></span>		  <span class="k">typename</span> <span class="n">remove_reference</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">type</span><span class="o">&amp;&amp;</span><span class="p">;</span> <span class="c1">// see Item 9
+</span><span class="c1"></span>	  <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ReturnType</span><span class="o">&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+我已经帮你把代码的两个部分高亮（move 和 static_cast）显示了。一个是函数的名字，因为返回值类型挺复杂的，我不想让你在这复杂的地方浪费时间。
+另一个地方是包括了这个函数的本质（cast）。就像你看到的那样，std::move 需要一个对象的引用（准确地说是一个 universal 引用，看 Item 24），
+并且返回同一个对象的引用。
+</p>
+<p>
+函数返回值类型的“&amp;&amp;”部分暗示了 std::move 返回一个右值引用，但是，就像 Item 28 解释的那样，如果类型 T 恰好是左值引用，T&amp;&amp;将成为一个左值引用。
+为了防止这样的事情发生，type trait（看 Item 9）std::remove_reference 被用在 T 上了，因此能保证把“&amp;&amp;”加在不是引用的类型上。
+这样能保证让 std::move 确切地返回一个右值引用，并且这是很重要的，因为由函数返回的右值引用是一个右值。
+因此，std::move 所做的所有事情就是转换它的参数为一个右值。
+</p>
+<p>
+说句题外话，在 C++14 中 std::move 能被实现得更简便一些。多亏了函数返回值类型推导（看 Item 3）以及标准库的别名模板
+std::remove_reference_t（看 Item 9），std::move 能被写成这样：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// C++14; still in
+</span><span class="c1"></span>  <span class="k">decltype</span><span class="p">(</span><span class="k">auto</span><span class="p">)</span> <span class="n">move</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// namespace std
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="k">using</span> <span class="n">ReturnType</span> <span class="o">=</span> <span class="n">remove_reference_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;&amp;</span><span class="p">;</span>
+	  <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ReturnType</span><span class="o">&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+看上去更简单了，不是吗？
+</p>
+<p>
+因为 std::move 值只转换它的参数为右值，这里有一些更好的名字，比如说 rvalue_cast。尽管如此，我们仍然使用 std::move 作为它的名字，
+所以记住 std::move 做了什么和没做什么很重要。它做的是转换，没有做 move。
+</p>
+<p>
+当然了，右值是 move 的候选人，所以把 std::move 应用在对象上能告诉编译器，这个对象是有资格被 move 的。
+这也就是为什么 std::move 有这样的名字：能让指定的对象更容易被 move。
+</p>
+<p>
+事实上，右值是 move 的唯一候选人。假设你写了一个代表注释的类。
+这个类的构造函数有一个 std::string 的参数，并且它拷贝参数到一个数据成员中。根据 Item 41 中的信息，你声明一个传值的参数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Annotation</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">explicit</span> <span class="n">Annotation</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">text</span><span class="p">);</span> <span class="c1">// param to be copied,
+</span><span class="c1"></span>	  <span class="err">…</span> <span class="c1">// so per Item 41,
+</span><span class="c1"></span>  <span class="p">};</span> <span class="c1">// pass by value
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是 Annotation 的构造函数只需要读取 text 的值。它不需要修改它。
+为了符合历史传统（把 const 用在任何可以使用的地方），你修改了你的声明，因此 text 成为了 const 的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Annotation</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">explicit</span> <span class="n">Annotation</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">text</span><span class="p">)</span>
+		  <span class="err">…</span>
+		  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+为了在拷贝 text 到数据成员的时候不把时间浪费在拷贝操作上，你保持 Item 41 的建议并且把 std::move 用在 text 上，因此产生了一个右值：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Annotation</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">explicit</span> <span class="n">Annotation</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">text</span><span class="p">)</span>
+		  <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">text</span><span class="p">))</span> <span class="c1">// &#34;move&#34; text into value; this code
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="err">…</span> <span class="p">}</span> <span class="c1">// doesn&#39;t do what it seems to!
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">value</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+代码能够编译。代码能够链接。代码能够执行。代码把数据成员 value 的值设为 text 的内容。这段代码同完美的代码（你所要的版本）
+之间的唯一不同之处就是 text 不是被 move 到 value 中去的，它是拷贝过去的。当热，text 通过 std::move 转换成了一个右值，
+但是 text 被声明为一个 const std::string，所以在转换之前，text 是一个左值 const std::string，
+然后转换的结果就是一个右值 const std::string，但是一直到最后，const 属性保留下来了
+</p>
+<p>
+考虑一下 const 对于编译器决定调用哪个 std::string 构造函数有什么影响。这里有两种可能：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">string</span> <span class="p">{</span> <span class="c1">// std::string is actually a
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// typedef for std::basic_string&lt;char&gt;
+</span><span class="c1"></span>	  <span class="err">…</span>
+	  <span class="n">string</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// copy ctor
+</span><span class="c1"></span>	  <span class="n">string</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">);</span> <span class="c1">// move ctor
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在 Annotation 的构造函数的成员初始化列表中，std::move(text)的结果是一个 const std::string 的右值。
+这个右值不能传给 std::string 的 move 构造函数，因为 move 构造函数只接受非 const std::string 的右值引用。
+但是，这个右值能被传给拷贝构造函数，因为一个 lvalue-reference-to-const（引用 const 的左值）能被绑定到一个 const 右值上去。
+因此即使 text 已经被转化成了一个右值，成员初始化列表还是调用了 std::string 中的拷贝构造函数。这样的行为本质上是为了维持 const 的正确性。
+一般把一个值 move 出去就相当于改动了这个对象，所以 C++不允许 const 对象被传给一个能改变其自身的函数（比如 move 构造函数）。
+</p>
+<p>
+我们从这个例子中得到两个教训。第一，如果你想要让一个对象能被 move，就不要把这个对象声明为 const。
+在 const 对象上的 move 请求会被默认地转换成拷贝操作。第二，std::move 事实上没有 move 任何东西，
+它甚至不能保证它转换出来的对象能有资格被 move。你唯一能知道的事情就是，把 std::move 用在一个对象之后，它变成了一个右值。
+</p>
+<p>
+std::forward 的情况和 std::move 相类似，但是 std::move 是无条件地把它的参数转换成右值的，而 std::forward 只在确定条件下才这么做。
+std::forward 是一个有条件的转换。为了理解它什么时候转换，什么时候不转换，回忆一下 std::forward 是怎么使用的。最常见的情况就是，
+一个带 universal 引用的参数被传给另外一个参数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="k">const</span> <span class="n">Widget</span><span class="o">&amp;</span> <span class="n">lvalArg</span><span class="p">);</span> <span class="c1">// process lvalues
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rvalArg</span><span class="p">);</span> <span class="c1">// process rvalues
+</span><span class="c1"></span>  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="c1">// template that passes
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="n">logAndProcess</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// param to process
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="k">auto</span> <span class="n">now</span> <span class="o">=</span> <span class="c1">// get current time
+</span><span class="c1"></span>		  <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+	  <span class="n">makeLogEntry</span><span class="p">(</span><span class="s">&#34;Calling &#39;process&#39;&#34;</span><span class="p">,</span> <span class="n">now</span><span class="p">);</span>
+	  <span class="n">process</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">));</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+考虑一下两个 logAndProcess 调用，一个使用左值，另外一个使用右值：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="n">logAndProcess</span><span class="p">(</span><span class="n">w</span><span class="p">);</span> <span class="c1">// call with lvalue
+</span><span class="c1"></span>  <span class="n">logAndProcess</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">w</span><span class="p">));</span> <span class="c1">// call with rvalue
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在 logAndProcess 内部，参数 param 被传给 process 函数。process 重载了左值和右值两个版本。
+当我们用左值调用 logAndProcess 的时候，我们自然是希望这个左值作为一个左值被转发给 process，然后当我们使用右值调用 logAndProcess 时，
+我们希望右值版本的 process 被调用。
+</p>
+<p>
+但是 param 就和所有的函数参数一样，是一个左值。因此在 logAndProcess 内部总是调用左值版本的 process。
+为了防止这样的事情发生，我们需要一种机制来让 param 在它被一个右值初始化（传给 logAndProcess 的参数）的时候转换成右值。
+这正好就是 std::forward 做的事情。这也就是为什么 std::forward 是一个条件转换：它只把用右值初始化的参数转换成右值。
+</p>
+<p>
+你可能会奇怪 std::forward 怎么知道他的参数是不是用右值初始化的。举个例子吧，在上面的代码中，
+std::forward 怎么会知道 param 是被左值还是右值初始化的呢？简单来说就是这个信息被包含在 logAndProcess 的模板参数 T 中了。
+这个参数被传给了 std::forward，这样就让 std::forward 得知了这个信息。它具体怎么工作的细节请参考 Item 28。
+</p>
+<p>
+考虑到 std::move 和 std::forward 都被归结为转换，不同之处就是 std::move 总是执行转换，
+但是 std::forward 只在有些情况下执行转换，你可能会问我们是不是可以去掉 std::move 并且在所有的地方都只使用 std::forward。
+从技术的角度来看，回答是可以：std::forward 能做到所有的事情。std::move 不是必须的。当然，这两个函数函数都不是“必须的”，
+因为我们能在使用的地方写 cast，但是我希望我们能同意它们是必须的函数，好吧，真是令人心烦的事。
+</p>
+<p>
+std::move 的优点是方便，减少相似的错误，并且更加清晰。考虑一个类，对于这个类我们想要记录它的 move 构造函数被调用了多少次。
+一个能在 move 构造的时候自增的 static 计数器就是我们需要的东西了。假设这个类中唯一的非 static 数据是一个 std::string，
+这里给出通常的办法（也就是使用 std::move）来实现 move 构造函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span>
+		  <span class="o">:</span> <span class="n">s</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">s</span><span class="p">))</span>
+		  <span class="p">{</span> <span class="o">++</span><span class="n">moveCtorCalls</span><span class="p">;</span> <span class="p">}</span>
+	  <span class="err">…</span>
+	  <span class="k">private</span><span class="o">:</span>
+	  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">moveCtorCalls</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+为了用 std::forward 来实现相同的行为，代码看起来像是这样的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="n">Widget</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="c1">// unconventional,
+</span><span class="c1"></span>		  <span class="o">:</span> <span class="n">s</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">s</span><span class="p">))</span> <span class="c1">// undesirable
+</span><span class="c1"></span>		  <span class="p">{</span> <span class="o">++</span><span class="n">moveCtorCalls</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// implementation
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+首先注意 std::move 只需要一个函数参数（rhs.s），而 std::forward 却需要一个函数参数（rhs.s）以及一个模板类型参数（std::string）。
+然后注意一下我们传给 std::forward 的类型应该是一个非引用类型，因为我们约定好传入右值的时候要这么编码（传入一个非引用类型，看 Item 28）。
+也就是说，这意味着 std::move 需要输入的东西比 std::forward 更少，还有，它去掉了我们传入的参数是右值时的麻烦（记住类型参数的编码）。
+它也消除了我们传入错误类型（比如，std::string&amp;，这会导致数据成员用拷贝构造函数来替换 move 构造函数）的可能。
+</p>
+<p>
+更加重要的是，使用 std::move 表示无条件转换到一个右值，然后使用 std::forward 表示只有引用的是右值时才转换到右值。
+这是两种非常不同的行为。第一个常常执行 move 操作，但是第二个只是传递（转发）一个对象给另外一个函数并且保留它原始的左值属性或右值属性。
+因为这些行为如此地不同，所以我们使用两个函数（以及函数名）来区分它们是很好的主意。
+</p>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+std::move 执行到右值的无条件转换。就其本身而言，它没有 move 任何东西。
+</p>
+</li>
+<li>
+<p>
+std::forward 只有在它的参数绑定到一个右值上的时候，它才转换它的参数到一个右值。
+</p>
+</li>
+<li>
+<p>
+std::move 和 std::forward 在运行期都没有做任何事情。
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+Item 24: 区分右值引用和 universal 引用
+</h1>
+<p>
+古人曾说事情的真相会让你觉得很自在，但是在适当的情况下，一个良好的谎言同样能解放你。这个 Item 就是这样一个谎言。
+但是，因为我们在和软件打交道，所以让我们避开“谎言”这个词，换句话来说：本 Item 是由“抽象”组成的。
+</p>
+<p>
+为了声明一个指向 T 类型的右值引用，你会写 T&amp;&amp;。因此我们可以“合理”地假设：如果你在源代码中看到“T&amp;&amp;”，你就看到了一个右值引用。可惜地是，它没有这么简单：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// rvalue reference
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">var1</span> <span class="o">=</span> <span class="n">Widget</span><span class="p">();</span> <span class="c1">// rvalue reference
+</span><span class="c1"></span>  <span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">var2</span> <span class="o">=</span> <span class="n">var1</span><span class="p">;</span> <span class="c1">// not rvalue reference
+</span><span class="c1"></span>  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// rvalue reference
+</span><span class="c1"></span>  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// not rvalue reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+事实上，“T&amp;&amp;”有两个不同的意思。当然，其中一个是右值引用。这样引用行为就是你所期望的：它们只绑定到右值上去，并且它们的主要职责就是去明确一个对象是可以被 move 的。
+</p>
+<p>
+“T&amp;&amp;”的另外一个意思即可能是左值引用也可能是右值引用。这样的引用看起来像是在源文件中的右值引用（也就是，“T&amp;&amp;”），
+但是它能表现得像是一个左值引用（也就是“T&amp;”）一样。
+它这样的两重意义让它能绑定到左值（就像左值引用）上去，也能绑定到右值（就像右值引用）上去。另外，它能绑定到 const 或非 const 对象上去，
+也能绑定到 volatile 或非 volatile 对象上去，甚至能绑定到 const 加 volatile 的对象上去。它能绑定到几乎任何东西上去。
+这样空前灵活的引用理应拥有它们自己的名字，我叫它们 universal 引用（万能引用）。
+</p>
+<p>
+universal 引用出现在两种上下文中。最通用的情况是在函数模板参数中，就像来自于上面示例代码的这个例子一样：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// param is a universal reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+第二个情况是 auto 声明，包括上面示例代码中的这一行代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">var2</span> <span class="o">=</span> <span class="n">var1</span><span class="p">;</span> <span class="c1">// var2 is a universal reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这两个情况的共同点就是它们都存在类型推导。在模板 f 中，param 的类型正在被推导，并且在 var2 的声明式中，var2 的类型正在被推导。
+把它们和下面的例子（它们不存在类型推导，同样来自上面的示例代码）比较一下，可以发现，如果你看到不存在类型推导的“T&amp;&amp;”时，你能把它视为右值引用：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// no type deduction;
+</span><span class="c1"></span>  <span class="c1">// param is an rvalue reference
+</span><span class="c1"></span>  <span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">var1</span> <span class="o">=</span> <span class="n">Widget</span><span class="p">();</span> <span class="c1">// no type deduction;
+</span><span class="c1"></span>  <span class="c1">// var1 is an rvalue reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+因为 universal 引用是引用，它们必须被初始化。universal 引用的初始化决定了它代表一个右值还是一个左值。如果初始化为一个右值，
+universal 引用对应右值引用。如果初始化为一个左值，universal 引用对应一个左值引用。对于那些属于函数参数的 universal 引用，它在调用的地方被初始化：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// param is a universal reference
+</span><span class="c1"></span>  <span class="n">Widget</span> <span class="n">w</span><span class="p">;</span>
+  <span class="n">f</span><span class="p">(</span><span class="n">w</span><span class="p">);</span> <span class="c1">// lvalue passed to f; param&#39;s type is
+</span><span class="c1"></span>  <span class="c1">// Widget&amp; (i.e., an lvalue reference)
+</span><span class="c1"></span>  <span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">w</span><span class="p">));</span> <span class="c1">// rvalue passed to f; param&#39;s type is
+</span><span class="c1"></span>  <span class="c1">// Widget&amp;&amp; (i.e., an rvalue reference)
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+要让一个引用成为 universal 引用，类型推导是其必要不补充条件。引用声明的格式必须同时正确才行，而且格式很严格。它必须正好是“T&amp;&amp;”。
+再看一次这个我们之前在示例代码中看过的例子：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// param is an rvalue reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+当 f 被调用时，类型 T 将被推导（除非调用者显式地指定它，这种边缘情况我们不关心）。但是 param 类型推导的格式不是“T&amp;&amp;”，
+而是“std::vector&amp;&amp;”。按照上面的规则，排除了 param 成为一个 universal 引用的可能性。因此 param 是一个右值引用，
+有时候你的编译器会很高兴地为你确认你是否传入了一个左值给 f：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+  <span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="c1">// error! can&#39;t bind lvalue to
+</span><span class="c1"></span>  <span class="c1">// rvalue reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+甚至一个简单的 <span style="text-decoration: underline;">const 属性的出场就足以取消引用成为 universal 的资格</span> ：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// param is an rvalue reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果你在一个模板中，并且你看到一个“T&amp;&amp;”类型的函数参数，你可能觉得你能假设它是一个 universal 引用。
+但是你不能，因为在模板中不能保证类型推导的存在。考虑一下 std::vector 中的这个 push_back 成员函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="err"> </span><span class="nc">T</span><span class="p">,</span> <span class="k">class</span><span class="err"> </span><span class="nc">Allocator</span> <span class="o">=</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="c1">// from C++
+</span><span class="c1"></span>  <span class="k">class</span><span class="err"> </span><span class="nc">vector</span> <span class="p">{</span> <span class="c1">// Standards
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span>
+	  <span class="kt">void</span> <span class="n">push_back</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">x</span><span class="p">);</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+push_back 的参数完全符合 universal 引用的格式，但是在这个情况中没有类型推导发生。
+因为 push_back 不能存在于 vector 的特定实例之外，并且实例的类型就完全能决定 push_back 的声明类型了。也就是说
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+使得 std::vector 模板被实例化为下面这样：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">vector</span><span class="o">&lt;</span><span class="n">Widget</span><span class="p">,</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="kt">void</span> <span class="n">push_back</span><span class="p">(</span><span class="n">Widget</span><span class="o">&amp;&amp;</span> <span class="n">x</span><span class="p">);</span> <span class="c1">// rvalue reference
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+现在你能清楚地发现 push_back 没有用到类型推导。vector 的这个 push_back（vector 中有两个 push_back 函数）
+总是声明一个类型是 rvalue-reference-to-T（指向 T 的右值引用）的参数。
+</p>
+<p>
+不同的是，std::vector 中和 push_back 概念上相似的 emplace_back 成员函数用到了类型推导：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="err"> </span><span class="nc">T</span><span class="p">,</span> <span class="k">class</span><span class="err"> </span><span class="nc">Allocator</span> <span class="o">=</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="c1">// still from
+</span><span class="c1"></span>  <span class="k">class</span><span class="err"> </span><span class="nc">vector</span> <span class="p">{</span> <span class="c1">// C++
+</span><span class="c1"></span>  <span class="k">public</span><span class="o">:</span> <span class="c1">// Standards
+</span><span class="c1"></span>	  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="err">... </span><span class="nc">Args</span><span class="o">&gt;</span>
+	  <span class="kt">void</span> <span class="n">emplace_back</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在这里，类型参数 Args 独立于 vector 的类型参数 T，所以每次 emplace_back 被调用的时候，Args 必须被推导。
+（好吧，Args 事实上是一个参数包，不是一个类型参数，但是为了讨论的目的，我们能把它视为一个类型参数。）
+</p>
+<p>
+事实上 emplace_back 的类型参数被命名为 Args（不是 T），但是它仍然是一个 universal 引用，之前我说 universal 引用的格式必须是“T&amp;&amp;”。
+在这里重申一下，我没要求你必须使用名字 T。举个例子。下面的模板使用一个 universal 引用，因为格式（“type&amp;&amp;”）是正确的，
+并且 param 的类型将被推导（再说一次，除了调用者显式指定类型的边缘情况）：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">MyTemplateType</span><span class="o">&gt;</span> <span class="c1">// param is a
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="n">someFunc</span><span class="p">(</span><span class="n">MyTemplateType</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">);</span> <span class="c1">// universal reference
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+我之前说过 auto 变量也能是 universal 引用。更加精确一些，用 auto&amp;&amp;的格式被推导的变量是 universal 引用，
+因为类型推导有发生，并且它有正确的格式（“T&amp;&amp;”）。auto universal 引用不像用于函数模板参数的 universal 引用那么常见，
+但是他们有时候会在 C++11 中突然出现。他们在 C++14 中出现的频率更高，因为 C++14 的 lambda 表达式可以声明 auto&amp;&amp;参数。
+举个例子，如果你想要写一个 C++14 的 lambda 来记录任意函数调用花费的时间，你能这么做：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">timeFuncInvocation</span> <span class="o">=</span>
+	  <span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">func</span><span class="p">,</span> <span class="k">auto</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span> <span class="c1">// C++14
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="n">start</span> <span class="n">timer</span><span class="p">;</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span> <span class="c1">// invoke func
+</span><span class="c1"></span>		  <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...</span> <span class="c1">// on params
+</span><span class="c1"></span>		  <span class="p">);</span>
+	  <span class="n">stop</span> <span class="n">timer</span> <span class="n">and</span> <span class="n">record</span> <span class="n">elapsed</span> <span class="n">time</span><span class="p">;</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果你对 lambda 中“std::forward&lt;decltype(blah blah blah)&gt;”的代码感到困惑，这可能只是意味着你还没读过 Item 33.不要担心这件事。
+在本 Item 中，重要的事情是 lambda 表达式中声明的 auto&amp;&amp;参数。func 是一个 universal 引用，它能被绑定到任何调用的对象上去，
+不管是左值还是右值。params（译注：原文为 args，应该是笔误）是 0 个或多个 universal 引用（也就是一个 universal 引用包），
+它能被绑定到任何数量的任意类型的对象上去。结果就是，由于 auto universal 引用的存在，timeFuncInvocation 能给绝大多数函数的执行进行计时。
+（对于为什么是绝大多数而不是任意，请看 Item 30。）
+</p>
+<p>
+把这件事记在心里：我们这整个 Item(universal 引用的基础)都是一个谎言…额，一个“抽象”！潜在的事实被称为 *引用折叠* ，
+这个话题会在 Item 28 中专门讨论。但是事实并不会让抽象失效。区分右值引用和 universal 引用将帮助你更精确地阅读源代码
+（“我看到的 T&amp;&amp;只能绑定到右值上，还是能绑定到所有东西上呢？”），并且在你和同事讨论的时候，它能让你避免歧义。
+（“我在这里使用一个 universal 引用，不是一个右值引用…”）。它也能让你搞懂 Item 25 和 Item 26 的意思，这两个 Item 都依赖于这两个引用的区别。
+所以，拥抱抽象并陶醉于此吧。就像牛顿的运动定律（学术上来说是错误的）一样，
+比起爱因斯坦的相对论（“事实”）来说它通常一样好用并且更简单，universal 引用的概念也是这样，比起工作在引用折叠的细节来说，它是更好的选择。
+</p>
+<h2 id="headline-4">
+记住
+</h2>
+<ul>
+<li>
+<p>
+如果一个函数模板参数有 T&amp;&amp;的格式，并且会被推导，或者一个对象使用 auto&amp;&amp;来声明，那么参数或对象就是一个 universal 引用。
+</p>
+</li>
+<li>
+<p>
+如果类型推导的格式不是准确的 type&amp;&amp;，或者如果类型推导没有发生，type&amp;&amp;就是一个右值引用。
+</p>
+</li>
+<li>
+<p>
+如果用右值来初始化，universal 引用相当于右值引用。如果用左值来初始化，则相当于左值引用。
+</p>
+</li>
+</ul>
+<h1 id="headline-5">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+翻译：<a href="http://www.cnblogs.com/boydfd/">http://www.cnblogs.com/boydfd/</a>
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/01/03/c-ep08smart-pointers3/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep08:Smart Pointers(3)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2018/01/02/c-ep07smart-pointers2/">
+            <span class="next-text nav-default">C&#43;&#43; Ep07:Smart Pointers(2)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

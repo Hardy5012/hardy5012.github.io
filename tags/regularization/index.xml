@@ -13,10 +13,10 @@
     
     <item>
       <title>Machine Learning(4) Regularization</title>
-      <link>https://hardy5012.github.io/post/machine-learning4-regularization/</link>
+      <link>https://hardy5012.github.io/2017/05/17/machine-learning4-regularization/</link>
       <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/machine-learning4-regularization/</guid>
+      <guid>https://hardy5012.github.io/2017/05/17/machine-learning4-regularization/</guid>
       <description>正规化(Regularization)弱化的高阶项的系数，这弱化也称为对参数θ的惩罚（penalize）。 线性回归中的正规化 公式变为： \begin{gather*} J(</description>
     </item>
     

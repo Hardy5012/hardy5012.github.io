@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Python 虚拟环境 - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Virtualenv Introduction virtualenv is a tool to create isolated Python environments. Installation 1 sudo pip install virtualenv {{{more}}} Usage 1.为一个工程创建一个虚拟环境： 1 2 cd my_project_folder virtualenv venv virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2017/06/06/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Python 虚拟环境" />
+<meta property="og:description" content="Virtualenv Introduction virtualenv is a tool to create isolated Python environments. Installation 1 sudo pip install virtualenv {{{more}}} Usage 1.为一个工程创建一个虚拟环境： 1 2 cd my_project_folder virtualenv venv virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2017/06/06/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" />
+<meta property="article:published_time" content="2017-06-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-06-06T00:00:00+00:00" />
+<meta itemprop="name" content="Python 虚拟环境">
+<meta itemprop="description" content="Virtualenv Introduction virtualenv is a tool to create isolated Python environments. Installation 1 sudo pip install virtualenv {{{more}}} Usage 1.为一个工程创建一个虚拟环境： 1 2 cd my_project_folder virtualenv venv virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，">
+
+
+<meta itemprop="datePublished" content="2017-06-06T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2017-06-06T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="959">
+
+
+
+<meta itemprop="keywords" content="python," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python 虚拟环境"/>
+<meta name="twitter:description" content="Virtualenv Introduction virtualenv is a tool to create isolated Python environments. Installation 1 sudo pip install virtualenv {{{more}}} Usage 1.为一个工程创建一个虚拟环境： 1 2 cd my_project_folder virtualenv venv virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Python 虚拟环境</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-06-06 </span>
+        <div class="post-category">
+            <a href="/categories/summary/"> summary </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Virtualenv</a>
+<ul>
+<li><a href="#headline-2">Introduction</a>
+</li>
+<li><a href="#headline-3">Installation</a>
+</li>
+<li><a href="#headline-4">Usage</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">virtualenvwrapper</a>
+</li>
+<li><a href="#headline-6">autoenv</a>
+</li>
+<li><a href="#headline-7">Python3</a>
+<ul>
+<li><a href="#headline-8">pre install</a>
+</li>
+<li><a href="#headline-9">Install pip for Python 3:</a>
+</li>
+<li><a href="#headline-10">Install pip3</a>
+</li>
+<li><a href="#headline-11">virtualenv &amp;&amp; virtualenvwrapper</a>
+</li>
+<li><a href="#headline-12">注意点</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Virtualenv
+</h1>
+<h2 id="headline-2">
+Introduction
+</h2>
+<p>
+virtualenv is a tool to create isolated Python environments.
+</p>
+<h2 id="headline-3">
+Installation
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  sudo pip install virtualenv</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+{{{more}}}
+</p>
+<h2 id="headline-4">
+Usage
+</h2>
+<p>
+1.为一个工程创建一个虚拟环境：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="nb">cd</span> my_project_folder
+  virtualenv venv</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，以及 pip 库的一份拷贝，这样就能安装其他包了。虚拟环境的名字（此例中是 venv）可以是任意的；若省略名字将会把文件均放在当前目录。
+</p>
+<p>
+在任何你运行命令的目录中，这会创建 Python 的拷贝，并将之放在叫做 venv 的文件中。
+</p>
+<p>
+你可以选择使用一个 Python 解释器：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  virtualenv -p /usr/bin/python2.7 venv</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这将会使用 /usr/bin/python2.7 中的 Python 解释器。
+2.要开始使用虚拟环境，其需要被激活：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="nb">source</span> venv/bin/activate</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+从现在起，任何你使用 pip 安装的包将会放在 ``venv 文件夹中，与全局安装的 Python 隔绝开
+3.如果你在虚拟环境中暂时完成了工作，则可以停用它：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  deactivate</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+要删除一个虚拟环境，只需删除它的文件夹。（要这么做请执行 rm -rf venv）
+4.其他注意
+运行带 –no-site-packages 选项的 virtualenv 将不会包括全局安装的包。这可用于保持包列表干净，以防以后需要访问它。
+详细命令：<a href="https://virtualenv.pypa.io/en/latest/reference/">https://virtualenv.pypa.io/en/latest/reference/</a>
+</p>
+<h1 id="headline-5">
+virtualenvwrapper
+</h1>
+<p>
+virtualenvwrapper 提供了一系列命令使得和虚拟环境工作变得愉快许多。它把你所有的虚拟环境都放在一个地方。
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  pip install virtualenvwrapper
+  <span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/Envs
+  <span class="nb">source</span> /usr/local/bin/virtualenvwrapper.sh</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+基本使用
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  mkvirtualenv venv
+  workon venv
+  deactivate
+  rmvirtualenv venv
+
+  mkproject myproject</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+其他有用的命令
+lsvirtualenv
+列举所有的环境。
+cdvirtualenv
+导航到当前激活的虚拟环境的目录中，比如说这样你就能够浏览它的 site-packages。
+cdsitepackages
+和上面的类似，但是是直接进入到 site-packages 目录中。
+lssitepackages
+显示 site-packages 目录中的内容。
+</p>
+<h1 id="headline-6">
+autoenv
+</h1>
+<p>
+autoen 可自动加载环境变量
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  sudo pip install autoenv
+  <span class="nb">source</span> ~/.bashrc
+  touch .env</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h1 id="headline-7">
+Python3
+</h1>
+<h2 id="headline-8">
+pre install
+</h2>
+<ol>
+<li>
+<p>
+install sqlite to solve virtualenv: ImportError: No module named _sqlite3
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">sudo yum install sqlite sqlite-devel  openssl-devel</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<ol>
+<li>
+<p>
+install tkinter
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-<span class="k">$(</span>rpm -E <span class="s1">&#39;%{rhel}&#39;</span><span class="k">)</span>.noarch.rpm
+yum -y install tkinter tcl-devel tk-devel
+wget https://centos7.iuscommunity.org/ius-release.rpm
+sudo rpm -Uvh ius-release*rpm
+sudo yum install python36u-tkinter</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-9">
+Install pip for Python 3:
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz 
+  tar --xz -xvf Python-3.6.5.tar.xz
+  sudo ./configure --prefix<span class="o">=</span>/usr/local/python3
+  sudo make <span class="o">&amp;&amp;</span> sudo make install
+  sudo ln -s /usr/local/python3/bin/python3 /usr/bin/python3</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-10">
+Install pip3
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  wget --no-check-certificate https://github.com/pypa/pip/archive/9.0.1.tar.gz
+  tar -zvxf <span class="m">9</span>.0.1.tar.gz
+  <span class="nb">cd</span> pip-9.0.1/
+  sudo python3  setup.py install
+  sudo ln -s /usr/local/python3/bin/pip /usr/bin/pip3</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-11">
+virtualenv &amp;&amp; virtualenvwrapper
+</h2>
+<p>
+install autoenv
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">sudo pip install autoenv
+<span class="nb">echo</span> <span class="s2">&#34;source `which activate.sh`&#34;</span> &gt;&gt; ~/.bashrc</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+install virtualenv and virtualenvwrapper
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  sudo pip3 install virtualenv
+  sudo pip3 install virtualenvwrapper</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+Create a folder for your virtualenvs (~/.virtualenvs) and set it as WORKON_HOME:
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  mkdir ~/.virtualenvs</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+Add the following lines to ~/.bashrc:
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/.virtualenvs
+  <span class="nb">export</span> <span class="nv">VIRTUALENVWRAPPER_PYTHON</span><span class="o">=</span>/usr/bin/python3 <span class="c1"># This needs to be placed before the virtualenvwrapper command</span>
+  <span class="nb">export</span> <span class="nv">VIRTUALENVWRAPPER_VIRTUALENV</span><span class="o">=</span>/usr/local/python3/bin/virtualenv
+  <span class="nb">source</span> /usr/local/python3/bin/virtualenvwrapper.sh</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+Close and re-open your shell and you&#39;re ready to go. Here are the basic commands for using virtualenvwrapper:
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  mkvirtualenv virtualenv_name <span class="c1"># Create virtualenv</span>
+  workon virtualenv_name <span class="c1"># Activate/switch to a virtualenv</span>
+  deactivate virtualenv_name <span class="c1"># Deactivate virtualenv</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-12">
+注意点
+</h2>
+<ol>
+<li>
+<p>
+在运行 workon 指定 python 版本时，如果是 2 与 3 版本之间的切换则需要修改/usr/bin/python
+</p>
+</li>
+<li>
+<p>
+yum 的功能依赖 Python2 更改 3 后需要做如下修改：
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  vi /usr/bin/yum</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+打开文件，修改第一行为：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="c1">#!/usr/bin/python2.7</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<ol>
+<li>
+<p>
+window 中使用 virtualenvwrapper-win 安装，同时可用 setprojectdir . 来设置项目的根目录，这样一运行 workon 直接跳到根目录
+</p>
+</li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2017-06-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/python/">python</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2017/06/07/2017-06-07-heroku/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">HeroKu</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2017/05/17/machine-learning4-regularization/">
+            <span class="next-text nav-default">Machine Learning(4) Regularization</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -13,46 +13,46 @@
     
     <item>
       <title>Machine Learning(4) Regularization</title>
-      <link>https://hardy5012.github.io/post/machine-learning4-regularization/</link>
+      <link>https://hardy5012.github.io/2017/05/17/machine-learning4-regularization/</link>
       <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/machine-learning4-regularization/</guid>
+      <guid>https://hardy5012.github.io/2017/05/17/machine-learning4-regularization/</guid>
       <description>正规化(Regularization)弱化的高阶项的系数，这弱化也称为对参数θ的惩罚（penalize）。 线性回归中的正规化 公式变为： \begin{gather*} J(</description>
     </item>
     
     <item>
       <title>Machine Learning(3) Neural Networks</title>
-      <link>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
+      <link>https://hardy5012.github.io/2017/05/07/2017-05-07-machine-learning%E4%B8%89-neural-networks/</link>
       <pubDate>Sun, 07 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
+      <guid>https://hardy5012.github.io/2017/05/07/2017-05-07-machine-learning%E4%B8%89-neural-networks/</guid>
       <description>Model Representation  \text {If network has $s_j$ units in layer $j$ and $sj+1$ units in layer $j+1$, then $Θ(j)$ will be of dimension $sj+1 × (s_j + 1)$.}  Cost Function   Let&amp;#39;s first define a few variables that we will need to use: L = total number of layers in the network $s_l$ = number of units (not counting bias unit) in layer l K = number of output units/classes   \begin{gather*} J(Θ) = - \frac{1}{m} ∑i=1^m ∑k=1^K ≤ft[y(i)_k log ((h_Θ (x(i)))_k) + (1 - y(i)_k)log (1 - (h_Θ(x(i)))_k)\right] + \frac{λ}{2m}∑l=1L-1 ∑i=1s_l ∑j=1^{sl+1} ( Θj,i(l))^2\end{gather*} Gradient Checking   Gradient checking will assure that our backpropagation works as intended.</description>
     </item>
     
     <item>
       <title>Machine Learning(2）Logistic Regression</title>
-      <link>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
+      <link>https://hardy5012.github.io/2017/04/27/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
+      <guid>https://hardy5012.github.io/2017/04/27/2017-04-27-machine-learing%E4%BA%8C-logistic-regression/</guid>
       <description>Decision Boundary 决策边界(Decison Boundary)就是用来划清界限的边界，即属于哪一类。 “决策边界是预测函数$h_θ(x)$ 的属性，而不是训练集</description>
     </item>
     
     <item>
       <title>Machine Learning(1)Linear Regression</title>
-      <link>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</link>
+      <link>https://hardy5012.github.io/2017/04/21/2017-04-21-maching-learing-normal-equation/</link>
       <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/2017-04-21-maching-learing-normal-equation/</guid>
+      <guid>https://hardy5012.github.io/2017/04/21/2017-04-21-maching-learing-normal-equation/</guid>
       <description>Hypothesis $$ h_θ(x)=θ_0+θ_1x_1+θ_2x_2+…+θ_nx_n=θ^Tx $$ Cost Function $$ J(θ)=\frac{1}{2m}∑limitsi=</description>
     </item>
     
     <item>
       <title>Machine Learning(0) introduction</title>
-      <link>https://hardy5012.github.io/post/machine-learning0-introduction/</link>
+      <link>https://hardy5012.github.io/2017/04/13/machine-learning0-introduction/</link>
       <pubDate>Thu, 13 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/machine-learning0-introduction/</guid>
+      <guid>https://hardy5012.github.io/2017/04/13/machine-learning0-introduction/</guid>
       <description>Supervised Learning and Unsupevised Learning 监督学习（Supervised Learning）所给的样本已知道正确的输出是什么样子，对输入与输出有一定的了解。 无监督学习（Uns</description>
     </item>
     

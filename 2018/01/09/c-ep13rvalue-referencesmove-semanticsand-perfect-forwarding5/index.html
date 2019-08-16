@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="Item 30:熟悉完美转发失败的情况 完美转发是 C&#43;&#43;11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2018/01/09/c-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)" />
+<meta property="og:description" content="Item 30:熟悉完美转发失败的情况 完美转发是 C&#43;&#43;11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2018/01/09/c-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/" />
+<meta property="article:published_time" content="2018-01-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-01-09T00:00:00+00:00" />
+<meta itemprop="name" content="C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)">
+<meta itemprop="description" content="Item 30:熟悉完美转发失败的情况 完美转发是 C&#43;&#43;11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现">
+
+
+<meta itemprop="datePublished" content="2018-01-09T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-09T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5052">
+
+
+
+<meta itemprop="keywords" content="C&#43;&#43;," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)"/>
+<meta name="twitter:description" content="Item 30:熟悉完美转发失败的情况 完美转发是 C&#43;&#43;11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-01-09 </span>
+        <div class="post-category">
+            <a href="/categories/modern/"> Modern </a>
+            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">Item 30:熟悉完美转发失败的情况</a>
+<ul>
+<li><a href="#headline-2">大括号初始值</a>
+</li>
+<li><a href="#headline-3">0 和 NULL 作为空指针</a>
+</li>
+<li><a href="#headline-4">只声明的 static const 成员变量</a>
+</li>
+<li><a href="#headline-5">重载函数名字和模板名字</a>
+</li>
+<li><a href="#headline-6">位域（Bitfields）</a>
+</li>
+<li><a href="#headline-7">总结</a>
+</li>
+<li><a href="#headline-8">记住</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-9">参考</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+Item 30:熟悉完美转发失败的情况
+</h1>
+<p>
+完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现实中的“完美”有点出入。
+C++11 的完美转发非常棒，但当且仅当你愿意忽略一两个特殊情况，才能真正得到完美。该条款就是为了让你熟悉那些特殊情况。
+</p>
+<p>
+在着手探索我们的特殊情况之前，值得回顾一下“完美转发”的意思。“转发”的意思是一个函数传递——转发——它的参数到另一个函数，
+目的是为了让第二个函数（被转发参数的函数）收到第一个函数（进行转发的函数）接受到的对象。这个规则排除值语义的形参，
+因为它们只是拷贝原始调用者传递的参数，我们想要的是，接受转发参数的函数能够处理最开始传递进来的对象。指针形参也排除在外，
+因为我们不想强迫调用者传递指针。通常，当发生有目的的转发时，我们都是处理形参为引用的参数。
+</p>
+<!-- more -->
+<p>
+完美转发意思是：我们不单单转发对象，我们还转发它们重要的特性：它们的类型，它们是右值还是左值，它们是否是 const 或者 volation 修饰的。
+配合我们观察到的我们一般处理引用参数，这暗示着我们会把完美转发用到通用引用（看条款 24）上，
+因为只有通用引用形参才会把传递给它们的实参的左值或右值信息进行编码。
+</p>
+<p>
+假设我们有一些函数 f，然后我们写了个函数（事实上是模板函数），这个函数把参数转发到函数 f。我们需要的关键代码是这样的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">fwd</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// accept any argument
+</span><span class="c1"></span>  <span class="p">{</span>
+	  <span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">param</span><span class="p">));</span> <span class="c1">// forward it to f
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+按照本性，进行转发的函数是通用的。例如，fwd 模板，应该可以接受一些类型不同的参数，然后转发它所得到的。对于这种通用性的一种有逻辑的扩展是，
+fwd 不应该只是个模板，而是个可变参数模板，因此可以接受任意数目的参数，可变参数模板 fwd 看起来应该是这样的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">fwd</span><span class="p">(</span><span class="n">Ts</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span> <span class="c1">// accept any arguments
+</span><span class="c1"></span>  <span class="p">{</span>
+		  <span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)...);</span> <span class="c1">// forward them to f
+</span><span class="c1"></span>  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这种形式的模板你能在其它地方见到，例如标准库容器的 emplace 函数（看条款 42），和智能指针工厂函数——std::make_shared 和 std::make_unique
+（看条款 21）。
+</p>
+<p>
+给定我们的目标函数 f 和进行转发的函数 fwd，如果用某个实参调用 f 会做某件事，然后用同样的实参调用 fwd，但 fwd 里的 f 行为和前面那种情况不一样，
+那么完美转发是失败的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">f</span><span class="p">(</span> <span class="n">expression</span> <span class="p">);</span> <span class="c1">// if this does one thing,
+</span><span class="c1"></span>  <span class="n">fwd</span><span class="p">(</span> <span class="n">expression</span> <span class="p">);</span> <span class="c1">// but this does something else, fwd fails
+</span><span class="c1"></span>  <span class="c1">// to perfectly forward expression to f
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+几种类型的实参会导致这种失败，知道它们是什么和如何工作是很重要的，让我们来观察这几种不能完美转发的类型吧。
+</p>
+<h2 id="headline-2">
+大括号初始值
+</h2>
+<p>
+假如 f 的声明是这样的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">v</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+这种情况，用大括号初始值调用 f 是可以通过编译的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">f</span><span class="p">({</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">});</span> <span class="c1">// fine, &#34;{1, 2, 3}&#34; implicitly
+</span><span class="c1"></span>  <span class="c1">// converted to std::vector&lt;int&gt;
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但如果把大括号初始值传递给 fwd 就不能通过编译：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">fwd</span><span class="p">({</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">});</span> <span class="c1">// error! doesn&#39;t compile
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+那是因为使用大括号初始值会让完美转发失败。
+</p>
+<p>
+这种失败的原因都是相同的。在直接调用 f 时（例如 f({1,2,3})），编译器观察调用端的实参，又观察 f 函数声明的参数类型，然后编译器对比这两个类型，
+如果是相互兼容的，然后，如果是必要的话，编译器会把类型进行隐式转发，使得调用成功。 <span style="text-decoration: underline;">在上面的例子中，编译器从{1,2,3}生成一个临时的 std::vector&lt;int&gt;对象</span> ，
+因此 f 的参数 v 可绑定到一个 std::vector&lt;int&gt;对象。
+</p>
+<p>
+当使用转发模板 fwd 间接调用 f 时，编译器不会比较调用端传递给 fwd 的实参和 f 声明的形参，取而代之的是，编译器推断传递给 fwd 实参的类型，
+然后比较推断的类型和 f 声明的形参类型。当下面某种情况发生时，完美转发会失败：
+</p>
+<ul>
+<li>
+<p>
+编译器不能推断出传递给 fwd 参数的类型，在这种情况下，代码编译失败。
+</p>
+</li>
+<li>
+<p>
+编译器为传递给 fwd 参数推断出“错误的”类型。这里的“错误的”，可以表示实例化的 fwd 不能编译推断出来的类型，还可以表示使用 fwd 推断的类型调用 f 的行为与直接使用传递给 fwd 的参数调用 f 的行为不一致。这种不一致行为的一种源头是 f 是个重载函数的名字，然后，根据“不正确的”推断类型，fwd 里的 f 重载调用与直接调用 f 的行为不一样。
+</p>
+</li>
+</ul>
+<p>
+在上面“fwd({1,2,3})”的例子中，问题在于，给没有声明为 std::initialist_list 类型的模板参数传递大括号初始值，正如标准库所说，
+这是“ <strong>non-deduced context</strong> ”。 <span style="text-decoration: underline;">通俗易懂的说，那意味着在 fwd 的调用中，编译器禁止从表达式{1,2,3}推断出一个类型，因为 fwd 的形参不是声明为 std::initializer_list</span> 。
+因为那是被禁止推断，所以编译器拒绝这样调用。
+</p>
+<p>
+有趣的是，条款 2 解释过 auto 变量在用大括号初始值初始化时会进行类型推断。这些变量被视为是 std::initializer_list 对象，
+然后对于进行转发的函数的形参应该被推断为 std::initializer_list 的场合，提供了一个简单的应对办法——用 auto 声明一个局部变量，
+然后把局部变量传递给进行转发的函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">auto</span> <span class="n">il</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">};</span> <span class="c1">// il&#39;s type deduced to be
+</span><span class="c1"></span>  <span class="c1">// std::initializer_list&lt;int&gt;
+</span><span class="c1"></span>  <span class="n">fwd</span><span class="p">(</span><span class="n">il</span><span class="p">);</span> <span class="c1">// fine, perfect-forwards il to f
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-3">
+0 和 NULL 作为空指针
+</h2>
+<p>
+条款 8 解释过，当你尝试把 0 和 NULL 作为空指针传递给一个模板，类型推断就会出错，编译器会把你传入的参数推断为整型数类型（通常是 int），而不是指针类型。
+这就导致了 0 和 NULL 都不可以作为空指针被完美转发，不过，解决办法也很容易：用 nullptr 代替 0 或 NULL。关于细节，请看条款 8。
+</p>
+<h2 id="headline-4">
+只声明的 static const 成员变量
+</h2>
+<p>
+作为一个通用的规则：不需要在类中定义 <strong>static const 成员变量</strong> ；声明它就行了。那是因为编译器会为这些成员变量的值进行  <strong>const propagation（常数传播）</strong> ，因此不需要为这些变量提供内存。例如，思考这份代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">class</span><span class="err"> </span><span class="nc">Widget</span> <span class="p">{</span>
+  <span class="k">public</span><span class="o">:</span>
+	  <span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">MinVals</span> <span class="o">=</span> <span class="mi">28</span><span class="p">;</span> <span class="c1">// MinVals&#39; declaration
+</span><span class="c1"></span>	  <span class="err">…</span>
+  <span class="p">};</span>
+  <span class="err">…</span> <span class="c1">// no defn. for MinVals
+</span><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">widgetData</span><span class="p">;</span>
+  <span class="n">widgetData</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">Widget</span><span class="o">::</span><span class="n">MinVals</span><span class="p">);</span> <span class="c1">// use of MinVals
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+在这里，我们使用 Widget::MinVals（下面简称为 Minvals）来指定 widgetData 的初始容量，尽管 MinVals 缺乏定义。
+编译器忽视 MinVals 没有定义（就像它们被要求这样）然后把 28 放到出现 MinVals 的地方。事实上没有为 MinVals 的值留出存储空间是不成问题的，
+<span style="text-decoration: underline;">如果取 MinVals 的地址（例如，某人创建一个指向 MinVals 的指针），然后 MinVals 才会去请求存储空间的值（因此指针就有东西可指）</span> ，然后对于上面的代码，
+虽然它可以编译，但它会链接失败，除非为 MinVals 提供定义。
+</p>
+<p>
+把那些记住心里，然后想象 f（fwd 把参数转发的目的函数）是这样声明的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">val</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+用 MinVals 直接调用 f 是没问题的，因为编译器会用 28 代替 MinVals：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">f</span><span class="p">(</span><span class="n">Widget</span><span class="o">::</span><span class="n">MinVals</span><span class="p">);</span> <span class="c1">// fine, treated as &#34;f(28)&#34;
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是，当我们通过 fwd 调用 f 时，事情就没有那么一帆风顺了：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">fwd</span><span class="p">(</span><span class="n">Widget</span><span class="o">::</span><span class="n">MinVals</span><span class="p">);</span> <span class="c1">// error! shouldn&#39;t link
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+代码可以编译，但是它不能链接。如果你能想起我们取 MinVals 地址会发生什么，你就很聪明啦，那是因为表面下的问题是相同的。
+</p>
+<p>
+尽管源代码没有取 MinVals 的地址，但 fwd 的参数是个通用引用，然后引用呢，在编译器生成的代码中，通常被视为指针。
+<span style="text-decoration: underline;">对于程序的二进制代码中（或对于硬件），指针和引用在本质上是同一个东西</span> 。在这个层次上，有一句反应事实的格言：引用只是会自动解引用的指针。
+情况既然是这样了，MinVals 被引用传递和被指针传递是相同的，而这样的话，必须要有指针可以指向的内存。
+以引用传递 static const 成员变量通常要求它们被定义过，而这个要求可以导致代码完美转发失败。
+</p>
+<p>
+在之前的讨论中，你可能会注意到我的一些含糊用词。代码“不应该”链接，引用“通常”被视为指针，以引用传递 static const 成员变量“通常”要求它们被定义过。
+这就好像是我知道一些东西，但是没有告诉你。
+</p>
+<p>
+那是因为，我现在告诉你。根据标准库，以引用传递 MinVals 要求 MinVals 被定义，但不是所有实现都强迫服从这个要求。因此，取决于你的编译器和链接器，
+你可能会发现你可以完美转发没有定义过的 static const 成员变量。如果真的可以，恭喜你，不过没有理由期望这样的代码能够移植。
+为了让代码可移植，就像我们谈及那样，简简单单地为 static const 成员变量提供一份定义。对于 MinVals，代码是这样的：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">Widget</span><span class="o">::</span><span class="n">MinVals</span><span class="p">;</span> <span class="c1">// in Widget&#39;s .cpp file
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+留意到定义没有重复初始值（对于 MinVals 这个例子，是 28），不过，不用在意这个细节。如果你在声明和定义两个地方都忘记提供初始值，你的编译器会发出抱怨，
+然后就能让你记起你需要在其中一个地方指定初始值。
+</p>
+<h2 id="headline-5">
+重载函数名字和模板名字
+</h2>
+<p>
+假如我们的函数 f（我们想要借助 fwd 转发参数到该函数）想通过接受一个函数作为参数来定制它的行为，假定该函数接受和返回 int，那么 f 应该被声明为这样：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">pf</span><span class="p">)(</span><span class="kt">int</span><span class="p">));</span> <span class="c1">// pf = &#34;processing function&#34;
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+值得注意的是 f 也可以被声明为使用简单的非指针函数。这样的声明看起来是下面这样的，尽管它和上面的声明具有相同的意思：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">pf</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span> <span class="c1">// declares same f as above
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+无所谓，现在假如我们有个重载函数，processVal：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="nf">processVal</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="nf">processVal</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">priority</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+我们可以把 processVal 传给 f，
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">f</span><span class="p">(</span><span class="n">processVal</span><span class="p">);</span> <span class="c1">// fine
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+不过有一些让我们惊讶的东西。f 需要的是一个指向函数的指针作为它的参数，但是 processVal 既不是个函数指针，也不是一个函数，它是两个不同函数的名字。
+不过，编译器知道它们需要哪个 processVal：匹配 f 形参类型的那一个。因此，编译器会选择接受一个 int 的 processVal，然后把那个函数地址传给 f。
+</p>
+<p>
+使得代码可以工作的原因是 f 的声明让编译器知道需求那个版本的 processVal。但是，fwd，是个模板函数，没有任何关于需求类型的信息，
+这让编译器不能决定——应该传递哪个重载函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">fwd</span><span class="p">(</span><span class="n">processVal</span><span class="p">);</span> <span class="c1">// error! which processVal?
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+单独的 processVal 没有类型。 没有类型，就不能进行类型推断；没有类型推断，就留给我们另一种完美转发失败的情况。
+</p>
+<p>
+当我们尝试用一个模板函数名字来代替重载函数名字，会出现相同的问题。一个模板函数不是代表成函数，它代表很多函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="n">T</span> <span class="n">workOnVal</span><span class="p">(</span><span class="n">T</span> <span class="n">param</span><span class="p">)</span> <span class="c1">// template for processing values
+</span><span class="c1"></span>  <span class="p">{</span> <span class="err">…</span> <span class="p">}</span>
+  <span class="n">fwd</span><span class="p">(</span><span class="n">workOnVal</span><span class="p">);</span> <span class="c1">// error! which workOnVal
+</span><span class="c1"></span>  <span class="c1">// instantiation?
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+像 fwd 这种进行完美转发的函数，想要接受一个重载函数名字或者模板名字的方法是：手动指定你想要转发的那个重载或者实例化。
+例如，你可以创建一个函数指针，它的类型与 f 的形参类型相同，然后用 processVal 和 workOnVal 初始化那个指针
+（所以能够选择合适的 processVal 版本或生成合适的 workOnValue 实例化），然后把指针传递给 fwd：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">using</span> <span class="n">ProcessFuncType</span> <span class="o">=</span> <span class="c1">// make typedef;
+</span><span class="c1"></span>	  <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span> <span class="c1">// see Item 9
+</span><span class="c1"></span>  <span class="n">ProcessFuncType</span> <span class="n">processValPtr</span> <span class="o">=</span> <span class="n">processVal</span><span class="p">;</span> <span class="c1">// specify needed
+</span><span class="c1"></span>  <span class="c1">// signature for
+</span><span class="c1"></span>  <span class="c1">// processVal
+</span><span class="c1"></span>  <span class="n">fwd</span><span class="p">(</span><span class="n">processValPtr</span><span class="p">);</span> <span class="c1">// fine
+</span><span class="c1"></span>  <span class="n">fwd</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ProcessFuncType</span><span class="o">&gt;</span><span class="p">(</span><span class="n">workOnVal</span><span class="p">));</span> <span class="c1">// also fine
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+当然，这需要你知道 fwd 转发的目的函数需要的函数指针类型，我们可以合理假设完美转发函数的文档或注释会说明转发的目的函数需要的函数指针类型。
+最后，进行完美转发的函数被设计来能够接受任何东西，所以如果没有文档告诉你要传递的类型，那你怎么知道呢？
+</p>
+<h2 id="headline-6">
+位域（Bitfields）
+</h2>
+<p>
+最后一种完美转发失败的情况是，当位域被用作函数实参。为了在实际中知道这是什么意思，观察一个模型化的 IPV4 头部：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="k">struct</span> <span class="n">IPv4Header</span> <span class="p">{</span>
+	  <span class="n">std</span><span class="o">::</span><span class="n">uint32_t</span> <span class="nl">version</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+		  <span class="nl">IHL</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+		  <span class="nl">DSCP</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
+		  <span class="nl">ECN</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+		  <span class="nl">totalLength</span><span class="p">:</span><span class="mi">16</span><span class="p">;</span>
+	  <span class="err">…</span>
+  <span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+如果我们可怜的函数 f（我们的转发函数 fwd 永恒的目标）被声明为接受一个 std::size_t 参数，然后用 IPv4Header 对象的 totalLength 域来调用 f，
+编译器不会发出怨言：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">sz</span><span class="p">);</span> <span class="c1">// function to call
+</span><span class="c1"></span>  <span class="n">IPv4Header</span> <span class="n">h</span><span class="p">;</span>
+  <span class="err">…</span>
+  <span class="n">f</span><span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">totalLength</span><span class="p">);</span> <span class="c1">// fine
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+但是，想要借助 fwd 把 h.totalLength 转发 f，就是另外的结果了：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="n">fwd</span><span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">totalLength</span><span class="p">);</span> <span class="c1">// error!
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+问题在于，fwd 的形参是个引用，而 h.totalLength 是个非 const 的位域。这听起来可能不是很糟糕，但是 C++标准对于这种结合，
+平淡无趣地讲：“ <strong>A non-const reference shall not be bound to a bit-field.</strong> ”（不是常量引用不能绑定位域。）对于这个禁令，
+原因很充分： <span style="text-decoration: underline;">位域可能是包括机器字（world）的任意部分（例如，32 位 int 的 3-5 个位。），但是没有方法直接获取它们的地址</span> 。
+我之前提起过在硬件层面上引用和指针是相同的东西，然后，就像没有办法创建指向任意位的指针
+（C++表明可指向的最小的东西是一个 char），也没有办法对任意位进行绑定引用。
+</p>
+<p>
+绕过不能完美转发转发位域很简单，只要你意识到接受位域作为参数的函数只是接收它的值的拷贝。毕竟，没有函数可以对位域绑定引用，
+也没有函数可以接受一个指向位域的指针，因为指向位域的指针不可能存在。可以传递位域的参数种类只有传值参数，和，
+有趣的常量引用（reference-to-const），在传值参数的情况里，被调用的函数明显接收位域的值的拷贝，而在常量引用参数的情况里，
+标准规定引用实际上绑定的是位域的值的拷贝（这份拷贝存储在某些标准整型类型中，例如 int）。常量引用不会绑定位域，它们绑定的是“正常的”对象，
+这个对象拷贝了位域的值。
+</p>
+<p>
+那么，把位域传递给进行完美转发函数的关键是，利用转发目的函数总是接收位域的值拷贝这个优势。所以你可以自己进行拷贝，然后用这个拷贝调用转发函数。
+例如，在 IPv4Header 这个例子，可以用这个把戏：
+</p>
+<div class="src src-c++">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++">  <span class="c1">// copy bitfield value; see Item 6 for info on init. form
+</span><span class="c1"></span>  <span class="k">auto</span> <span class="n">length</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">totalLength</span><span class="p">);</span>
+  <span class="n">fwd</span><span class="p">(</span><span class="n">length</span><span class="p">);</span> <span class="c1">// forward the copy
+</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-7">
+总结
+</h2>
+<p>
+在大多数情况下，完美转发工作得像它宣称那样，你很少需要仔细考虑它。但有时它不能工作——当一些看起来合理的代码编译失败，或者可以编译，
+行为却和你预料的不一样——知道完美转发有瑕疵是重要的，同样重要的是知道如何绕过它们。在大多数情况下，完美转发是直截了当的。
+</p>
+<h2 id="headline-8">
+记住
+</h2>
+<ul>
+<li>
+<p>
+当模板类型推断失败或推断出错误的类型时，完美转发会失败。
+</p>
+</li>
+<li>
+<p>
+导致完美转发失败的几种实参有：大括号初始值，0 和 NULL 代表的空指针，只声明的 static const 成员变量，模板函数名字和重载函数名字，位域。
+</p>
+</li>
+</ul>
+<h1 id="headline-9">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+翻译：<a href="http://blog.csdn.net/big_yellow_duck/article/category/6352345">http://blog.csdn.net/big_yellow_duck/article/category/6352345</a>
+</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-01-09
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/01/11/c-ep14lambda-epressions1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">C&#43;&#43; Ep14:Lambda Epressions(1)</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2018/01/07/c-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/">
+            <span class="next-text nav-default">C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

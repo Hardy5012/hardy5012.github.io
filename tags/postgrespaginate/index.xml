@@ -13,10 +13,10 @@
     
     <item>
       <title>Postgres 中的五种分页方式</title>
-      <link>https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</link>
+      <link>https://hardy5012.github.io/2018/03/28/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</link>
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</guid>
+      <guid>https://hardy5012.github.io/2018/03/28/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/</guid>
       <description>任意查询分页 limit-offset limit-offset 是最简单，也是最危险的分页方式。不幸的是，它是 Web 应用程序开发教程的主要内容。对象关系映射（ORM）库使它变得简单而诱人，从 SQLAlchemy</description>
     </item>
     

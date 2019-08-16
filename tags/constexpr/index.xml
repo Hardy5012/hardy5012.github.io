@@ -13,10 +13,10 @@
     
     <item>
       <title>C&#43;&#43; Ep23: constexpr if</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</link>
+      <link>https://hardy5012.github.io/2018/03/07/c-ep23-if-constexpt/</link>
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/</guid>
+      <guid>https://hardy5012.github.io/2018/03/07/c-ep23-if-constexpt/</guid>
       <description>以 if constexpr 开始的语句被称为 constexpr if 语句，从 c++17 起支持。在 constexpr if 语句中，条件的值必须能语境地转换到 bool 类型的 *常量表达式*。其值为 true，则舍去 false 分支语句</description>
     </item>
     

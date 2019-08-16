@@ -13,145 +13,145 @@
     
     <item>
       <title>C&#43;&#43; Ep17:The Concurrency API(2)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/</link>
+      <link>https://hardy5012.github.io/2018/01/17/c-ep17the-concurrency-api2/</link>
       <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep17the-concurrency-api2/</guid>
+      <guid>https://hardy5012.github.io/2018/01/17/c-ep17the-concurrency-api2/</guid>
       <description>Item 37:让 std::thread 对象在所有路径都无法连接 每个 std::thread 对象的状态都是这两种中的一种：joinable（可连接的）或 unjoinable（不可连接的）。一</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep16:The Concurrency API(1)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/</link>
+      <link>https://hardy5012.github.io/2018/01/15/c-ep16the-concurrency-api1/</link>
       <pubDate>Mon, 15 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep16the-concurrency-api1/</guid>
+      <guid>https://hardy5012.github.io/2018/01/15/c-ep16the-concurrency-api1/</guid>
       <description>Item 35:优先考虑基于任务编程，而不是线程编程 如果你想异步地运行函数 doAsyncWork，你有两个基本的选择。你可以创建一个 std::thr</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep15:Lambda Epressions(2)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/</link>
+      <link>https://hardy5012.github.io/2018/01/14/c-ep15lambda-epressions2/</link>
       <pubDate>Sun, 14 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep15lambda-epressions2/</guid>
+      <guid>https://hardy5012.github.io/2018/01/14/c-ep15lambda-epressions2/</guid>
       <description>Item 33:对需要 std::forward 的 auto&amp;amp;&amp;amp;参数使用 decltype 泛型 lambda(generic lambda)是 C++14 最令人兴奋的特性之一——lambda 可以在参数说明中使用 au</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep14:Lambda Epressions(1)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/</link>
+      <link>https://hardy5012.github.io/2018/01/11/c-ep14lambda-epressions1/</link>
       <pubDate>Thu, 11 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep14lambda-epressions1/</guid>
+      <guid>https://hardy5012.github.io/2018/01/11/c-ep14lambda-epressions1/</guid>
       <description>Item31:对于 lambda 表达式，避免使用默认捕获模式 C++11 中有两种默认捕获模式：引用捕获或值捕获。默认的引用捕获模式可能会导致悬挂引用，默认的值捕获</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep13:Rvalue References,Move Semantics,and Perfect Forwarding(5)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</link>
+      <link>https://hardy5012.github.io/2018/01/09/c-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</link>
       <pubDate>Tue, 09 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</guid>
+      <guid>https://hardy5012.github.io/2018/01/09/c-ep13rvalue-referencesmove-semanticsand-perfect-forwarding5/</guid>
       <description>Item 30:熟悉完美转发失败的情况 完美转发是 C++11 箱子里最令人注目的特性之一，完美转发，它是完美的！额，打开箱子后，然后你会发现理想中的“完美”和现</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep12:Rvalue References,Move Semantics,and Perfect Forwarding(4)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</link>
+      <link>https://hardy5012.github.io/2018/01/07/c-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</link>
       <pubDate>Sun, 07 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</guid>
+      <guid>https://hardy5012.github.io/2018/01/07/c-ep12rvalue-referencesmove-semanticsand-perfect-forwarding4/</guid>
       <description>Item 28:理解引用折叠 Item 23 说过，当一个参数被传给模板函数时，不管这个参数是左值还是右值，模板参数的类型推导都会对参数进行编码。 那个 Item 没有解释这</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</link>
+      <link>https://hardy5012.github.io/2018/01/05/c-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</link>
       <pubDate>Fri, 05 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</guid>
+      <guid>https://hardy5012.github.io/2018/01/05/c-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/</guid>
       <description>Item 27:明白什么时候选择重载，什么时候选择 universal 引用 Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</link>
+      <link>https://hardy5012.github.io/2018/01/04/c-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</link>
       <pubDate>Thu, 04 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</guid>
+      <guid>https://hardy5012.github.io/2018/01/04/c-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/</guid>
       <description>Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward 右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep08:Smart Pointers(3)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/</link>
+      <link>https://hardy5012.github.io/2018/01/03/c-ep08smart-pointers3/</link>
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep08smart-pointers3/</guid>
+      <guid>https://hardy5012.github.io/2018/01/03/c-ep08smart-pointers3/</guid>
       <description>Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现 如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&amp;#34;point to i</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</link>
+      <link>https://hardy5012.github.io/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</link>
       <pubDate>Wed, 03 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</guid>
+      <guid>https://hardy5012.github.io/2018/01/03/c-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/</guid>
       <description>Item 23:理解 std::move 和 std::forward 根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep07:Smart Pointers(2)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/</link>
+      <link>https://hardy5012.github.io/2018/01/02/c-ep07smart-pointers2/</link>
       <pubDate>Tue, 02 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/</guid>
+      <guid>https://hardy5012.github.io/2018/01/02/c-ep07smart-pointers2/</guid>
       <description>Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针 矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep06:Smart Pointers(1)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/</link>
+      <link>https://hardy5012.github.io/2017/12/29/c-_ep06_smart_pointers_1/</link>
       <pubDate>Fri, 29 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;_ep06_smart_pointers_1/</guid>
+      <guid>https://hardy5012.github.io/2017/12/29/c-_ep06_smart_pointers_1/</guid>
       <description>item 18: 使用 std::unique_ptr 来管理独占所有权的资源 当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</link>
+      <link>https://hardy5012.github.io/2017/12/27/c-ep05moving-to-modern-c-3/</link>
       <pubDate>Wed, 27 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/</guid>
+      <guid>https://hardy5012.github.io/2017/12/27/c-ep05moving-to-modern-c-3/</guid>
       <description>item 15: 只要有可能，就使用 constexpr 从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</link>
+      <link>https://hardy5012.github.io/2017/12/26/c-ep04moving-to-modern-c-2/</link>
       <pubDate>Tue, 26 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/</guid>
+      <guid>https://hardy5012.github.io/2017/12/26/c-ep04moving-to-modern-c-2/</guid>
       <description>item 11: 优先考虑使用 deleted function 而非 private undefined 在 C++ 98 中禁止拷贝和赋值实现如下： 1 2 3 4 5 6 7 8 template &amp;lt;classcharT, classtraits = char_traits&amp;lt;charT&amp;gt; &amp;gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp;amp; ); // not defined basic_ios&amp;amp; operator=(const basic_ios&amp;amp;); // not defined }; In C++1</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</link>
+      <link>https://hardy5012.github.io/2017/12/22/c-ep03moving-to-modern-c-1/</link>
       <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/</guid>
+      <guid>https://hardy5012.github.io/2017/12/22/c-ep03moving-to-modern-c-1/</guid>
       <description>item 7: 区别使用（）和{}创建对象 记住 括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++</description>
     </item>
     
     <item>
       <title>C&#43;&#43; Ep02:auto</title>
-      <link>https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/</link>
+      <link>https://hardy5012.github.io/2017/12/21/c-ep02auto/</link>
       <pubDate>Thu, 21 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://hardy5012.github.io/post/c&#43;&#43;-ep02auto/</guid>
+      <guid>https://hardy5012.github.io/2017/12/21/c-ep02auto/</guid>
       <description>item 5: 尽量用 auto 代替显式类型声明 1 2 3 4 5 6 std::unordered_map&amp;lt;std::string, int&amp;gt; m; … for (const std::pair&amp;lt;std::string, int&amp;gt;&amp;amp; p : m) { … // do something with p } 上面代码看起来很完美，但是有个问题。std::unordere</description>
     </item>
     
