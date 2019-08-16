@@ -1,141 +1,96 @@
-
-
-There are two possible situations that led to this error:
-  1. You haven&#39;t copied the config.toml yet. See https://github.com/olOwOlo/hugo-theme-even#installation 
-  2. You have an incompatible update. See https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
-
-有两种可能的情况会导致这个错误发生:
-  1. 你还没有复制 config.toml 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation 
-  2. 你进行了一次不兼容的更新 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06 
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>C&#43;&#43; Ep07:Smart Pointers(2) - Learning Hardy</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="" /><meta name="description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&amp;lt;Widget&amp;gt;(); // the pointed-to Widget&amp;#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared." />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
-
-
-<link rel="canonical" href="https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
-
-
-
-<meta property="og:title" content="C&#43;&#43; Ep07:Smart Pointers(2)" />
-<meta property="og:description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&lt;Widget&gt;(); // the pointed-to Widget&#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/" />
-<meta property="article:published_time" content="2018-01-02T00:00:00+00:00" />
-<meta property="article:modified_time" content="2018-01-02T00:00:00+00:00" />
-<meta itemprop="name" content="C&#43;&#43; Ep07:Smart Pointers(2)">
-<meta itemprop="description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&lt;Widget&gt;(); // the pointed-to Widget&#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared.">
-
-
-<meta itemprop="datePublished" content="2018-01-02T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2018-01-02T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1258">
-
-
-
-<meta itemprop="keywords" content="C&#43;&#43;," />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="C&#43;&#43; Ep07:Smart Pointers(2)"/>
-<meta name="twitter:description" content="Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&lt;Widget&gt;(); // the pointed-to Widget&#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared."/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">Learning Hardy</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/archives/">
-        <li class="mobile-menu-item">归档</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">关于</li>
-      </a>
-  </ul>
-</nav>
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">Learning Hardy</a>
-</div>
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/archives/">归档</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">关于</a>
-      </li>
-  </ul>
-</nav>
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
-    
-    <header class="post-header">
-      <h1 class="post-title">C&#43;&#43; Ep07:Smart Pointers(2)</h1>
-
-      <div class="post-meta">
-        <span class="post-time"> 2018-01-02 </span>
-        <div class="post-category">
-            <a href="/categories/modern/"> Modern </a>
-            <a href="/categories/c&#43;&#43;/"> C&#43;&#43; </a>
-            </div>
+    <title>C&#43;&#43; Ep07:Smart Pointers(2) | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; Ep07:Smart Pointers(2) - Learning Hardy">
+    <meta property="og:type" content="article">
         
-      </div>
-    </header>
+    <meta property="article:published_time" content="2018-01-02T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2018-01-02T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43; Ep07:Smart Pointers(2)">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://hardy5012.github.io/post/c&#43;&#43;-ep07smart-pointers2/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
-    <div class="post-content">
-      
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://hardy5012.github.io/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://hardy5012.github.io/">首页</a>
+                    
+                    <a  href="https://hardy5012.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://hardy5012.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C&#43;&#43; Ep07:Smart Pointers(2)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2018年1月2日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/modern">Modern</a></span>
+                            
+                                <span class="meta-category"><a href="https://hardy5012.github.io/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
 <h1 id="headline-1">
 Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针
 </h1>
@@ -697,76 +652,233 @@ std::make_shared 比起直接使用 new 在大小和速度方面上的提升源�
 翻译：<a href="http://www.cnblogs.com/boydfd/">http://www.cnblogs.com/boydfd/</a>
 </p>
 
-    </div>
+                        </div>
+
+                        
+
+
+                        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/c&#43;&#43;_ep06_smart_pointers_1/">C&#43;&#43; Ep06:Smart Pointers(1)</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://hardy5012.github.io/tags/c&#43;&#43;">C&#43;&#43;</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
 
     
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/c&#43;&#43;_ep06_smart_pointers_1/">
-            <span class="next-text nav-default">C&#43;&#43; Ep06:Smart Pointers(1)</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://hardy5012.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="https://hardy5012.github.io/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://hardy5012.github.io/tags/boost/">boost</a>
+    
+    <a href="https://hardy5012.github.io/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="https://hardy5012.github.io/tags/constexpr/">constexpr</a>
+    
+    <a href="https://hardy5012.github.io/tags/docker/">docker</a>
+    
+    <a href="https://hardy5012.github.io/tags/etf/">etf</a>
+    
+    <a href="https://hardy5012.github.io/tags/fibonacci/">fibonacci</a>
+    
+    <a href="https://hardy5012.github.io/tags/git/">git</a>
+    
+    <a href="https://hardy5012.github.io/tags/gprof/">gprof</a>
+    
+    <a href="https://hardy5012.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://hardy5012.github.io/tags/linear/">linear</a>
+    
+    <a href="https://hardy5012.github.io/tags/linux/">linux</a>
+    
+    <a href="https://hardy5012.github.io/tags/logistic/">logistic</a>
+    
+    <a href="https://hardy5012.github.io/tags/makefile/">makefile</a>
+    
+    <a href="https://hardy5012.github.io/tags/neural/">neural</a>
+    
+    <a href="https://hardy5012.github.io/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="https://hardy5012.github.io/tags/protobuf/">protobuf</a>
+    
+    <a href="https://hardy5012.github.io/tags/python/">python</a>
+    
+    <a href="https://hardy5012.github.io/tags/regression/">regression</a>
+    
+    <a href="https://hardy5012.github.io/tags/regularization/">regularization</a>
+    
+    <a href="https://hardy5012.github.io/tags/spacemacs/">spacemacs</a>
+    
+    <a href="https://hardy5012.github.io/tags/static/">static</a>
+    
+    <a href="https://hardy5012.github.io/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://hardy5012.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
         </div>
-        
-  
-  
-
-  
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - 
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy; 
-     - 
-    2019
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author"></span>
-  </span>
-</div>
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
     </div>
-  </div>
-  <script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
-  
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://hardy5012.github.io/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
 
 
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
 
 
