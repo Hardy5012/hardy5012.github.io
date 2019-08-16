@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C&#43;&#43; | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43;">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/categories/c&#43;&#43;/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="alternate" type="application/rss+xml+xml" href="http://example.org/categories/c++/index.xml" title="Learning Hardy" />
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    
+                    <h3 class="archive-title">
+                        分类
+                        <span class="keyword">C&#43;&#43;</span>
+                        中的文章
+                    </h3>
+                    
+
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">C&#43;&#43; Ep11:Rvalue References,Move Semantics,and Perfect Forwarding(3)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2018年1月5日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                Item 27:明白什么时候选择重载，什么时候选择 universal 引用   Item 26 已经解释了，不管是对全局函数还是成员函数（尤其是构造函数）而言，对 universal 引用的重载会导致一系列的问题。 到目前为止，我也已经给出了好几个例子，如果它能表现得和我们期待的一样，这种重载也能很实用。 此 Item 会探索如何让这种重载能实现我们所需求的行为。我们可以设计出避免对 universal 引用进行重载的实现， 也可以通过限制参数的类型，来使得它们能够匹配。 抛弃重载   Item 26 中的第一个例子（logAndAdd）就是一个典型的例子，很多这样的函数如果想要避免对 universal 引用进行重载， 那只要简单地对即将重载的函数进行不同的命名即可。举个例子，两个 logAndAdd 重载能被分割成 logAndAddName 和 logAndAddNameIdx。可惜的是，这个方法不能在第二个例子（Person 构造函数）中工作，因为构造函数的名字是由语言固定的。 再说了，谁又想放弃重载呢？ 通过 const T&amp;传参数   另一个选择是回到 C++98，并且把 pass-by-universal-reference（通过 universal 引用传参数） 替换成 pass-by-lvalue-reference-to-const（通过 const 左值引用传参数）。事实上，这是 Item 26 考虑的第一个方法。 这个办法的缺点是它的效率无法达到最优。要知道，对于我们现在所知道的 universal 引用和重载来说， 牺牲一些效率来保持事情的简单性可能是一个很有吸引力的方案。 传值   一个常常能让你提升效率并且不增加复杂性的办法是把传引用的参数替换成传值的参数。虽然这很不直观， 但这个设计遵守了 Item 41 的建议（当知道你需要拷贝一个对象时，直接通过传值来传递它）。 所以，对于它们怎么工作以及它们有多高效的细节部分，我会推迟到 Item 41 再讨论。 在这，我只是给你看一下这个技术怎么用在 Person 例子中去： classPerson { public: explicit Person(std::string n) // replaces T&amp;&amp; ctor; see 	: name(std::move(n)) {} // Item 41 for use of std::move 	explicit Person(int idx) // as before 	: name(nameFromIdx(idx)) {} … private: std::string name; };    因为 std::string 的构造函数接受类型为整型的参数，所以所有传给 Person 构造函数的 int 及类 int （比如，std::size_t, short, long）的参数讲调用 int 版本的重载。相似的，所有的 std::string 类型 （以及那些可以用来创建一个 std::string 的参数，比如字符串&#34;Ruth&#34;）会被传给以 std::string 为参数的构造函数。 因此对于调用者来说，这里没有意外发生。你能争论说“我觉得有些人还是会感到奇怪，他们使用 0 或 NULL 来代表 null 指针， 所以这会掉用 int 版本的重载”，但是这些人应该回到 Item 8，然后再读一次，直到他们觉得使用 0 或 NULL 来表示 null 指针会让他们觉得可怕。 使用 Tag dispatch（标签分发）   不管是通过 lvalue-reference-to-const 传递还是传值的方式来支持完美转发。如果使用 universal 引用的动机是完美转发的话， 我们没有其他的选择。我们还是不想抛弃重载。所以如果我们不想抛弃重载，也不想抛弃 universal 引用的话， 我们怎么才能避免对 universal 引用进行重载呢？  事实上没有这么困难。重载函数的调用是这样的：依次查看每个重载函数的参数（形参）以及调用点的参数（实参）， 然后选择最匹配的重载函数（匹配上所有的形参和实参）。一个 universal 引用参数通常提供一个格外的匹配，使得不管传入的是什么， 都能匹配上，但是如果 universal 引用只是参数列表的一部分，这个参数列表还包含其他不是 universal 引用的参数，那么， 即使不考虑 universal 引用，非 universal 引用参数就足够我们造成不匹配了。这就是 tag dispatch 方法背后的基础， 一个例子会让之前的描述更加好理解。  我们把 tag dispatch 永在 logAndAdd177 页的例子上去。为了避免你分神去找，这里给出那个例子的代码： std::multiset&lt;std::string&gt; names; // global data structure  template&lt;typename T&gt; // make log entry and add  void logAndAdd(T&amp;&amp; name) // name to data structure  { auto now = std::chrono::system_clock::now(); log(now, &#34;logAndAdd&#34;); names.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep11rvalue-referencesmove-semanticsand-perfect-forwarding3/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">C&#43;&#43; Ep10:Rvalue References,Move Semantics,and Perfect Forwarding(2)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2018年1月4日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                Item 25:对右值引用使用 std::move，对 universal 引用则使用 std::forward   右值引用只能绑定那些有资格被 move 的对象上去。如果你有一个右值引用类型的参数，你就知道这个被绑定的对象可以被 move： classWidget { Widget(Widget&amp;&amp; rhs); // rhs definitely refers to an 	… // object eligible for moving  };    在这种情况下，你会想传这样一个对象给其他函数，来允许这些函数能利用对象的右值属性。为了达到这样的目的，需要把绑定到这些对象的参数转换成右值。 就像 Item 23 解释的那样，std::move 不仅是这么做了，它就是为了这个目的而被创造出来的： classWidget { public: Widget(Widget&amp;&amp; rhs) // rhs is rvalue reference 	: name(std::move(rhs.name)), p(std::move(rhs.p)) { … } … private: std::string name; std::shared_ptr&lt;SomeDataStructure&gt; p; };    在另一方面，一个 universal 引用可能被绑定到一个有资格被 move 的对象上去。universal 引用只在它由右值初始化的时候需要被转换成一个右值。 Item 23 解释了这就是 std::forward 具体做的事情： classWidget { public: template&lt;typename T&gt; void setName(T&amp;&amp; newName) // newName is 	{ name = std::forward&lt;T&gt;(newName); } // universal reference 	… };    总之，因为右值引用总是被绑定到右值，所以当它们被转发给别的函数的时候，应该被无条件地转换成右值（通过 std::move）， 而 universal 引用由于只是不定时地被绑定到右值，所以当转发它们时，它们应该被有条件地转换成右值（通过 std::forward）。  Item 23 解释了对右值引用使用 std::forward 能让它显示出正确的行为，但是源代码会因此变得冗长、易错、不符合习惯的， 所以你应该避免对右值引用使用 std::forward。对 universal 引用使用 std::move 是更加糟糕的想法，因为这样会对左值（比如，局部变量）产生非预期的修改： classWidget { public: template&lt;typename T&gt; void setName(T&amp;&amp; newName) // universal reference 	{ name = std::move(newName); } // compiles, but is 	… // bad, bad, bad!……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep10rvalue-referencesmove-semanticsand-perfect-forwarding2/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep08smart-pointers3/">C&#43;&#43; Ep08:Smart Pointers(3)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2018年1月3日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                Item 22:当使用 Pimpl 机制时，在实现文件中给出特殊成员函数的实现   如果你曾经同过久的编译时间斗争过，那么你肯定对 Pimpl（&#34;point to implementation&#34;,指向实现）机制很熟悉了。这种技术让你把类的数据成员替换成指向一个实现类（或结构）的指针， 把曾经放在主类中的数据成员放到实现类中去，然后通过指针间接地访问那些数据成员。举个例子，假设 Widget 看起来像这个样子： classWidget { // in header &#34;widget.h&#34;  public: Widget(); … private: std::string name; std::vector&lt;double&gt; data; Gadget g1, g2, g3; // Gadget is some user-  };    因为 Widget 的数据成员包含 std::string，std::vector 和 Gadget 类型，这些类型的头文件必须出现在 Widget 的编译中， 这就意味着 Widget 的客户必须#include &lt;string&gt;,&lt;vector&gt;,和 gadget.h。这些头文件增加了 Widget 客户的编译时间， 加上它们使得这些客户依赖于头文件的内容。如果头文件的内容改变了，Widget 的客户必须重编译。标准头文件&lt;string&gt;和&lt;vector&gt;不会经常改变， 但是 gadget.h 有频繁更替版本的倾向。  在 C++98 中应用 Pimpl 机制需要在 Widget 中把它的数据成员替换成一个原始指针，指向一个已经被声明却还没有定义的结构： classWidget { // still in header &#34;widget.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep08smart-pointers3/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/">C&#43;&#43; Ep09:Rvalue References,Move Semantics,and Perfect Forwarding(1)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2018年1月3日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                Item 23:理解 std::move 和 std::forward   根据 std::move 和 std::forward 不能做什么来熟悉它们是一个好办法。std::move 没有 move 任何东西，std::forward 没有转发任何东西。 在运行期，它们没有做任何事情。它们没有产生需要执行的代码，一 byte 都没有。  std::move 和 std::forward 只不过就是执行 cast 的两个函数（实际上是函数模板）。 std::move 无条件地把它的参数转换成一个右值，而 std::forward 只在特定条件满足的情况下执行这个转换。就是这样了， 我的解释又引申出一系列的新问题，但是，基本上来说，上面说的就是全部内容了。  为了让内容更加形象，这里给出 C++11 中 std::move 实现的一个例子。它没有完全遵循标准的细节，但是很接近了。 template&lt;typename T&gt; // in namespace std  typename remove_reference&lt;T&gt;::type&amp;&amp; move(T&amp;&amp; param) { using ReturnType = // alias declaration; 	typename remove_reference&lt;T&gt;::type&amp;&amp;; // see Item 9 	return static_cast&lt;ReturnType&gt;(param); }    我已经帮你把代码的两个部分高亮（move 和 static_cast）显示了。一个是函数的名字，因为返回值类型挺复杂的，我不想让你在这复杂的地方浪费时间。 另一个地方是包括了这个函数的本质（cast）。就像你看到的那样，std::move 需要一个对象的引用（准确地说是一个 universal 引用，看 Item 24）， 并且返回同一个对象的引用。  函数返回值类型的“&amp;&amp;”部分暗示了 std::move 返回一个右值引用，但是，就像 Item 28 解释的那样，如果类型 T 恰好是左值引用，T&amp;&amp;将成为一个左值引用。 为了防止这样的事情发生，type trait（看 Item 9）std::remove_reference 被用在 T 上了，因此能保证把“&amp;&amp;”加在不是引用的类型上。 这样能保证让 std::move 确切地返回一个右值引用，并且这是很重要的，因为由函数返回的右值引用是一个右值。 因此，std::move 所做的所有事情就是转换它的参数为一个右值。  说句题外话，在 C++14 中 std::move 能被实现得更简便一些。多亏了函数返回值类型推导（看 Item 3）以及标准库的别名模板 std::remove_reference_t（看 Item 9），std::move 能被写成这样： template&lt;typename T&gt; // C++14; still in  decltype(auto) move(T&amp;&amp; param) // namespace std  { using ReturnType = remove_reference_t&lt;T&gt;&amp;&amp;; return static_cast&lt;ReturnType&gt;(param); }    看上去更简单了，不是吗？  因为 std::move 值只转换它的参数为右值，这里有一些更好的名字，比如说 rvalue_cast。尽管如此，我们仍然使用 std::move 作为它的名字， 所以记住 std::move 做了什么和没做什么很重要。它做的是转换，没有做 move。  当然了，右值是 move 的候选人，所以把 std::move 应用在对象上能告诉编译器，这个对象是有资格被 move 的。 这也就是为什么 std::move 有这样的名字：能让指定的对象更容易被 move。  事实上，右值是 move 的唯一候选人。假设你写了一个代表注释的类。 这个类的构造函数有一个 std::string 的参数，并且它拷贝参数到一个数据成员中。根据 Item 41 中的信息，你声明一个传值的参数： classAnnotation { public: explicit Annotation(std::string text); // param to be copied, 	… // so per Item 41,  }; // pass by value    但是 Annotation 的构造函数只需要读取 text 的值。它不需要修改它。 为了符合历史传统（把 const 用在任何可以使用的地方），你修改了你的声明，因此 text 成为了 const 的： classAnnotation { public: explicit Annotation(const std::string text) … };    为了在拷贝 text 到数据成员的时候不把时间浪费在拷贝操作上，你保持 Item 41 的建议并且把 std::move 用在 text 上，因此产生了一个右值： classAnnotation { public: explicit Annotation(const std::string text) : value(std::move(text)) // &#34;move&#34; text into value; this code 	{ … } // doesn&#39;t do what it seems to!……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep09rvalue-referencesmove-semanticsand-perfect-forwarding1/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep07smart-pointers2/">C&#43;&#43; Ep07:Smart Pointers(2)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2018年1月2日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                Item 20:使用 std::weak_ptr 替换会造成指针悬挂的 std::shared_ptr-like 指针   矛盾的是，我们很容易就能创造出一个和 std::shared_ptr 类似的智能指针，但是，它们不参加被指向资源的共享所有权管理。 换句话说，这是一个行为像 std::shared_ptr，但却不影响对象引用计数的指针。这样的智能指针需要与一个对 std::shared_ptr 来说不存在的问题做斗争：它指向的东西可能已经被销毁了。一个真正的智能指针需要通过追踪资源的悬挂 （也就是说，被指向的对象不存在时）来解决这个问题。std::weak_ptr 正好就是这种智能指针。  你可能会奇怪 std::weak_ptr 有什么用。当你检查 std::weak_ptr 的 API 时，你可能会更奇怪。它看起来一点也不智能。 std::weak_ptr 不能解引用，不能检查指针是否为空。这是因为 std::weak_ptr 不是独立的智能指针。 它是 std::shared_ptr 的附加物。  它们的联系从出生起就存在了。std::weak_ptr 常常创造自 std::shared_ptr。std::shared_ptr 初始化它们时，它们指向和 std::shard_ptr 指向的相同的位置，但是它们不影响它们所指向对象的引用计数： auto spw = // after spw is constructed, 	std::make_shared&lt;Widget&gt;(); // the pointed-to Widget&#39;s  // ref count (RC) is 1. (See  // Item 21 for info on  // std::make_shared.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep07smart-pointers2/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;_ep06_smart_pointers_1/">C&#43;&#43; Ep06:Smart Pointers(1)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2017年12月29日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                item 18: 使用 std::unique_ptr 来管理独占所有权的资源   当你需要一个智能指针的时候，std::unique_ptr 通常是最接近你需求的那一个。默认情况下，这么假设是很合理的：std::unique_ptr 和原始指针的大小是一样的， 并且很多操作（包括解引用），它们执行的是完全相同的指令。这意味着你甚至能把它们用在对内存和时间都很紧的地方。如果一个原始指针对你来说足够的小和快， 那么一个 std::unique_ptr 也几乎可以肯定是这样的。  std::unique_ptr 表现出独占所有权的语义。一个非空的 std::unique_ptr 总是对它指向的资源拥有所有权。 move 一个 std::unique_ptr 将把所有权从源指针转交给目标指针（源指针将被设置为 null）。拷贝一个 std::unique_ptr 是不被允许的， 因为如果你拷贝一个 std::unique_ptr，你将得到两个 std::unique_ptr 指向同样的资源，然后这两个指针都认为它们拥有资源（因此应该释放资源）。 因此 std::unique_ptr 是一个 move-only（只能进行 move 操作的）类型。再看看资源的销毁，一个非空的 std::unique_ptr 销毁它的资源。 默认情况下，通过在 std::unique_ptr 中 delete 一个原始指针的方法来进行资源的销毁。  std::unique_ptr 的常用方法是作为一个工厂函数的返回类型（指向类层次中的对象），假设我们有一个投资类型的类层次（比如，股票，债券，不动产等等）， 这个类层次的基类是 Investment。 classInvestment { … }; classStock: public Investment { … }; classBond: public Investment { … }; classRealEstate: public Investment { … };    对于这样的类层次，一个工厂函数常常会在堆上分配一个对象，并且返回一个指向这个对象的指针，当这个对象不再需要被使用的时候，调用者有责任销毁这个对象。 这完全符合 std::unique_ptr 的概念，因为调用者要对工厂返回的资源负责（也就是，它独占了所有权），然后当 std::unique_ptr 被销毁的时候， std::unique_ptr 会自动销毁它指向的对象。对于 Investment 类层次，一个工厂函数能被声明成这样： template&lt;typename.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;_ep06_smart_pointers_1/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">C&#43;&#43; Ep05:Moving to Modern C&#43;&#43;(3)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2017年12月27日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                item 15: 只要有可能，就使用 constexpr   从概念上来说，constexpr 表明的一个值不只是不变的，它还能在编译期被知道。但是这个概念只是故事的一部分，因为当 constexpr 应用在函数上时， 事情变得比看上去还要微妙。为了避免毁掉后面的惊喜，现在，我只能说你不能假设 constexpr 函数的返回值是 const 的，同时你也不能假设这些值能在编译期被知道。 也许最有趣的是，这些东西都是特性（是有用的）。对于 constexpr 函数来说，不需要产生 const 或能在编译期知道的返回结果是一件好事。  但是，让我们从 constexpr 对象开始。这些对象确实是常量，也确实能在编译期被知道。 （技术上来讲，它们的值是在翻译阶段被决定的，翻译阶段包含了编译期和链接期。除非你要写一个 C++的编译器或连接器，不然这都影响不到你， 所以你能在编程的时候，开心地假设为 constexpr 对象的值是在编译期被决定的） int sz; // non-constexpr variable  … constexpr auto arraySize1 = sz; // error! sz&#39;s value not  // known at compilation  std::array&lt;int, sz&gt; data1; // error! same problem  constexpr auto arraySize2 = 10; // fine, 10 is a  // compile-time constant  std::array&lt;int, arraySize2&gt; data2; // fine, arraySize2  // is constexpr    记住，const 不能提供和 constexpr 一样的保证，因为 const 对象不需要用“在编译期就知道的”值初始化： int sz; // as before  … const auto arraySize = sz; // fine, arraySize is  // const copy of sz  std::array&lt;int, arraySize&gt; data; // error!……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep05moving-to-modern-c&#43;&#43;3/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2017年12月26日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                item 11: 优先考虑使用 deleted function 而非 private undefined   在 C++ 98 中禁止拷贝和赋值实现如下： template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … private: basic_ios(const basic_ios&amp; ); // not defined 	basic_ios&amp; operator=(const basic_ios&amp;); // not defined  };    In C++11,可使用 = delete template &lt;classcharT, classtraits = char_traits&lt;charT&gt; &gt; classbasic_ios : public ios_base { public: … basic_ios(const basic_ios&amp; ) = delete; basic_ios&amp; operator=(const basic_ios&amp;) = delete; … };    delete 还可以删除实例化模板 template&lt;typename T&gt; void processPointer(T* ptr); template&lt;&gt; void processPointer&lt;void&gt;(void*) = delete; template&lt;&gt; void processPointer&lt;char&gt;(char*) = delete;   记住     优先考虑使用 deleted function 而非 private undefined    任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数   item 12: 把重写函数声明为“override”   因为 overriding (重写)听起来有点像 overloading (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。 classBase { public: virtual void doWork(); // base class virtual function 	… }; classDerived: public Base { public: virtual void doWork(); // overrides Base::doWork 	… // (&#34;virtual&#34; is optional  }; // here)  std::unique_ptr&lt;Base&gt; upb = // create base class pointer 	std::make_unique&lt;Derived&gt;(); // to derived class object;  // see Item 21 for info on  … // std::make_unique  upb-&gt;doWork(); // call doWork through base  // class ptr; derived class  // function is invoked    为了能够成功重写，必须要符合一些要求：    基类函数必须是 virtual 的。    基类函数和派生类函数的名字必须完全一样（除了析构函数）    基类函数和派生类函数的参数类型必须完全一样。    基类函数和派生类函数的 const 属性必须完全一样。    类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的    这些限制是 C++98 要求的，C++11 还增加了一条:    函数的引用限定符必须完全一样    “成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。 它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数： classWidget { public: void doWork() &amp;; // this version of doWork applies  // only when *this is an lvalue 	void doWork() &amp;&amp;; // this version of doWork applies  }; // only when *this is an rvalue  Widget makeWidget(); // factory function (returns rvalue)  Widget w; // normal object (an lvalue)  w.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2017年12月22日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                item 7: 区别使用（）和{}创建对象  记住     括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++最令人头疼的解析有天生的免疫性.   double x, y, z; int sum1{ x + y + z }; // error! sum of doubles may  // not be expressible as int   Widget w2(); // most vexing parse! declares a function  // named w2 that returns a Widget!  Widget w3{}; // calls Widget ctor with no args      在构造函数重载决议中，括号初始化尽最大可能与 std::initializer_list 参数匹配，即便其他构造函数看起来是更好的选择.……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="http://example.org/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2017年12月21日
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                |
+                                
+                                    <a href="http://example.org/categories/modern">Modern</a>
+                                
+                                    <a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                item 5: 尽量用 auto 代替显式类型声明  std::unordered_map&lt;std::string, int&gt; m; … for (const std::pair&lt;std::string, int&gt;&amp; p : m) { … // do something with p 	}    上面代码看起来很完美，但是有个问题。std::unordered_map 的 * key * 部分的类型是* const *修饰的， 所以哈希表(std::unordered_map)中的 std::pair 类型不是 std::pair&lt;std::string,int&gt;，而是 std::pair&lt;const std::string, int&gt;。 导致的结果是，编译器会把 std::pair&lt;const std::string,int&gt;对象强制转换为 std::pair&lt;std::string,int&gt;对象(也就是 p 声明的类型)。 因此编译器为 m 哈希表中每一个元素的拷贝生成一个临时对象(key 为非 const 的 pair 类型)，然后 p 就引用了那些临时对象。当循环结束，那些临时对象被析构。 记住     auto 变量必须初始化，它通常不会类型不匹配，从而更轻便和更高效，还能减少重构的工作量，一般我们尽量用 auto 代替显式类型声明。    auto 类型变量会有 time 2 和条款 item 6 中的陷阱   item 6: 当 auto 推断出不想要的类型时，使用显示类型初始化语法  Widget w; … bool highPriority = features(w)[5]; // is w high priority?……
+                                <p class="readmore"><a href="http://example.org/post/c&#43;&#43;-ep02auto/">阅读全文</a></p>
+                            </div>
+                        </article>
+                    
+
+                    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="http://example.org/categories/c&#43;&#43;/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="http://example.org/categories/c&#43;&#43;/">1</a>
+    </li>
+    
+    <li  class="current">
+        <a href="http://example.org/categories/c&#43;&#43;/page/2/">2</a>
+    </li>
+    
+
+    
+</ol>
+
+
+
+                </div>
+            </div>
+
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HeroKu on Learning Hardy</title>
+    <link>http://example.org/tags/heroku/</link>
+    <description>Recent content in HeroKu on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 07 Jun 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/heroku/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HeroKu</title>
+      <link>http://example.org/post/2017-06-07-heroku/</link>
+      <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2017-06-07-heroku/</guid>
+      <description> 安装  sudo yum install ruby gem sudo gem install json_pure sudo gem install rails sudo gem install bundler sudo gem install heroku    {{{more}}} </description>
+    </item>
+    
+  </channel>
+</rss>

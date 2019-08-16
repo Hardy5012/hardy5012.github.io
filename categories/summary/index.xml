@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>summary on Learning Hardy</title>
+    <link>http://example.org/categories/summary/</link>
+    <description>Recent content in summary on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/categories/summary/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>为运行的容器挂载文件目录</title>
+      <link>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</link>
+      <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</guid>
+      <description>在使用 docker 时，经常需要为已运行的容器挂载文件目录。方法如下:    首先使用 df 查看需要挂载的文件目录是在哪个文件系统上 #on the host: df /home/huaming_li/github Filesystem 1K-blocks Used Available Use% Mounted on /dev/mapper/centos-home 917199292 103069408 814129884 12% /home     通过/proc/self/mountinfo 查看哪个子目录是在 /home #on the host, look for &amp;#39;/home&amp;#39; in the MOUNT column: cat /proc/self/mountinf 65 18 0:6 / /sys/kernel/debug rw,relatime shared:26 - debugfs debugfs rw 71 16 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:27 - binfmt_misc binfmt_misc rw 74 19 0:37 / /proc/fs/nfsd rw,relatime shared:28 - nfsd nfsd rw 76 62 8:1 / /boot rw,relatime shared:29 - xfs /dev/sda1 rw,attr2,inode64,noquota 78 62 253:2 / /home rw,relatime shared:30 - xfs /dev/mapper/centos-home rw,attr2,inode64,noquota 80 62 0:38 / /var/lib/nfs/rpc_pipefs rw,relatime shared:31 - rpc_pipefs sunrpc rw 348 24 0:3 / /run/docker/netns/ingress_sbox rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 357 24 0:3 / /run/docker/netns/1-7qyaqxyicw rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 187 24 0:39 / /run/user/1000 rw,nosuid,nodev,relatime shared:134 - tmpfs tmpfs rw,size=1621780k,mode=700,uid=1000,gid=1000 195 18 0:41 / /sys/fs/fuse/connections rw,relatime shared:141 - fusectl fusectl rw     我们找到了需要创建的设备 253:2, 在容器中 # in the container, create the device if it doesn&amp;#39;t already exist: [ -b /dev/xvda1 ] || mknod --mode 0600 /dev/xvda1 b 253 2     把这个设备挂到容器中 # in the container: $ mkdir -p /tmpmount $ mount /dev/xvda1 /tmpmount mount: permission denied     如果挂载提示权限失败，则需要 ns-enter， 这允许我们作为主机用户输入容器的命名空间： # on the host, get the container&amp;#39;s PID: $ docker inspect --format {{.</description>
+    </item>
+    
+    <item>
+      <title>super 没那么简单</title>
+      <link>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</guid>
+      <description>大家都知道使用 super 来调用父类了方法，但如何正确使用 super 普遍知之甚少。 为了弄清它的原理，我们需要花点时间解释下 Python 是如何实现继承的。 对于你定义的每一个类，Python 会计算出一个所谓的方法解析顺序(MRO)列表。 这个 MRO 列表就是一个简单的所有基类的线性顺序表。 MRO(Method Resolution Order)   Python 中是使用 C3 算法来确定 MRO 的。可通过 mro()函数来获取每个类的 MRO。  首先了解 C3 的一些基本定义： C1C2...CN   表示一个包含多个类的列表 [C1,C2,…,CN]  例表的第一个元素定义为 head: head = C1   剩余的为 tail: tail = C2...CN   例表相加 [C] + [C1,C2,…,CN]: C + (C1C2...CN) = CC1C2...CN   考虑我们有个多继承的类 C，基类为 B1,B2,…,BN.现在要计算类 C 的线性顺序表 L[C].规则为    C 的线性顺序表为 C 加上 父类的线性顺序表 和 父类例表的 merge.</description>
+    </item>
+    
+    <item>
+      <title>centos7 配置 service</title>
+      <link>http://example.org/post/centos7%E9%85%8D%E7%BD%AEservice/</link>
+      <pubDate>Thu, 07 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/centos7%E9%85%8D%E7%BD%AEservice/</guid>
+      <description>配置 service 文件  在/usr/lib/systemd/system/目录创建自己的 service 文件 my.service  [Unit] Description=infrec # Wants=systemd-user-sessions.service # After=systemd-user-sessions.service [Service] Environment=&amp;#34;PATH=/home/lytz/.virtualenvs/xn_infrec/bin&amp;#34; &amp;#34;PYTHONPATH=.:/home/lytz/app/xn_InfRec/src:/home/lytz/app/rlib-py&amp;#34; &amp;#34;APP_SETTINGS=/home/lytz/app/xn_InfRec/src/config.py&amp;#34; #Sets the working directory for executed processes WorkingDirectory=/home/lytz/app/xn_InfRec/src/ # Sets the Unix user that the processes are executed as User=lytz # Sets the highest scheduling priority for executed processes Nice=-20 # disable OOM killing for this process OOMScoreAdjust=-1000 ExecStartPre=/bin/echo ${PYTHONPATH} ExecStart=/home/lytz/.virtualenvs/xn_infrec/bin/gunicorn run:app --bind 0.0.0.0:9021 --worker-class sanic.worker.GunicornWorker -w 4 -t 180 # systemd will send SIGTERM to all processes started from this service if we don&amp;#39;t set ExecStop # ExecStop=-/bin/kill -15 $MAINPID Restart=on-failure RestartSec=15s # systemd-coredump will log the coredump including a backtrace if possible, and store the core (contents of process&amp;#39; memory contents) in an external file on disk in /var/lib/systemd/coredump or in current working directory # ulimit -c unlimited # echo &amp;#34;core.</description>
+    </item>
+    
+    <item>
+      <title>Python 虚拟环境</title>
+      <link>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Tue, 06 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <description>Virtualenv  Introduction   virtualenv is a tool to create isolated Python environments. Installation  sudo pip install virtualenv   {{{more}}} Usage   1.为一个工程创建一个虚拟环境： cd my_project_folder virtualenv venv   virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，以及 pip 库的一份拷贝，这样就能安装其他包了。虚拟环境的名字（此例中是 venv）可以是任意的；若省略名字将会把文件均放在当前目录。  在任何你运行命令的目录中，这会创建 Python 的拷贝，并将之放在叫做 venv 的文件中。  你可以选择使用一个 Python 解释器： virtualenv -p /usr/bin/python2.7 venv   这将会使用 /usr/bin/python2.7 中的 Python 解释器。 2.要开始使用虚拟环境，其需要被激活： source venv/bin/activate   从现在起，任何你使用 pip 安装的包将会放在 ``venv 文件夹中，与全局安装的 Python 隔绝开 3.</description>
+    </item>
+    
+    <item>
+      <title>配置多个 git 账户</title>
+      <link>http://example.org/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</link>
+      <pubDate>Tue, 26 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2016-07-26-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAgithub/</guid>
+      <description>配置多个 git 账户   在使用 ssh keys 时常因为有多个 git 账户，无法正常使用 {{{more}}} 生成 SSH keys  ssh-keygen -t rsa -f ~/.ssh/id_github -C &amp;#34;youremail@xxx.com&amp;#34;   在 Git Bash 中执行命令根据提示一路回车，会在~/.ssh/目录下生成 id_github 开头的两个文件，把 id_github.pub 放到 github 的 SSH keys 中 然后生成别一个 keys（命名需要不同） 把新的 keys 加到 SSH 服务中  ssh-agent bash ssh-add ~/.ssh/id_github   查看有哪些 keys ssh-add -l  创建配置文件，在.ssh 目录下面创建 config 文件  # Default github user(github@mail.com),注意 User 项直接填 git，不用填在 github 的用户名 # 多个账户时，host 可以精确到用户名以做区分 Host github.</description>
+    </item>
+    
+  </channel>
+</rss>

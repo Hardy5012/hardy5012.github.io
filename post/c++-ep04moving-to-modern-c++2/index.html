@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2) | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2) - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-12-26T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-12-26T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep04moving-to-modern-c&#43;&#43;2/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C&#43;&#43; Ep04:Moving to Modern C&#43;&#43;(2)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年12月26日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+item 11: 优先考虑使用 deleted function 而非 private undefined
+</h1>
+<p>
+在 C++ 98 中禁止拷贝和赋值实现如下：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">charT</span>, <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">traits</span> <span style="color:#f92672">=</span> char_traits<span style="color:#f92672">&lt;</span>charT<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">basic_ios</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> ios_base {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#960050;background-color:#1e0010">…</span>
+	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+	  basic_ios(<span style="color:#66d9ef">const</span> basic_ios<span style="color:#f92672">&amp;</span> ); <span style="color:#75715e">// not defined
+</span><span style="color:#75715e"></span>	  basic_ios<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> basic_ios<span style="color:#f92672">&amp;</span>); <span style="color:#75715e">// not defined
+</span><span style="color:#75715e"></span>  };
+</code></pre></div>
+</div>
+<p>
+In C++11,可使用 <strong>= delete</strong>
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">charT</span>, <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">traits</span> <span style="color:#f92672">=</span> char_traits<span style="color:#f92672">&lt;</span>charT<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">basic_ios</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> ios_base {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#960050;background-color:#1e0010">…</span>
+	  basic_ios(<span style="color:#66d9ef">const</span> basic_ios<span style="color:#f92672">&amp;</span> ) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+	  basic_ios<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> basic_ios<span style="color:#f92672">&amp;</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+	  <span style="color:#960050;background-color:#1e0010">…</span>
+  };
+</code></pre></div>
+</div>
+<!-- more -->
+<p>
+delete 还可以删除实例化模板
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">void</span> processPointer(T<span style="color:#f92672">*</span> ptr);
+
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span>
+  <span style="color:#66d9ef">void</span> processPointer<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">void</span><span style="color:#f92672">&gt;</span>(<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span>
+  <span style="color:#66d9ef">void</span> processPointer<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">char</span><span style="color:#f92672">&gt;</span>(<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</code></pre></div>
+</div>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+优先考虑使用 deleted function 而非 private undefined
+</p>
+</li>
+<li>
+<p>
+任何函数都能被删除（deleted），包括非成员函数和 template 实例化函数
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+item 12: 把重写函数声明为“override”
+</h1>
+<p>
+因为 <strong>overriding</strong> (重写)听起来有点像 <strong>overloading</strong> (重载)，但是他们完全没有关系，让我们来弄清楚，重写虚函数是为了通过基类的接口来调用派生类的函数。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Base</span> {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> doWork(); <span style="color:#75715e">// base class virtual function
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
+  };
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Derived</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Base {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> doWork(); <span style="color:#75715e">// overrides Base::doWork
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// (&#34;virtual&#34; is optional
+</span><span style="color:#75715e"></span>  }; <span style="color:#75715e">// here)
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>Base<span style="color:#f92672">&gt;</span> upb <span style="color:#f92672">=</span> <span style="color:#75715e">// create base class pointer
+</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Derived<span style="color:#f92672">&gt;</span>(); <span style="color:#75715e">// to derived class object;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// see Item 21 for info on
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// std::make_unique
+</span><span style="color:#75715e"></span>  upb<span style="color:#f92672">-&gt;</span>doWork(); <span style="color:#75715e">// call doWork through base
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// class ptr; derived class
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// function is invoked
+</span></code></pre></div>
+</div>
+<p>
+为了能够成功重写，必须要符合一些要求：
+</p>
+<ul>
+<li>
+<p>
+基类函数必须是 virtual 的。
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的名字必须完全一样（除了析构函数）
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的参数类型必须完全一样。
+</p>
+</li>
+<li>
+<p>
+基类函数和派生类函数的 const 属性必须完全一样。
+</p>
+</li>
+<li>
+<p>
+类函数和派生类函数的返回值类型以及异常规格（exception specification）必须是可兼容的
+</p>
+</li>
+</ul>
+<p>
+这些限制是 C++98 要求的，C++11 还增加了一条:
+</p>
+<ul>
+<li>
+<p>
+函数的引用限定符必须完全一样
+</p>
+</li>
+</ul>
+<p>
+“成员函数引用限定符”是 C++11 中不太被知道的特性，所以即使你从来没有听过，也不需要吃惊。
+它们的出现是为了限制成员函数只能被左值或右值中的一个使用。使用它们时，不需要一定是 virtual 成员函数：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+
+	  <span style="color:#66d9ef">void</span> doWork() <span style="color:#f92672">&amp;</span>; <span style="color:#75715e">// this version of doWork applies
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// only when *this is an lvalue
+</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doWork</span>() <span style="color:#f92672">&amp;&amp;</span>; <span style="color:#75715e">// this version of doWork applies
+</span><span style="color:#75715e"></span>  }; <span style="color:#75715e">// only when *this is an rvalue
+</span><span style="color:#75715e"></span>
+  Widget <span style="color:#a6e22e">makeWidget</span>(); <span style="color:#75715e">// factory function (returns rvalue)
+</span><span style="color:#75715e"></span>  Widget w; <span style="color:#75715e">// normal object (an lvalue)
+</span><span style="color:#75715e"></span>  w.doWork(); <span style="color:#75715e">// calls Widget::doWork for lvalues
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (i.e., Widget::doWork &amp;)
+</span><span style="color:#75715e"></span>  makeWidget().doWork(); <span style="color:#75715e">// calls Widget::doWork for rvalues
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (i.e., Widget::doWork &amp;&amp;)
+</span></code></pre></div>
+</div>
+<p>
+写需要这么多的的要求，就意味着一个小的差错就会有很大影响。举个例子，下面的代码完全没有问题，并且乍一看也很合理，
+但是它们没有包含虚函数重写
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Base</span> {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> mf1() <span style="color:#66d9ef">const</span>;
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf2</span>(<span style="color:#66d9ef">int</span> x);
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf3</span>() <span style="color:#f92672">&amp;</span>;
+	  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf4</span>() <span style="color:#66d9ef">const</span>;
+  };
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Derived</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Base {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> mf1();
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf2</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> x);
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf3</span>() <span style="color:#f92672">&amp;&amp;</span>;
+	  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf4</span>() <span style="color:#66d9ef">const</span>;
+  };
+</code></pre></div>
+</div>
+<ul>
+<li>
+<p>
+mf1 在基类中声明为 const，但是在派生类中却不是
+</p>
+</li>
+<li>
+<p>
+mf2 在基类中的参数类型是 int，但是在派生类中的参数类型是 unsigned
+</p>
+</li>
+<li>
+<p>
+mf3 在基类中是左值限定的，但是在派生类中是右值限定的
+</p>
+</li>
+<li>
+<p>
+mf4 在基类中没声明为 virtual
+</p>
+</li>
+</ul>
+<p>
+在派生类中，声明出正确的重写函数很重要，但是它们总是很容易出错，
+所以 C++11 给了你一个方法来明确一个派生类函数需要重写一个基类函数，这个方法就是把函数声明为 <strong>override</strong> 的
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Derived</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Base {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> mf1() <span style="color:#66d9ef">override</span>;
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf2</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> x) <span style="color:#66d9ef">override</span>;
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf3</span>() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">override</span>;
+	  <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mf4</span>() <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">override</span>;
+  };
+</code></pre></div>
+</div>
+<p>
+把所有的派生类中的重写函数都声明为 override，这个准则不仅能让编译器告诉你什么地方声明了 override 却没有重写任何东西。
+而且当你考虑改变基类中虚函数的签名，它（这个准则）还能帮助你评估出影响大不大。如果派生类所有的地方都使用了 override，
+你只需要改变函数签名，然后再编译一次你的系统，看看你造成了多大的损害（也就是，各个派生类中有多少函数不能编译），
+然后再决定这些问题是否值得你去改变函数签名。
+</p>
+<p>
+C++11 介绍了两个和上下文相关的关键字(<strong>contextual keywords</strong>)，override 和 final。
+这两个关键字的特点是，只在特定的上下文中它们是保留的。
+比如 override 的情况，只有当它出现在成员函数声明的最后时，它才是保留的。
+这意味着如果你有历史遗留的代码，代码中已经使用了 override 作为 name，你不需要因为你使用了 C++11 而改变它：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Warning</span> { <span style="color:#75715e">// potential legacy class from C++98
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#960050;background-color:#1e0010">…</span>
+	  <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">override</span>(); <span style="color:#75715e">// legal in both C++98 and C++11
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// (with the same meaning)
+</span><span style="color:#75715e"></span>  };
+</code></pre></div>
+</div>
+<p>
+需要引用限定功能的成员函数不常见，但是它是存在的。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">using</span> DataType <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span>; <span style="color:#75715e">// see Item 9 for
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// info on &#34;using&#34;
+</span><span style="color:#75715e"></span>	  DataType<span style="color:#f92672">&amp;</span> data() { <span style="color:#66d9ef">return</span> values; }
+	  <span style="color:#960050;background-color:#1e0010">…</span>
+	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+	  DataType values;
+  };
+
+  Widget w;
+  <span style="color:#960050;background-color:#1e0010">…</span>
+  <span style="color:#66d9ef">auto</span> vals1 <span style="color:#f92672">=</span> w.data(); <span style="color:#75715e">// copy w.values into vals1
+</span><span style="color:#75715e"></span>
+  Widget <span style="color:#a6e22e">makeWidget</span>();
+  <span style="color:#66d9ef">auto</span> vals2 <span style="color:#f92672">=</span> makeWidget().data(); <span style="color:#75715e">// copy values inside the
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Widget into vals2
+</span></code></pre></div>
+</div>
+<p>
+从 makeWidget 返回的临时对象（一个左值，），拷贝它的 std::vector 浪费时间，我们最好的做法是 move 它，
+但是因为 data 返回一个左值引用，所以 C++的规则要求编译器生成拷贝的代码。
+</p>
+<p>
+我们需要一个方法来明确一点，那就是当 data 被一个右值 Widget 调用时，结果也应该是一个右值。
+使用引用限定符来重载 data 的左值和右值版本让之成为可能：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">using</span> DataType <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span>;
+	  
+	  DataType<span style="color:#f92672">&amp;</span> data() <span style="color:#f92672">&amp;</span> <span style="color:#75715e">// for lvalue Widgets,
+</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> values; } <span style="color:#75715e">// return lvalue
+</span><span style="color:#75715e"></span>	  DataType data() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#75715e">// for rvalue Widgets,
+</span><span style="color:#75715e"></span>		  { <span style="color:#66d9ef">return</span> std<span style="color:#f92672">::</span>move(values); } <span style="color:#75715e">// return rvalue
+</span><span style="color:#75715e"></span>	  
+	  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+	  DataType values;
+  };
+</code></pre></div>
+</div>
+<h2 id="headline-4">
+记住
+</h2>
+<ul>
+<li>
+<p>
+把重写函数声明为 override 的
+</p>
+</li>
+<li>
+<p>
+成员函数引用限定符能区别对待左值和右值对象（*this）
+</p>
+</li>
+</ul>
+<h1 id="headline-5">
+item 13: 优先考虑 const_iterators 而非 iterators
+</h1>
+<p>
+const_iterators 在 C++11 比 98 好用多了，但 C++11 只添加了 non-member 版本的 begin 和 end 函数，
+而没有添加相应的 cbegin，cend，rbegin，rend，crbegin，crend。C++14 更正了这个问题。C++ 11 自己实现
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">C</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">auto</span> cbegin(<span style="color:#66d9ef">const</span> C<span style="color:#f92672">&amp;</span> container)<span style="color:#f92672">-&gt;</span><span style="color:#66d9ef">decltype</span>(std<span style="color:#f92672">::</span>begin(container))
+  {
+		  <span style="color:#66d9ef">return</span> std<span style="color:#f92672">::</span>begin(container); <span style="color:#75715e">// see explanation below
+</span><span style="color:#75715e"></span>  }
+</code></pre></div>
+</div>
+<p>
+看到 non-member 版本的 cbegin 没有调用 member 版本的 cbegin，你觉得很奇怪是吧？我也觉得奇怪，但是跟着代码看下来。
+cbegin 模板接受任何类型的参数来表示一个“类容器”（C），并且它通过它的 reference-to-const 形参（container）来使用实参。
+如果 C 是一个普通的容器类型（比如，一个 std::vector），container 将成为一个指向 const 容器的引用（也就是，const std::vector&lt;int&gt;&amp;）。
+用 const 容器调用 non-member 版本的 begin 函数（由 C++11 提供）就能产生一个 const_iterator，
+并且这个 iterator 就是这个模板的返回值。用这样的方式来实现的优点是，对于那些提供了 begin 成员函数，但是没有提供 cbegin 成员函数的容器，
+能更好地工作（在 C++11 的 non-member 版本的 begin 中，会调用这个容器的 begin 成员函数）。
+因此，你能对只提供 begin 成员函数的容器，使用这个 non-member 版本的 cbegin。
+</p>
+<p>
+如果 C 是一个 built-in 数组类型，这个模板也能工作。在这种情况下，container 成为一个指向 const 数组的引用。C++11 在 non-member 版本的 begin 中，
+为数组提供了一个特殊的版本，这个版本的 begin 返回一个指向数组中第一个元素的指针。一个 const 数组的元素是 const 的，所以 non-member 版本的 begin 为
+const 数组返回一个 point-to-const 的指针，并且事实上，一个 point-to-const 的指针对于数组来说就是一个 const_iterator。
+（为了深入了解一个模板怎么为 built-in 数组特殊化，请看 Item 1 中，以指向数组的引用为参数的 template 类型推导的讨论）
+</p>
+<h2 id="headline-6">
+记住
+</h2>
+<ul>
+<li>
+<p>
+优先考虑 const_iterators 而非 iterators
+</p>
+</li>
+<li>
+<p>
+在最大限度的通用代码中，优先考虑 begin，end，rbegin 等非成员版本的成员函数。
+</p>
+</li>
+</ul>
+<h1 id="headline-7">
+item 14: 如果函数不会抛出异常就把它们声明为 noexcept
+</h1>
+<p>
+在设计接口的时候，一个函数是不是应该这么声明（noexcept）是一个需要考虑的问题。函数的异常抛出行为是客户最感兴趣的部分。
+调用者能查询一个函数的 noexcept 状态，并且这个查询的结果能影响异常安全（exception safety）或着调用代码的性能。
+因此，一个函数是否是 noexcept 就和一个成员函数是否是 cosnt 同样重要。当你知道一个函数不会抛出异常的时候却不声明它为 noexcept，
+就属于一个不好的接口设计。
+</p>
+<p>
+但是，这里还有一个额外的动机让我们把 noexcept 应用到不会产生异常的函数上：它允许编译器产生更好的目标代码。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">f</span>(<span style="color:#66d9ef">int</span> x) <span style="color:#66d9ef">throw</span>(); <span style="color:#75715e">// no exceptions from f: C++98 style
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">f</span>(<span style="color:#66d9ef">int</span> x) <span style="color:#66d9ef">noexcept</span>; <span style="color:#75715e">// no exceptions from f: C++11 style
+</span></code></pre></div>
+</div>
+<p>
+如果，运行时期，一个异常逃离了 f，这违反了 f 的异常规范。在 C++98 的异常规范下，f 的调用者的调用栈被解开了，然后经过一些不相关的动作，程序终止执行。
+在 C++11 的异常规范下，运行期行为稍微有些不同：调用栈只有在程序终止前才有可能被解开。
+</p>
+<p>
+解开调用栈的时机，以及解开的可能性的不同，对于代码的产生有很大的影响。在一个 noexcept 函数中，如果一个异常能传到函数外面去，
+优化器不需要保持运行期栈为解开的状态，也不需要确保 noexcept 函数中的对象销毁的顺序和构造的顺序相反（因为 noexcept 是不应该抛出异常的）。
+</p>
+<p>
+我们值得去注意一些库的接口设计区分了宽接口（ <strong>wide contract</strong> ）和窄接口（ <strong>narrow contract</strong> ）。
+一个带宽接口的函数没有前提条件。这样的函数被调用时不需要注意程序的状态，它在传入的参数方面没有限制。
+带宽接口的函数永远不会展现未定义行为。
+</p>
+<p>
+不带宽接口条件的函数就是窄接口函数。对这些函数来说，如果传入的参数违反了前提条件，结果将是未定义的。
+</p>
+<p>
+如果你在写一个宽接口的函数，并且你知道你不会抛出一个异常，那就遵循本 Item 的建议，把它声明为 noexcept。对于那些窄接口的函数，
+情况将变得很棘手。举个例子，假设你正在写一个函数 f，这个函数接受一个 std::string 参数，并且它假设 f 的实现永远不会产生一个异常。
+这个假设建议把 f 声明为 noexcept。
+</p>
+<p>
+现在假设 f 有一个前提条件：std::string 参数的数据长度不会超过 32 个字节。如果用一个超过 32 字节的 std::string 来调用 f，f 的行为将是未定义的，
+因为一个不符合前提条件的参数会导致未定义行为。f 没有义务去检查前提条件，因为函数假设它们的前提条件是被满足的（调用者有责任确保这些假设是有效的）。
+由于前提条件的存在，把 f 声明为 noexcept 看起来是合理的。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">f</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string<span style="color:#f92672">&amp;</span> s) <span style="color:#66d9ef">noexcept</span>; <span style="color:#75715e">// precondition:
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// s.length() &lt;= 32
+</span></code></pre></div>
+</div>
+<p>
+但是假设 f 的实现选择检查前提条件是否被违反了。检查本不是必须的，但是它也不是被禁止的，并且检查一下前提条件是有用的（比如，在进行系统测试的时候）。
+调试时，捕捉一个抛出的异常总是比尝试找出未定义行为的原因要简单很多。但是要怎么报道出前提条件被违反了呢？
+只有报道了才能让测试工具或客户端的错误处理机制来捕捉到它。一个直接的方法就是抛出一个“前提条件被违反”的异常，但是如果 f 被声明为 noexcept，
+那么这个方法就不可行了，抛出一个异常就会导致程序终止。因此，区分宽接口和窄接口的库设计者通常只为宽接口函数提供 noexcept 声明。
+</p>
+<p>
+编译器通常不能帮助识别函数实现与异常规范之间的不一致性。下段代码是完全合法的
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setup</span>(); <span style="color:#75715e">// functions defined elsewhere
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cleanup</span>();
+  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doWork</span>() <span style="color:#66d9ef">noexcept</span>
+  {
+	  setup(); <span style="color:#75715e">// set up work to be done
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// do the actual work
+</span><span style="color:#75715e"></span>		  cleanup(); <span style="color:#75715e">// perform cleanup actions
+</span><span style="color:#75715e"></span>  }
+</code></pre></div>
+</div>
+<p>
+在这里，尽管 doWork 调用了 non-noexcept 函数（setup 和 cleanup），doWork 还是被声明为 noexcept。这看起来很矛盾，
+但是有可能 setup 和 cleanup 在说明文档中说了它们永远不会抛出异常。就算它们没有在说明文档中说明，
+我们 还是有多理由来解释他们的声明式为什么是 non-noexcept。举个例子，它们可能是用 C 写的。（
+也可能是从 C 标准库移动到 std 命名空间但缺少异常规范的函数，比如，std::strlen 没有声明为 noexcept）或者它们可能是 C++98 标准库的一部分，
+没有使用 C++98 的异常规范，并且到目前为止还没有被修改成 C++11 的版本。
+</p>
+<p>
+因为这里有很多合适的理由来解释为什么 noexcept 函数可以调用缺乏 noexcept 保证的函数，所以 C++允许这样的代码，并且编译器通常不会对此发出警告。
+</p>
+<h2 id="headline-8">
+记住
+</h2>
+<ul>
+<li>
+<p>
+noexcept 是函数接口的一部分，并且调用者可能会依赖这个接口
+</p>
+</li>
+<li>
+<p>
+比起 non-noexcept 函数，noexcept 函数可以更好地被优化
+</p>
+</li>
+<li>
+<p>
+noexcept 对于 move 操作，swap，内存释放函数和析构函数是特别有价值的
+</p>
+</li>
+<li>
+<p>
+大部分函数是异常中立的而不是 noexcept
+</p>
+</li>
+</ul>
+<h1 id="headline-9">
+参考
+</h1>
+<p>
+effective-modern-c++
+</p>
+
+                        </div>
+
+                        
+
+
+                        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">C&#43;&#43; Ep01:模板类型推导</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/c&#43;&#43;">C&#43;&#43;</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>centos7 配置 service | Learning Hardy</title>
+    <meta property="og:title" content="centos7 配置 service - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-12-07T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-12-07T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="centos7 配置 service">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/centos7%E9%85%8D%E7%BD%AEservice/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">centos7 配置 service</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年12月7日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/summary">summary</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+配置 service 文件
+</h1>
+<h2 id="headline-2">
+在/usr/lib/systemd/system/目录创建自己的 service 文件 my.service
+</h2>
+<div class="src src-dot">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dot" data-lang="dot">[Unit]
+Description=infrec
+# Wants=systemd-user-sessions.service
+# After=systemd-user-sessions.service
+
+[Service]
+Environment=&#34;PATH=/home/lytz/.virtualenvs/xn_infrec/bin&#34; &#34;PYTHONPATH=.:/home/lytz/app/xn_InfRec/src:/home/lytz/app/rlib-py&#34; &#34;APP_SETTINGS=/home/lytz/app/xn_InfRec/src/config.py&#34;
+#Sets the working directory for executed processes
+WorkingDirectory=/home/lytz/app/xn_InfRec/src/
+# Sets the Unix user that the processes are executed as
+User=lytz
+# Sets the highest scheduling priority for executed processes
+Nice=-20
+# disable OOM killing for this process
+OOMScoreAdjust=-1000
+ExecStartPre=/bin/echo ${PYTHONPATH}
+ExecStart=/home/lytz/.virtualenvs/xn_infrec/bin/gunicorn run:app --bind 0.0.0.0:9021 --worker-class sanic.worker.GunicornWorker -w 4 -t 180
+# systemd will send SIGTERM to all processes started from this service if we don&#39;t set ExecStop
+# ExecStop=-/bin/kill -15 $MAINPID
+Restart=on-failure
+RestartSec=15s
+# systemd-coredump will log the coredump including a backtrace if possible, and store the core (contents of process&#39; memory contents) in an external file on disk in /var/lib/systemd/coredump or in current working directory
+# ulimit -c unlimited
+# echo &#34;core.t%t.s%s.u%u&#34; &gt; /proc/sys/kernel/core_pattern
+# echo 1 &gt; /proc/sys/fs/suid_dumpable
+# echo 1 &gt; /proc/sys/kernel/core_uses_pid
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target runlevel1.target runlevel2.target runlevel3.target runlevel4.target runlevel5.target</code></pre></div>
+</div>
+<!-- more -->
+<ol>
+<li>
+<p>
+Unit 区块：启动顺序与依赖关系
+</p>
+</li>
+</ol>
+<p>
+Unit 区块的 Description 字段给出当前服务的简单描述，Documentation 字段给出文档位置
+</p>
+<div class="verse-block">
+<p>
+After 字段：my.service 应该在 After 服务之后启动。相应地，还有一个 Before 字段，定义 my.service 应该在哪些服务之前启动。
+After 和 Before 字段只涉及启动顺序，不涉及依赖关系。
+Wants 字段：表示存在&#34;弱依赖&#34;关系，即如果 wants.service 启动失败或停止运行，不影响 my.service 继续执行。Requires 字段则表示&#34;强依赖&#34;关系，
+即如果该服务启动失败或异常退出，那么 my.service 也必须退出。意，Wants 字段与 Requires 字段只涉及依赖关系，与启动顺序无关，默认情况下是同时启动的。
+</p>
+</div>
+<ol>
+<li>
+<p>
+Service 区块：启动行为
+</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>
+启动命令
+</p>
+</li>
+</ul>
+<div class="verse-block">
+<p>
+EnvironmentFile 字段：指定当前服务的环境参数文件。该文件内部的 key=value 键值对，可以用$key 的形式，在当前配置文件中获取
+Environment 字段：设置环境变量
+WorkingDirectory 字段：指定工作目录
+ExecStart 字段：定义启动进程时执行的命令。
+ExecReload 字段：重启服务时执行的命令
+ExecStop 字段：停止服务时执行的命令
+ExecStartPre 字段：启动服务之前执行的命令
+ExecStartPost 字段：启动服务之后执行的命令
+ExecStopPost 字段：停止服务之后执行的命令
+</p>
+</div>
+<p>
+所有的启动设置之前，都可以加上一个连词号（-），表示&#34;抑制错误&#34;，即发生错误的时候，不影响其他命令的执行。
+</p>
+<ul>
+<li>
+<p>
+启动类型
+</p>
+</li>
+</ul>
+<p>
+Type 字段定义启动类型。它可以设置的值如下
+</p>
+<div class="verse-block">
+<p>
+simple（默认值）：ExecStart 字段启动的进程为主进程
+forking：ExecStart 字段将以 fork()方式启动，此时父进程将会退出，子进程将成为主进程
+oneshot：类似于 simple，但只执行一次，Systemd 会等它执行完，才启动其他服务
+dbus：类似于 simple，但会等待 D-Bus 信号后启动
+notify：类似于 simple，启动结束后会发出通知信号，然后 Systemd 再启动其他服务
+idle：类似于 simple，但是要等到其他任务都执行完，才会启动该服务。一种使用场合是为让该服务的输出，不与其他服务的输出相混合
+</p>
+</div>
+<ul>
+<li>
+<p>
+重启行为
+</p>
+</li>
+</ul>
+<p>
+KillMode 字段：定义 Systemd 如何停止服务,字段可以设置的值如下
+</p>
+<div class="verse-block">
+<p>
+control-group（默认值）：当前控制组里面的所有子进程，都会被杀掉
+process：只杀主进程
+mixed：主进程将收到 SIGTERM 信号，子进程收到 SIGKILL 信号
+none：没有进程会被杀掉，只是执行服务的 stop 命令。
+</p>
+</div>
+<p>
+Restart 字段：定义了 sshd 退出后，Systemd 的重启方式
+</p>
+<div class="verse-block">
+<p>
+no（默认值）：退出后不会重启
+on-success：只有正常退出时（退出状态码为 0），才会重启
+on-failure：非正常退出时（退出状态码非 0），包括被信号终止和超时，才会重启
+on-abnormal：只有被信号终止和超时，才会重启
+on-abort：只有在收到没有捕捉到的信号终止时，才会重启
+on-watchdog：超时退出，才会重启
+always：不管是什么退出原因，总是重启
+</p>
+</div>
+<p>
+RestartSec 字段：表示 Systemd 重启服务之前，需要等待的秒数
+</p>
+<ol>
+<li>
+<p>
+Install 区块
+</p>
+</li>
+</ol>
+<p>
+Install 区块，定义如何安装这个配置文件，即怎样做到开机启动。WantedBy 字段：表示该服务所在的 Target。
+Target 的含义是服务组，表示一组服务。WantedBy=multi-user.target 指的是，my.service 所在的 Target 是 multi-user.target。
+</p>
+<p>
+这个设置非常重要，因为执行 systemctl enable sshd.service 命令时，sshd.service 的一个符号链接，
+就会放在/etc/systemd/system 目录下面的 multi-user.target.wants 子目录之中。
+上面的结果表示，默认的启动 Target 是 multi-user.target。在这个组里的所有服务，都将开机启动。
+这就是为什么 systemctl enable 命令能设置开机启动的原因。
+使用 Target 的时候，systemctl list-dependencies 命令和 systemctl isolate 命令也很有用
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  <span style="color:#75715e"># 查看 multi-user.target 包含的所有服务</span>
+  systemctl list-dependencies multi-user.target
+
+  <span style="color:#75715e"># 切换到另一个 target</span>
+  <span style="color:#75715e"># shutdown.target 就是关机状</span>
+  sudo systemctl isolate shutdown.target</code></pre></div>
+</div>
+<p>
+一般来说，常用的 Target 有两个：一个是 multi-user.target，表示多用户命令行状态；另一个是 graphical.target，表示图形用户状态，它依赖于 multi-user.target。
+官方文档有一张非常清晰的 [[<a href="https://www.freedesktop.org/software/systemd/man/bootup.html#System%20Manager%20Bootup">https://www.freedesktop.org/software/systemd/man/bootup.html#System%20Manager%20Bootup</a>][Target 依赖关系图]]
+</p>
+<h2 id="headline-3">
+Target 的配置文件
+</h2>
+<p>
+Target 也有自己的配置文件。
+</p>
+<div class="src src-dot">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dot" data-lang="dot">  #  This file is part of systemd.
+  #
+  #  systemd is free software; you can redistribute it and/or modify it
+  #  under the terms of the GNU Lesser General Public License as published by
+  #  the Free Software Foundation; either version 2.1 of the License, or
+  #  (at your option) any later version.
+
+  [Unit]
+  Description=Multi-User System
+  Documentation=man:systemd.special(7)
+  Requires=basic.target
+  Conflicts=rescue.service rescue.target
+  After=basic.target rescue.service rescue.target
+  AllowIsolate=yes
+
+  [Install]
+  Alias=default.target</code></pre></div>
+</div>
+<div class="verse-block">
+<p>
+Requires 字段：要求 basic.target 一起运行。
+Conflicts 字段：冲突字段。如果 rescue.service 或 rescue.target 正在运行，multi-user.target 就不能运行，反之亦然。
+After：表示 multi-user.target 在 basic.target、rescue.service、rescue.target 之后启动，如果它们有启动的话。
+AllowIsolate：允许使用 systemctl isolate 命令切换到 multi-user.target。
+</p>
+</div>
+<h1 id="headline-4">
+systemct 命令
+</h1>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># 重新加载配置文件</span>
+sudo systemctl daemon-reload
+<span style="color:#75715e"># 重启相关服务</span>
+sudo systemctl restart my
+<span style="color:#75715e">#开机启动</span>
+sudo systemctl enable my
+<span style="color:#75715e">#启动服务</span>
+sudo systemctl start my
+<span style="color:#75715e">#服务的状态</span>
+sudo systemctl status my
+<span style="color:#75715e">#停止服务</span>
+sudo systemctl stop my</code></pre></div>
+</div>
+<p>
+status 状态说明
+</p>
+<div class="src src-dot">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dot" data-lang="dot">  infrec.service - infrec
+  Loaded: loaded (/usr/lib/systemd/system/infrec.service; enabled)
+  Active: active (running) since Thu 2017-12-07 13:38:16 CST; 1h 8min ago
+  Main PID: 13187 (gunicorn)
+  CGroup: /system.slice/infrec.service
+  ├─13187 /home/lytz/.virtualenvs/xn_infrec/bin/python3 /home/lytz/....
+  ├─13190 /home/lytz/.virtualenvs/xn_infrec/bin/python3 /home/lytz/....
+  ├─13198 /home/lytz/.virtualenvs/xn_infrec/bin/python3 /home/lytz/....
+  ├─13206 /home/lytz/.virtualenvs/xn_infrec/bin/python3 /home/lytz/....
+  └─13207 /home/lytz/.virtualenvs/xn_infrec/bin/python3 /home/lytz/....</code></pre></div>
+</div>
+<div class="verse-block">
+<p>
+Loaded 行：配置文件的位置，是否设为开机启动
+Active 行：表示正在运行
+Main PID 行：主进程 ID
+Status 行：由应用本身（这里是 httpd）提供的软件当前状态
+CGroup 块：应用的所有子进程
+日志块：应用的日志
+</p>
+</div>
+<h1 id="headline-5">
+Journalctl
+</h1>
+<p>
+Journal 的实现归功于 journald 守护进程，其负责处理由内核、initrd 以及服务等产生的信息。要查看 journald 守护进程收集到的日志，可使用 journalctl 命令。
+</p>
+<h2 id="headline-6">
+按信息类型过滤
+</h2>
+<ol>
+<li>
+<p>
+按单元,如查看上面的 my.service 日志
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  journalctl -u my.service</code></pre></div>
+</div>
+
+                        </div>
+
+                        
+
+
+                        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/linux%E7%8E%AF%E5%A2%83/">linux 环境</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/linux">linux</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ETF on Learning Hardy</title>
+    <link>http://example.org/tags/etf/</link>
+    <description>Recent content in ETF on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 28 Nov 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/etf/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ETF notes</title>
+      <link>http://example.org/post/2016-11-28-etf-notes/</link>
+      <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2016-11-28-etf-notes/</guid>
+      <description> 预估现金  预估现金为负时，表示 ETF 的市值要比篮子市值少，在做赎回时会先从资金账户中先扣除这部分钱   {{{more}}} 4A1B  A1:期货与现货的价差  A2:A2 交易，也就是市场中很多人称为α套利的交易产品  A3:ETF  </description>
+    </item>
+    
+  </channel>
+</rss>

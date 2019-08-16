@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Learning Hardy</title>
+    <link>http://example.org/tags/docker/</link>
+    <description>Recent content in Docker on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>为运行的容器挂载文件目录</title>
+      <link>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</link>
+      <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/</guid>
+      <description>在使用 docker 时，经常需要为已运行的容器挂载文件目录。方法如下:    首先使用 df 查看需要挂载的文件目录是在哪个文件系统上 #on the host: df /home/huaming_li/github Filesystem 1K-blocks Used Available Use% Mounted on /dev/mapper/centos-home 917199292 103069408 814129884 12% /home     通过/proc/self/mountinfo 查看哪个子目录是在 /home #on the host, look for &amp;#39;/home&amp;#39; in the MOUNT column: cat /proc/self/mountinf 65 18 0:6 / /sys/kernel/debug rw,relatime shared:26 - debugfs debugfs rw 71 16 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:27 - binfmt_misc binfmt_misc rw 74 19 0:37 / /proc/fs/nfsd rw,relatime shared:28 - nfsd nfsd rw 76 62 8:1 / /boot rw,relatime shared:29 - xfs /dev/sda1 rw,attr2,inode64,noquota 78 62 253:2 / /home rw,relatime shared:30 - xfs /dev/mapper/centos-home rw,attr2,inode64,noquota 80 62 0:38 / /var/lib/nfs/rpc_pipefs rw,relatime shared:31 - rpc_pipefs sunrpc rw 348 24 0:3 / /run/docker/netns/ingress_sbox rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 357 24 0:3 / /run/docker/netns/1-7qyaqxyicw rw,nosuid,nodev,noexec,relatime shared:5 - proc proc rw 187 24 0:39 / /run/user/1000 rw,nosuid,nodev,relatime shared:134 - tmpfs tmpfs rw,size=1621780k,mode=700,uid=1000,gid=1000 195 18 0:41 / /sys/fs/fuse/connections rw,relatime shared:141 - fusectl fusectl rw     我们找到了需要创建的设备 253:2, 在容器中 # in the container, create the device if it doesn&amp;#39;t already exist: [ -b /dev/xvda1 ] || mknod --mode 0600 /dev/xvda1 b 253 2     把这个设备挂到容器中 # in the container: $ mkdir -p /tmpmount $ mount /dev/xvda1 /tmpmount mount: permission denied     如果挂载提示权限失败，则需要 ns-enter， 这允许我们作为主机用户输入容器的命名空间： # on the host, get the container&amp;#39;s PID: $ docker inspect --format {{.</description>
+    </item>
+    
+  </channel>
+</rss>

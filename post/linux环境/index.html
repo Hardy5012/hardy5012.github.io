@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>linux 环境 | Learning Hardy</title>
+    <meta property="og:title" content="linux 环境 - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-11-16T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-11-16T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="linux 环境">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/linux%E7%8E%AF%E5%A2%83/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">linux 环境</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年11月16日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/notes">notes</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+翻墙
+</h1>
+<h2 id="headline-2">
+ssh
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo ssh -qTfnN -D <span style="color:#ae81ff">8087</span> user@remote-hosts</code></pre></div>
+</div>
+<p>
+上面的 8087 是本地未被占用的端口，可以自己选择。其它参数的意思是：
+-q :- be very quite, we are acting only as a tunnel.
+-T :- Do not allocate a pseudo tty, we are only acting a tunnel.
+-f :- move the ssh process to background, as we don’t want to interact with this ssh session directly.
+-N :- Do not execute remote command.
+-n :- redirect standard input to /dev/null.
+{{{more}}}
+</p>
+<h1 id="headline-3">
+gcc
+</h1>
+<h2 id="headline-4">
+Install dependencies
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">yum install gmp-devel mpfr-devel libmpc-devel</code></pre></div>
+</div>
+<h2 id="headline-5">
+Downloading gcc
+</h2>
+<p>
+You can download the GCC source code from the <a href="https://ftp.gnu.org/gnu/gcc/">official GNU ftp.</a> 
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  curl https://ftp.gnu.org/gnu/gcc/gcc-8.3.0/gcc-8.3.0.tar.xz -O
+  tar --xz -xvf gcc-8.3.0.tar.xz</code></pre></div>
+</div>
+<h2 id="headline-6">
+Configuration and install
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mkdir gcc-build
+cd gcc-build
+../gcc-8.3.0/configure --enable-languages<span style="color:#f92672">=</span>c,c++ --prefix<span style="color:#f92672">=</span>/usr/local/gcc8 --disable-multilib 
+make
+make install</code></pre></div>
+</div>
+<h2 id="headline-7">
+replace libstdc++
+</h2>
+<p>
+check version
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">strings /usr/lib64/libstdc++.so.6 | grep GLIBC</code></pre></div>
+</div>
+<p>
+find lib
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">find / -name <span style="color:#e6db74">&#34;libstdc++.so*&#34;</span></code></pre></div>
+</div>
+<h1 id="headline-8">
+Adding a Yum Repository
+</h1>
+<h2 id="headline-9">
+To define a new repository, you can either add a [repository] section to the <em>etc/yum.conf file, or to a .repo file in the /etc/yum.repos.d</em> directory
+</h2>
+<p>
+Yum repositories commonly provide their own .repo file. To add such a repository to your system and enable it, run the following command as root:
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  yum-config-manager --add-repo repository_url</code></pre></div>
+</div>
+<h2 id="headline-10">
+Enabling a Yum Repository
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">yum-config-manager --enable example<span style="color:#ae81ff">\*</span></code></pre></div>
+</div>
+<h1 id="headline-11">
+clang 5.0
+</h1>
+<h2 id="headline-12">
+add yum repo
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">yum-config-manager --add-repo https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.0/repo/epel-7/alonid-llvm-5.0.0-epel-7.repo
+yum-config-manager --enable  alonid-llvm-5.0.0-epel-7</code></pre></div>
+</div>
+<p>
+<a href="https://copr.fedorainfracloud.org/coprs/alonid/llvm-5.0.0/">fedora cop</a>r 会提供最新安装包的 repo
+</p>
+<h2 id="headline-13">
+yum install clang-5.0.0 &amp;&amp; yum install clang-5.0.0-devel
+</h2>
+<h2 id="headline-14">
+You may need to set PATH to include /opt/llvm-5.0.0/bin. LD_LIBRARY_PATH include /opt/llvm-5.0.0/lib64
+</h2>
+<h1 id="headline-15">
+cmake 
+</h1>
+<h2 id="headline-16">
+download
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl https://cmake.org/files/v3.14/cmake-3.14.5.tar.gz -O
+tar -zxvf cmake-3.14.5.tar.gz</code></pre></div>
+</div>
+<h2 id="headline-17">
+install
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./bootstrap
+make
+make install</code></pre></div>
+</div>
+<h1 id="headline-18">
+boost 1.70	
+</h1>
+<h2 id="headline-19">
+download
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz
+tar -zxvf boost_1_70_0.tar.gz</code></pre></div>
+</div>
+<h2 id="headline-20">
+install
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./bootstrap.sh --prefix<span style="color:#f92672">=</span>path/to/installation/prefix
+./b2  cxxflags<span style="color:#f92672">=</span>-std<span style="color:#f92672">=</span>c++17 install</code></pre></div>
+</div>
+<h1 id="headline-21">
+protobuf 
+</h1>
+<h2 id="headline-22">
+download
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">git clone git@github.com:google/protobuf.git
+cd protobuf <span style="color:#f92672">&amp;&amp;</span> git checkout v3.5.1.1</code></pre></div>
+</div>
+<h2 id="headline-23">
+install
+</h2>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">git submodule update <span style="color:#f92672">--</span>init <span style="color:#f92672">--</span>recursive <span style="color:#f92672">&amp;&amp;</span> .<span style="color:#f92672">/</span>autogen.sh
+.<span style="color:#f92672">/</span>configure <span style="color:#f92672">--</span>prefix<span style="color:#f92672">=/</span>usr<span style="color:#f92672">/</span>local<span style="color:#f92672">/</span>protobuf3
+  make
+  make check
+  sudo make install
+  sudo ldconfig
+</code></pre></div>
+</div>
+<h2 id="headline-24">
+modify .bashrc 
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">export PKG_CONFIG_PATH<span style="color:#f92672">=</span>/usr/local/protobuf3/lib/pkgconfig/
+export LD_LIBRARY_PATH<span style="color:#f92672">=</span>.:$LD_LIBRARY_PATH:/usr/local/protobuf3/lib
+export PATH<span style="color:#f92672">=</span>$PATH:/usr/local/protobuf3/bin
+
+export CMAKE_INCLUDE_PATH<span style="color:#f92672">=</span>/usr/local/protobuf3/include/
+export CMAKE_LIBRARY_PATH<span style="color:#f92672">=</span>/usr/local/protobuf3/lib</code></pre></div>
+</div>
+<h1 id="headline-25">
+oracle 11.2
+</h1>
+<h2 id="headline-26">
+download 
+</h2>
+<p>
+<a href="http://www.oracle.com/technetwork/cn/topics/linuxx86-64soft-092277.html#ic_x64_inst">http://www.oracle.com/technetwork/cn/topics/linuxx86-64soft-092277.html#ic_x64_inst</a>
+</p>
+<h2 id="headline-27">
+install
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo yum install oracle-instantclient11.2-basic-11.2.0.4.0-1.x86_64.rpm 
+sudo yum install oracle-instantclient11.2-devel-11.2.0.4.0-1.x86_64.rpm</code></pre></div>
+</div>
+<h2 id="headline-28">
+modify .bashrc
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">export ORACLE_HOME<span style="color:#f92672">=</span>/usr/lib/oracle/11.2/client64
+export TNS_ADMIN<span style="color:#f92672">=</span>$ORACLE_HOME/network/admin
+export PATH<span style="color:#f92672">=</span>$PATH:$ORACLE_HOME/bin
+export LD_LIBRARY_PATH<span style="color:#f92672">=</span>.:$LD_LIBRARY_PATH:$ORACLE_HOME/lib</code></pre></div>
+</div>
+
+                        </div>
+
+                        
+
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/linux">linux</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

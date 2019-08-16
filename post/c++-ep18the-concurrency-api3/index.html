@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C&#43;&#43; Ep18:The Concurrency API(3) | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; Ep18:The Concurrency API(3) - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2018-01-30T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2018-01-30T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43; Ep18:The Concurrency API(3)">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep18the-concurrency-api3/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C&#43;&#43; Ep18:The Concurrency API(3)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2018年1月30日
+                        </date>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+Item39:考虑使用 void futures 一次性事件通信
+</h1>
+<p>
+​有的时候对于一个任务来说，希望有一种机制可以和另外一个任务进行通信，尤其是那种异步运行的任务，并且会出现一种特定事件的任务，
+另外一个任务需要等到这个事件的发生才能继续运行，典型的，可以是等待一个重要的数据结构进行初始化，或者是等待一个计算阶段完成，又或者是检测一个重要的值。
+那么什么样的方式可以处理好这种线程间的通信呢？
+</p>
+<p>
+一个很明显的方法就是使用 <strong>条件变量</strong> （ <strong>condvar</strong> ） 。如果我把检测条件的任务叫做检测任务，响应条件的任务叫响应任务，那么这个策略简单：响应任务等待条件变量，当事件
+发生时，检测线程通知条件变量。
+</p>
+<!-- more -->
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>condition_variable cv; <span style="color:#75715e">// condvar for event
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>mutex m; <span style="color:#75715e">// mutex for use with cv
+</span></code></pre></div>
+</div>
+<p>
+检测任务中的代码非常简单：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// detect event
+</span><span style="color:#75715e"></span>  cv.notify_one(); <span style="color:#75715e">// tell reacting task
+</span></code></pre></div>
+</div>
+<p>
+如果有多个响应任务需要通知，则可以用 <strong>notify_all</strong> 替换 <strong>notify_one</strong>.
+</p>
+<p>
+响应任务中的代码有点复杂，因为在调用 <strong>wait</strong> 这个条件变量之前，需要通过 <strong>std::unique_lock</strong> 来互斥锁住。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// prepare to react
+</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// open critical section
+</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>unique_lock<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> lk(m); <span style="color:#75715e">// lock mutex
+</span><span style="color:#75715e"></span>	  cv.wait(lk); <span style="color:#75715e">// wait for notify;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// this isn&#39;t correct!
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// react to event
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (m is locked)
+</span><span style="color:#75715e"></span>		  } <span style="color:#75715e">// close crit. section;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// unlock m via lk&#39;s dtor
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// continue reacting
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (m now unlocked)
+</span></code></pre></div>
+</div>
+<p>
+这种方法的第一个问题是有时被称为 <strong>code smell</strong> ：即使代码有效，某些东西似乎也不是很正确。在这种情况下，气味源于需要使用互斥变量。
+互斥锁用于控制对共享数据的访问，但检测和响应任务完全可能不需要这种中介。例如，检测任务可能负责初始化一个全局数据结构，然后把它转换为响应任务使用。
+如果检测任务在初始化之后从不访问数据结构，并且如果在检测任务指示准备就绪之前，响应任务从不访问它，那么两个任务将通过程序逻辑互相排斥。
+这将不需要互斥变量。
+即使你理解这些，还有两个你应该注意的问题：
+</p>
+<ul>
+<li>
+<p>
+<strong>如果检测任务在响应任务 wait 之前通知条件变量</strong> ，那么响应任务将悬挂。为了通知条件变量来唤醒另一个任务，另一个任务必须等待这个条件变量。如果检测任务在响应任务执行 <strong>wait</strong> 之前执行通知，那么这个响应任务将错过通知，将永远等待。
+</p>
+</li>
+<li>
+<p>
+<strong>等待语句不能识别虚假的唤醒</strong> 。事实上在线程 API 中（不仅仅 C++）等待条件变量可能被唤醒，即使没有通知条件变量。正确的代码通过确认所等待的条件确实已经发发，并将其作为唤醒后的第一个动作来处理它们。C++条件变量 API 处理这种异常简单，因为它允许 wait 传等待的条件给 lambda 测试。响应任务代码像下面：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">cv.wait(lk,
+	[]{ <span style="color:#66d9ef">return</span> whether the event has occurred; });
+</code></pre></div>
+</div>
+</li>
+</ul>
+<p>
+利用这个能力，要求响应任务能够确定它所等待的条件是否成立。但是在我们已经考虑的情况下，它所等待的情况是检测线程负责识别事件的发生。响应线程可能无法确定它正在等待的事件是否已经发生。
+这就是为什么它正在等待一个条件变量！
+</p>
+<p>
+在许多情况下，使用条件变量进行任务通信是非常适合手头的问题，但这似乎并不是其中之一。
+</p>
+<p>
+对于许多开发人员来说，他们的下一个技巧是共享的布尔标志。 标志初始化是 <strong>false</strong> 。当检测线程识别到它正在查找的事件时，它会设置这个标志：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>atomic<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span> flag(false); <span style="color:#75715e">// shared flag; see
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Item 40 for std::atomic
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// detect event
+</span><span style="color:#75715e"></span>  flag <span style="color:#f92672">=</span> true; <span style="color:#75715e">// tell reacting task
+</span></code></pre></div>
+</div>
+<p>
+就其本身而言，响应线程只是轮询这个标志。 当它看到该标志被设置时，它知道它正在等待的事件已经发生：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// prepare to react
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>flag); <span style="color:#75715e">// wait for event
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// react to event
+</span></code></pre></div>
+</div>
+<p>
+这种方法没有基于条件变量的设计的缺点。不需要互斥变量，如果检测任务在响应任务开始轮询之前设置了标志，则没有任何问题，并且不类似于虚假的唤醒。
+</p>
+<p>
+响应任务中轮询的成本不太好。在任务等待标志被设置的时间内，任务基本上被阻塞，但它仍在运行。因此，它占用了另一个任务可能使用的硬件线程，每次启动或完成其时间片时，都会产生上下文切换的代价，
+并且可能会保持一个可能为了节省电力关闭的内核运行。一个真正被锁住的任务将不会做任何这些事情。 这是基于条件变量方法的一个优点，因为等待调用中的任务是真正被阻止的。
+</p>
+<p>
+将条件变量和标志的设计相结合是很常见的。一个标志表示是否发生了感兴趣的事件，但是通过互斥锁同步访问该标志。因为互斥锁阻止并发访问该标志，
+所以如条款 40 所解释的那样，不需要该标志是 std :: atomic; 一个简单的布尔就可以。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>condition_variable cv; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>mutex m;
+  <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">flag</span>(false); <span style="color:#75715e">// not std::atomic
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// detect event
+</span><span style="color:#75715e"></span>  {
+	  std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> g(m); <span style="color:#75715e">// lock m via g&#39;s ctor
+</span><span style="color:#75715e"></span>	  flag <span style="color:#f92672">=</span> true; <span style="color:#75715e">// tell reacting task
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (part 1)
+</span><span style="color:#75715e"></span>  } <span style="color:#75715e">// unlock m via g&#39;s dtor
+</span><span style="color:#75715e"></span>  cv.notify_one(); <span style="color:#75715e">// tell reacting task
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (part 2)
+</span></code></pre></div>
+</div>
+<p>
+响应任务代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// prepare to react
+</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>unique_lock<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> lk(m); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>	  cv.wait(lk, [] { <span style="color:#66d9ef">return</span> flag; }); <span style="color:#75715e">// use lambda to avoid
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// spurious wakeups
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// react to event
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (m is locked)
+</span><span style="color:#75715e"></span>		  }
+  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// continue reacting
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// (m now unlocked)
+</span></code></pre></div>
+</div>
+<p>
+这种方法避免了我们讨论过的问题。它可以工作，不管在检测任务通知之前，响应任务是否等待，它在虚假唤醒的情况下能正常工作，并且不需要轮询。
+然而，气味依然存在，因为探测任务以非常异样的方式与反应任务沟通。通知条件变量告诉响应任务它正在等待的事件可能已经发生，但是响应任务必须检查标志被设置。
+设置标志告诉响应任务事件已经发生，但是检测任务仍然需要通知条件变量，以便响应任务唤醒并检查标志。这个方法很有效，但看起来并不太干净。
+</p>
+<p>
+另一种方法是避免条件变量，互斥锁和标志，让响应任务 <strong>wait</strong> 检测任务设置的 <strong>future</strong> 。这似乎是一个奇怪的想法。毕竟，第 38 条解释说，
+future 代表了从被调用者到（通常是异步）调用者的通信通道的接收端，这里在检测和响应任务之间没有被调用者的关系。
+但是，第 38 项也注意到，发送端是 std :: promise，接收端是 future 的通信通道不仅仅是用于被调用与调用的通信。
+这种通信通道可以用于任何需要将信息从程序中的一个地方传输到另一个地方的情况。
+在这种情况下，我们将使用它来将信息从检测任务传输到响应任务，并且我们将传达的信息将是感兴趣的已经发生事件。
+</p>
+<p>
+设计很简单。 检测任务有一个 std :: promise 对象（即写入通讯通道的末端），响应任务有相应的 future。
+当检测任务发现它正在查找的事件已经发生时，它会设置 std :: promise（即写入通信通道）。 同时，响应任务等待 future。 
+等待阻止响应任务，直到 std :: promise 被设置。
+</p>
+<p>
+现在，std :: promise 和 futures（即 <strong>std :: future</strong> 和 <strong>std :: shared_future</strong> ）都是需要类型参数的模板。
+该参数指示要通过通信通道发送的数据的类型。但在我们的例子中，没有数据可以传达。对这个响应任务感兴趣的唯一事情就是它的 future 是否已设置。
+我们需要的 std :: promise 和 future 模板是一种类型，表示没有数据要通过通信通道传送。
+类型 <strong>void</strong>,  因此，检测任务将使用 std :: promise &lt;void&gt;, 响应任务使用 std :: future &lt;void&gt;或 std :: shared_future &lt;void&gt;。
+当感兴趣的事件发生时，检测任务将设置其 std :: promise &lt;void&gt;，并且响应任务将等待其 future。
+即使响应任务不会接收到任何来自检测任务的数据，通信通道将允许响应任务知道何时检测任务在其 std :: promise 上调用 set_value “写入”了 <strong>void</strong> 数据。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>promise<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">void</span><span style="color:#f92672">&gt;</span> p; <span style="color:#75715e">// promise for
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// communications channel
+</span></code></pre></div>
+</div>
+<p>
+检测任务代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// detect event
+</span><span style="color:#75715e"></span>  p.set_value(); <span style="color:#75715e">// tell reacting task
+</span></code></pre></div>
+</div>
+<p>
+响应任务代码，非常简单：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// prepare to react
+</span><span style="color:#75715e"></span>  p.get_future().wait(); <span style="color:#75715e">// wait on future
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// corresponding to p
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// react to event
+</span></code></pre></div>
+</div>
+<p>
+就像使用标志的方法一样，这种设计不需要互斥，不管工作如何检测任务是否在响应任务等待之前设置其 std :: promise，并且不受虚假唤醒的影响。
+（只有条件变量容易受到这个问题的影响）。像基于条件变量的方法一样，在等待呼叫之后，反应任务真正被阻塞，所以在等待时不消耗系统资源。 完美，对吧？
+不完全是。当然，基于 future 的方法可以避开这些滩涂，但还有其他的担忧。
+例如，第 38 项解释说 std :: promise 和 future 之间是共享状态，共享状态通常是动态分配的。
+因此，您应该假设这种设计会导致基于堆的分配和释放的成本。
+</p>
+<p>
+也许更重要的是，一个 std :: promise 可能只能被设置一次。std :: promise 和 future 之间的通信通道是一次性机制：不能重复使用。
+这与基于 condvar 和 flag 的设计有显着区别，两者都可以用来多次通信。
+</p>
+<p>
+一次性限制不像您想象的那样受到限制。假设你想创建一个挂起状态的系统线程。也就是说，您希望获得与创建线程相关的所有开销，以便在线程上执行某些操作时，将避免正常的线程创建延迟。
+或者你可能想创建一个暂停的线程，以便在运行之前配置它。这种配置可能包括诸如设置其优先级或内核关联性的事情。
+C ++并发 API 没有办法做这些事情，但 std :: thread 对象提供了 <strong>native_handle</strong> 成员函数，让您访问平台的底层线程 API（通常是 POSIX 线程或 Windows 线程）。
+较低级别的 API 通常可以配置线程特征，例如优先级和关联性。
+</p>
+<p>
+假设你只想暂停线程一次（在创建之后，但在它运行它的线程函数之前），使用 void future 的设计是一个合理的选择。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>promise<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">void</span><span style="color:#f92672">&gt;</span> p;
+  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">react</span>(); <span style="color:#75715e">// func for reacting task
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">detect</span>() <span style="color:#75715e">// func for detecting task
+</span><span style="color:#75715e"></span>  {
+	  std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t([] <span style="color:#75715e">// create thread
+</span><span style="color:#75715e"></span>					{
+						p.get_future().wait(); <span style="color:#75715e">// suspend t until
+</span><span style="color:#75715e"></span>						react(); <span style="color:#75715e">// future is set
+</span><span style="color:#75715e"></span>					});
+	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// here, t is suspended
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// prior to call to react
+</span><span style="color:#75715e"></span>		  p.set_value(); <span style="color:#75715e">// unsuspend t (and thus
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// call react)
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// do additional work
+</span><span style="color:#75715e"></span>		  t.join(); <span style="color:#75715e">// make t unjoinable
+</span><span style="color:#75715e"></span>  } <span style="color:#75715e">// (see Item 37)
+</span></code></pre></div>
+</div>
+<p>
+因为在 <strong>detect</strong> 的所有路径之外让 <strong>t</strong> 变得不可连接非常重要，所以使用像 Item 37 的 ThreadRAII 这样的 RAII 类似乎是可取的。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">detect</span>()
+  {
+	  ThreadRAII tr( <span style="color:#75715e">// use RAII object
+</span><span style="color:#75715e"></span>		  std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span>([]
+					  {
+						  p.get_future().wait();
+						  react();
+					  }),
+		  ThreadRAII<span style="color:#f92672">::</span>DtorAction<span style="color:#f92672">::</span>join <span style="color:#75715e">// risky! (see below)
+</span><span style="color:#75715e"></span>		  );
+	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// thread inside tr
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// is suspended here
+</span><span style="color:#75715e"></span>		  p.set_value(); <span style="color:#75715e">// unsuspend thread
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// inside tr
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
+		  }
+</code></pre></div>
+</div>
+<p>
+这看起来比较安全。问题是，如果在第一个“…”区域（看注释“thread inside tr is suspended here”）发出异常，set_value 永远不会被 p 调用。
+这意味着在 lambda 内部等待的调用将永远不会返回。这又意味着运行 lambda 的线程将永远不会完成，问题来了
+因为 RAII 对象 tr 已被配置为在 tr 的析构函数中连接该线程。换句话说，如果从代码的第一个“…”区域发出异常，因为 tr 的析构函数将永远不会完成，
+此函数将挂起。有办法可以解决这个问题，但是我会以练习的方式留下（<a href="http://scottmeyers.blogspot.com/2013/12/threadraii-thread-suspension-trouble.html">http://scottmeyers.blogspot.com/2013/12/threadraii-thread-suspension-trouble.html</a>）。
+在这里，我想展示如何将原始代码（不使用 ThreadRAII）扩展为暂停，然后解除不仅仅是一个响应任务，而是多个。
+这是一个简单的泛化，因为关键是在响应代码中使用  <strong>std :: shared_futures</strong>  而不是 std :: future。
+一旦你知道了 std :: future 的共享成员函数将共享状态的所有权转移给了 share 所产生的 std :: shared_future 对象，代码就会自行写入。
+唯一的微妙之处在于每个响应线程都需要自己拷贝 std :: shared_future 来引用共享状态，所以从  <strong>share</strong>  中获得的 std :: shared_future 被运行在响应线程上的 lambdas 通过值捕获.
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>promise<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">void</span><span style="color:#f92672">&gt;</span> p; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">detect</span>() <span style="color:#75715e">// now for multiple
+</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// reacting tasks
+</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">auto</span> sf <span style="color:#f92672">=</span> p.get_future().share(); <span style="color:#75715e">// sf&#39;s type is
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// std::shared_future&lt;void&gt;
+</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span><span style="color:#f92672">&gt;</span> vt; <span style="color:#75715e">// container for
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// reacting threads
+</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> threadsToRun; <span style="color:#f92672">++</span>i) {
+		  vt.emplace_back([sf]{ sf.wait(); <span style="color:#75715e">// wait on local
+</span><span style="color:#75715e"></span>			  react(); }); <span style="color:#75715e">// copy of sf; see
+</span><span style="color:#75715e"></span>	  } <span style="color:#75715e">// Item 42 for info
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// on emplace_back
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// detect hangs if
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// this &#34;…&#34; code throws!
+</span><span style="color:#75715e"></span>		  p.set_value(); <span style="color:#75715e">// unsuspend all threads
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
+		  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> t : vt) { <span style="color:#75715e">// make all threads
+</span><span style="color:#75715e"></span>			  t.join(); <span style="color:#75715e">// unjoinable; see Item 2
+</span><span style="color:#75715e"></span>		  } <span style="color:#75715e">// for info on &#34;auto&amp;&#34;
+</span><span style="color:#75715e"></span>  }
+</code></pre></div>
+</div>
+<p>
+使用 future 的设计可以实现这一效果的事实值得注意，这就是为什么您应该考虑一次性事件通信的原因。
+</p>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+对于简单的事件通信，基于 condvar 的设计需要一个多余的互斥体，对检测和响应任务的相对进度施加约束，并要求响应任务验证事件已经发生。
+</p>
+</li>
+<li>
+<p>
+使用标志的设计可以避免这些问题，但基于轮询而不是阻塞。
+</p>
+</li>
+<li>
+<p>
+一个 condvar 和标志可以一起使用，但是由此产生的通信机制有点不自然。
+</p>
+</li>
+<li>
+<p>
+使用 std :: promises 和 futures 可以避免这些问题，但是这种方法使用堆内存来实现共享状态，而且它仅限于一次性通信。
+</p>
+</li>
+</ul>
+<h1 id="headline-3">
+参考
+</h1>
+<p>
+原文：effective-modern-c++
+</p>
+
+                        </div>
+
+                        
+
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            没有标签
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

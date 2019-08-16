@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C&#43;&#43; Ep01:模板类型推导 | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; Ep01:模板类型推导 - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-12-18T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-12-18T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43; Ep01:模板类型推导">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C&#43;&#43; Ep01:模板类型推导</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年12月18日
+                        </date>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+Case 1:ParmaType 是引用或指针，但不是 Universal Referencs
+</h1>
+<ul>
+<li>
+<p>
+如果 expr 类型是一个引用，忽略引用部分
+</p>
+</li>
+<li>
+<p>
+expr 的类型和 ParamType 模式匹配的部分决定了 T
+</p>
+</li>
+</ul>
+<p>
+示例模板：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">void</span> f(T<span style="color:#f92672">&amp;</span> param); <span style="color:#75715e">// param is a reference
+</span></code></pre></div>
+</div>
+<p>
+变量定义：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">27</span>; <span style="color:#75715e">// x is an int
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> cx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// cx is a const int
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">&amp;</span> rx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// rx is a reference to x as a const int
+</span></code></pre></div>
+</div>
+<p>
+param 和 T 的推导：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  f(x); <span style="color:#75715e">// T is int, param&#39;s type is int&amp;
+</span><span style="color:#75715e"></span>  f(cx); <span style="color:#75715e">// T is const int,
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// param&#39;s type is const int&amp;
+</span><span style="color:#75715e"></span>  f(rx); <span style="color:#75715e">// T is const int,
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// param&#39;s type is const int&amp;
+</span></code></pre></div>
+</div>
+<!-- more -->
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">void</span> f(<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> param); <span style="color:#75715e">// param is now a ref-to-const
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">27</span>; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> cx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">&amp;</span> rx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  f(x); <span style="color:#75715e">// T is int, param&#39;s type is const int&amp;
+</span><span style="color:#75715e"></span>  f(cx); <span style="color:#75715e">// T is int, param&#39;s type is const int&amp;
+</span><span style="color:#75715e"></span>  f(rx); <span style="color:#75715e">// T is int, param&#39;s type is const int&amp;
+</span></code></pre></div>
+</div>
+<h1 id="headline-2">
+Case 2:ParamType 是 Universal Reference
+</h1>
+<ul>
+<li>
+<p>
+如果 expr 是个左值，T 和 ParamType 都被推导为左值引用。这里有两个地方不同寻常，第一，这是唯一一种场景下模板类型推导把 T 推导成一个引用。第二，尽管 ParamType 是使用了右值引用的语法来声明的，它的推导类型却是一个左值引用。
+</p>
+</li>
+<li>
+<p>
+如果 expr 是个右值，则 Case 1 会适用。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+<span style="color:#66d9ef">void</span> f(T<span style="color:#f92672">&amp;&amp;</span> param); <span style="color:#75715e">// param is now a universal reference
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">27</span>; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> cx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">&amp;</span> rx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>
+f(x); <span style="color:#75715e">// x is lvalue, so T is int&amp;,
+</span><span style="color:#75715e"></span> <span style="color:#75715e">// param&#39;s type is also int&amp;
+</span><span style="color:#75715e"></span>f(cx); <span style="color:#75715e">// cx is lvalue, so T is const int&amp;,
+</span><span style="color:#75715e">// param&#39;s type is also const int&amp;
+</span><span style="color:#75715e"></span>f(rx); <span style="color:#75715e">// rx is lvalue, so T is const int&amp;,
+</span><span style="color:#75715e"></span> <span style="color:#75715e">// param&#39;s type is also const int&amp;
+</span><span style="color:#75715e"></span>f(<span style="color:#ae81ff">27</span>); <span style="color:#75715e">// 27 is rvalue, so T is int,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// param&#39;s type is therefore int&amp;&amp;
+</span></code></pre></div>
+</div>
+</li>
+</ul>
+<h1 id="headline-3">
+Case 3:ParamType 既不是指针也不是引用
+</h1>
+<p>
+此时执行的是传值参数，这意味着无论传递什么，param 都会是个拷贝—一个新的对象
+</p>
+<ul>
+<li>
+<p>
+和之前一样，如果 expr 的类型是个引用，则引用部分被忽略。
+</p>
+</li>
+<li>
+<p>
+如果忽略了引用部分后，expr 是一个 const 或 volatile，也都忽略。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+<span style="color:#66d9ef">void</span> f(T param); <span style="color:#75715e">// param is now passed by value
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">27</span>; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> cx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">&amp;</span> rx <span style="color:#f92672">=</span> x; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>
+f(x); <span style="color:#75715e">// T&#39;s and param&#39;s types are both int
+</span><span style="color:#75715e"></span>f(cx); <span style="color:#75715e">// T&#39;s and param&#39;s types are again both int
+</span><span style="color:#75715e"></span>f(rx); <span style="color:#75715e">// T&#39;s and param&#39;s types are still both int
+</span></code></pre></div>
+</div>
+</li>
+</ul>
+<p>
+注意，即使 cx 和 rx 都表示 const 值，param 也不是常量。这也讲得通，param 是个完全独立于 cx 或 rx 的对象—是 cx 和 rx 的拷贝。cx 和 rx 不能被修改而 param 可以被修改。
+</p>
+<h1 id="headline-4">
+数组及函数参数
+</h1>
+<p>
+在模板类型推导时，数组和函数参数会退化成指针，除非它们被用做初始化引用
+</p>
+<h1 id="headline-5">
+Universal Reference
+</h1>
+<p>
+当看起来像右值引用的 T&amp;&amp; 出现在 template 的中，他就是 universal reference，既不是 lvalue reference 也不是 rvalue reference。
+</p>
+<div class="src src-dot">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dot" data-lang="dot">  universal reference 的实际效果就是，你给他一个 lvalue reference 的时候，他就是 lvalue reference，你给他 rvalue reference 的时候，他就是 rvalue reference。</code></pre></div>
+</div>
+<h1 id="headline-6">
+auto 类型推导
+</h1>
+<h2 id="headline-7">
+auto 类型推导与模板规则类似,除大括号初始例如，auto 推导为 std::initializer_list 而模板则不支持
+</h2>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">auto</span> x <span style="color:#f92672">=</span> { <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">9</span> }; <span style="color:#75715e">// x&#39;s type is
+</span><span style="color:#75715e">// std::initializer_list&lt;int&gt;
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// template with parameter
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> f(T param); <span style="color:#75715e">// declaration equivalent to
+</span><span style="color:#75715e">// x&#39;s declaration
+</span><span style="color:#75715e"></span>f({ <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">9</span> }); <span style="color:#75715e">// error! can&#39;t deduce type for T
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+<span style="color:#66d9ef">void</span> f(std<span style="color:#f92672">::</span>initializer_list<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> initList);
+f({ <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">9</span> }); <span style="color:#75715e">// T deduced as int, and initList&#39;s
+</span><span style="color:#75715e">// type is std::initializer_list&lt;int&gt;
+</span></code></pre></div>
+</div>
+<h2 id="headline-8">
+auto 在函数返回及 lambda 参数时使用的是模板推导规则，而不是 auto 类型推导
+</h2>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">auto</span> <span style="color:#a6e22e">createInitList</span>()
+{
+<span style="color:#66d9ef">return</span> { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> }; <span style="color:#75715e">// error: can&#39;t deduce type
+</span><span style="color:#75715e"></span>}
+
+std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> v;
+<span style="color:#960050;background-color:#1e0010">…</span>
+<span style="color:#66d9ef">auto</span> resetV <span style="color:#f92672">=</span>
+[<span style="color:#f92672">&amp;</span>v](<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> newValue) { v <span style="color:#f92672">=</span> newValue; }; <span style="color:#75715e">// C++14
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+resetV({ <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> }); <span style="color:#75715e">// error! can&#39;t deduce type
+</span><span style="color:#75715e">// for { 1, 2, 3 }
+</span></code></pre></div>
+</div>
+<h1 id="headline-9">
+理解 decltype
+</h1>
+<p>
+auto 会自动把引用类型忽略，从而无法进行修改，如果我们希望这个函数返回的是真正的引用类型，则需要使用 decltype，显式表明返回类型。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Container, <span style="color:#66d9ef">typename</span> Index<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> authAndAccess(Container<span style="color:#f92672">&amp;</span> c, Index i) <span style="color:#75715e">// not quite
+</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// correct
+</span><span style="color:#75715e"></span>	  authenticateUser();
+	  <span style="color:#66d9ef">return</span> c[i]; <span style="color:#75715e">// return type deduced from c[i]
+</span><span style="color:#75715e"></span>  }
+
+  std<span style="color:#f92672">::</span>deque<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> d;
+  <span style="color:#960050;background-color:#1e0010">…</span>
+  authAndAccess(d, <span style="color:#ae81ff">5</span>) <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>; <span style="color:#75715e">// authenticate user, return d[5],
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// then assign 10 to it;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// this won&#39;t compile!
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Container, <span style="color:#66d9ef">typename</span> Index<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14; works,
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">decltype</span>(<span style="color:#66d9ef">auto</span>) <span style="color:#75715e">// but still
+</span><span style="color:#75715e"></span>  authAndAccess(Container<span style="color:#f92672">&amp;</span> c, Index i) <span style="color:#75715e">// requires
+</span><span style="color:#75715e"></span>  { <span style="color:#75715e">// refinement
+</span><span style="color:#75715e"></span>	  authenticateUser();
+	  <span style="color:#66d9ef">return</span> c[i];
+  }
+</code></pre></div>
+</div>
+<p>
+auto 表明这个类型需要推导，decltype 表示推导使用 decltype 的方法，也就是根据他实际的类型来返回。
+</p>
+<p>
+对于左值表达示 decltype 返回的是左值的引用，这点与参数名有区别。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#66d9ef">decltype</span>(x) <span style="color:#75715e">// is int
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">decltype</span>((x)) <span style="color:#75715e">//is therefore int&amp;.
+</span></code></pre></div>
+</div>
+<h1 id="headline-10">
+查看推导结果
+</h1>
+<ul>
+<li>
+<p>
+编译诊断
+</p>
+</li>
+</ul>
+<p>
+灵活使用只声明未定义的模板
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// declaration only for TD;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">TD</span>; <span style="color:#75715e">// TD == &#34;Type Displayer&#34;
+</span><span style="color:#75715e"></span>
+  TD<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">decltype</span>(x)<span style="color:#f92672">&gt;</span> xType; <span style="color:#75715e">// elicit errors containing
+</span><span style="color:#75715e"></span>  TD<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">decltype</span>(y)<span style="color:#f92672">&gt;</span> yType; <span style="color:#75715e">// x&#39;s and y&#39;s types
+</span></code></pre></div>
+</div>
+<div class="src src-dot">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dot" data-lang="dot">  error: &#39;xType&#39; uses undefined class &#39;TD&lt;int&gt;&#39;
+  error: &#39;yType&#39; uses undefined class &#39;TD&lt;const int *&gt;&#39;</code></pre></div>
+</div>
+<ul>
+<li>
+<p>
+运行时输出
+</p>
+</li>
+</ul>
+<p>
+typeid 和 std::type_info::name，但有时并不准确。Boost TypeIndex（boost::typeindex::type_id_with_cvr）会更准确。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">typeid</span>(x).name() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>; <span style="color:#75715e">// display types for
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">typeid</span>(y).name() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>; <span style="color:#75715e">// x and y
+</span></code></pre></div>
+</div>
+<h1 id="headline-11">
+参考
+</h1>
+<p>
+effective-modern-c++
+</p>
+
+                        </div>
+
+                        
+
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/c&#43;&#43;">C&#43;&#43;</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Learning Hardy</title>
+    <link>http://example.org/tags/</link>
+    <description>Recent content in Tags on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker</title>
+      <link>http://example.org/tags/docker/</link>
+      <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>http://example.org/tags/python/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Postgres,Paginate</title>
+      <link>http://example.org/tags/postgrespaginate/</link>
+      <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/postgrespaginate/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>constexpr</title>
+      <link>http://example.org/tags/constexpr/</link>
+      <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/constexpr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fibonacci</title>
+      <link>http://example.org/tags/fibonacci/</link>
+      <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/fibonacci/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Template</title>
+      <link>http://example.org/tags/template/</link>
+      <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/template/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>static</title>
+      <link>http://example.org/tags/static/</link>
+      <pubDate>Tue, 13 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/static/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;</title>
+      <link>http://example.org/tags/c&#43;&#43;/</link>
+      <pubDate>Wed, 17 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>http://example.org/tags/linux/</link>
+      <pubDate>Thu, 07 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HeroKu</title>
+      <link>http://example.org/tags/heroku/</link>
+      <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/heroku/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Regularization</title>
+      <link>http://example.org/tags/regularization/</link>
+      <pubDate>Wed, 17 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/regularization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>neural</title>
+      <link>http://example.org/tags/neural/</link>
+      <pubDate>Sun, 07 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/neural/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>logistic</title>
+      <link>http://example.org/tags/logistic/</link>
+      <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/logistic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regression</title>
+      <link>http://example.org/tags/regression/</link>
+      <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/regression/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linear</title>
+      <link>http://example.org/tags/linear/</link>
+      <pubDate>Fri, 21 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/linear/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>makefile</title>
+      <link>http://example.org/tags/makefile/</link>
+      <pubDate>Thu, 02 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/makefile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ETF</title>
+      <link>http://example.org/tags/etf/</link>
+      <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/etf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>boost</title>
+      <link>http://example.org/tags/boost/</link>
+      <pubDate>Thu, 03 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/boost/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gprof</title>
+      <link>http://example.org/tags/gprof/</link>
+      <pubDate>Mon, 05 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/gprof/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>protobuf</title>
+      <link>http://example.org/tags/protobuf/</link>
+      <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/protobuf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git</title>
+      <link>http://example.org/tags/git/</link>
+      <pubDate>Tue, 26 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spacemacs</title>
+      <link>http://example.org/tags/spacemacs/</link>
+      <pubDate>Fri, 22 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/spacemacs/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

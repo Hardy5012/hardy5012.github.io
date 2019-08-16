@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Postgres 中的五种分页方式 | Learning Hardy</title>
+    <meta property="og:title" content="Postgres 中的五种分页方式 - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2018-03-28T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2018-03-28T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Postgres 中的五种分页方式">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Postgres 中的五种分页方式</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2018年3月28日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/date">date</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+任意查询分页
+</h1>
+<h2 id="headline-2">
+limit-offset
+</h2>
+<p>
+limit-offset 是最简单，也是最危险的分页方式。不幸的是，它是 Web 应用程序开发教程的主要内容。对象关系映射（ORM）库使它变得简单而诱人，从 SQLAlchemy 的.slice（1，3）到 ActiveRecord 的.limit（1）.offset（3）到 Sequelize 的.findAll（{offset：3，limit：1}）
+。它们最后生成的 SQL 都是以 LIMIT 1 OFFSET3 结束。limit-offset 的使用非常普遍，并非巧合，您可以将其应用于任何查询而无需进一步修改。
+</p>
+<p>
+这个技术有两个大总是，结果不一致和偏移(offset)效率低下。一致性是指遍历结果集的意图应该检索每个项目一次，没有遗漏或重复。
+偏移效率是指将结果转移大量偏移所导致的延迟。
+</p>
+<p>
+这里有个 limit-offse 分页结果不一致的例子。假设从第 n 页跳到 n+1 页时，同时一个新的元素插入到第 n 页。
+这将同时导致重复（第 n 页的先前最后一个元素被推入第 n + 1 页）和一个省略（新元素）。
+或者考虑从用户移动到页面 n + 1 时从页面 n 中删除的元素。 页面 n + 1 的先前初始元素将被移动到页面 n 并被省略。
+</p>
+<p>
+现在分析低效率。大的偏移本质上就是昂贵的，即使存在索引，数据库也必须通过存储进行扫描，对行进行计数。
+为了利用索引，我们必须通过一个值过滤一列，但在这种情况下，我们需要一定数量的行，而不管它们的列值如何。
+此外，这些行的存储空间不需要具有相同的大小，有些可能存在于磁盘上，但标记为已删除，因此数据库无法使用简单的算术在磁盘上查找位置以开始读取结果。
+我们来衡量有多少慢。
+</p>
+<!-- more -->
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#75715e">-- Create table with random strings of various lengths
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> medley <span style="color:#66d9ef">AS</span>
+  <span style="color:#66d9ef">SELECT</span>
+  generate_series(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">10000000</span>) <span style="color:#66d9ef">AS</span> n,
+  substr(concat(md5(random()::text), md5(random()::text)), <span style="color:#ae81ff">1</span>, (random() <span style="color:#f92672">*</span> <span style="color:#ae81ff">64</span>)::integer <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">AS</span> description;
+
+  <span style="color:#75715e">-- Notify query planner of drastically changed table size
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">VACUUM</span> <span style="color:#66d9ef">ANALYZE</span>;
+
+  <span style="color:#75715e">-- Low offsets are refreshingly fast
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">EXPLAIN</span> <span style="color:#66d9ef">ANALYZE</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> medley <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">100</span>;</code></pre></div>
+</div>
+<p>
+估计成本相当低：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">	QUERY PLAN
+	<span style="color:#75715e">--------------------------------------------------------------------------------------------------------------------
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">Limit</span>  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">00</span>..<span style="color:#ae81ff">1</span>.<span style="color:#ae81ff">85</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">100</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">38</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">008</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">036</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">100</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+	<span style="color:#f92672">-&gt;</span>  Seq Scan <span style="color:#66d9ef">on</span> medley  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">00</span>..<span style="color:#ae81ff">185460</span>.<span style="color:#ae81ff">60</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">9999660</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">38</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">007</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">017</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">100</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+	Planning time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">040</span> ms
+	Execution time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">059</span> ms
+	(<span style="color:#ae81ff">4</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+offset 等于 1000 时，需要 19ms 和 0.609ms 的执行时间。
+offset 等于 5000000,则提升到 92734ms，执行时间 758.484ms.
+</p>
+<p>
+这些问题并不一定意味着 limit-offset 不适用于您的情况。 在某些应用程序中，用户通常不会将许多页面推进到结果集中，甚至可能选择强制执行服务器页面限制。
+如果结果不一致和受限制的页码在您的应用程序中不成问题，那么 limit-offset 可能会满足您的需求。
+</p>
+<p>
+<strong>应用程序的分页深度受限，并且容忍结果不一致的情况适合 limit-offset</strong> 。
+</p>
+<h2 id="headline-3">
+Cursors
+</h2>
+<p>
+尽管有其缺点，但 limit-offse 确实具有在服务器上无状态的优势。 将其与另一种分页方法（查询游标）进行对比。
+像 limit-offset 一样，游标可以用在任何查询，但是它们通过要求服务器为每个 HTTP 客户端保存专用数据库连接和事务而有所不同。
+</p>
+<p>
+下面是怎么使用游标：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#75715e">-- We must be in a transaction
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">BEGIN</span>;
+  <span style="color:#75715e">-- Open a cursor for a query
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">DECLARE</span> medley_cur <span style="color:#66d9ef">CURSOR</span> <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> medley;
+  <span style="color:#75715e">-- Retrieve ten rows
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">FETCH</span> <span style="color:#ae81ff">10</span> <span style="color:#66d9ef">FROM</span> medley_cur;
+  <span style="color:#75715e">-- ...
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">-- Retrieve ten more from where we left off
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">FETCH</span> <span style="color:#ae81ff">10</span> <span style="color:#66d9ef">FROM</span> medley_cur;
+  <span style="color:#75715e">-- All done
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">COMMIT</span>;</code></pre></div>
+</div>
+<p>
+游标在任意查询上具有分页一致性的理想属性，显示事务开始时存在的结果。 事务的隔离级别（链接是外部的）保证了我们对结果的分页视图不会改变。
+</p>
+<p>
+每种分页方法都有缺点，而游标存在的问题是资源使用和客户端与服务器之间的耦合。每个打开的事务都会消耗专用的数据库资源，而且对于太多的客户端来说不可扩展。
+还有一些可以存在于事务之外的“WITH HOLD”游标，但它们必须实现数据。 无论哪种方式，这使得光标分页仅适用于像内联网那样的小规模情况。
+</p>
+<p>
+将 HTTP 桥接到游标引入了复杂性。服务器必须通过令牌或在会话中保留诸如客户端 IP 地址之类的标识符来跨越请求标识客户端。
+服务器还必须判断何时由于不活动而释放事务。最后，服务器负载均衡变得复杂，因为每次客户端都必须每次连接到专用服务器。
+</p>
+<p>
+<strong>单服务器内网应用程序，它必须以不同且可变的顺序对查询进行分页，尤其是在结果一致性很重要的情况下适合游标</strong> 。
+</p>
+<h1 id="headline-4">
+有序查询分页
+</h1>
+<h2 id="headline-5">
+Keyset 分页
+</h2>
+<p>
+上面的技术可以分页查询，包括没有 order 的子句查询。尤其是在按索引列排序时，客户端可以使用当前页面中的值来选择要在下一页显示的项目。
+这就是 Keyset 分页。
+</p>
+<p>
+回到之前的示例：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#75715e">-- Add an index for keyset pagination (btrees support inequality)
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> n_idx <span style="color:#66d9ef">ON</span> medley <span style="color:#66d9ef">USING</span> btree (n);
+  <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> medley <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> n <span style="color:#66d9ef">ASC</span> <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;</code></pre></div>
+</div>
+<p>
+随着我的随机数据它返回：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  n <span style="color:#f92672">|</span>                         description
+  <span style="color:#75715e">---+-------------------------------------------------------------
+</span><span style="color:#75715e"></span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">74</span>f70e009396
+  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">8</span>dac5a085eb670a29058d
+  <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> fce303a32e89181bf5df1601487
+  <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span> fddcced2c12e83516b3bd6cc94f23a012dfd
+  <span style="color:#ae81ff">5</span> <span style="color:#f92672">|</span> f51ae548dd27f51147e53e839eeceb6b0c92922145276d668e73d4a6621
+  (<span style="color:#ae81ff">5</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+现在，客户端可以查看此结果中的最大值 n 并将其用于请求下一页：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> 
+  <span style="color:#66d9ef">FROM</span> medley
+  <span style="color:#66d9ef">WHERE</span> n <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5</span>
+  <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> n <span style="color:#66d9ef">ASC</span>
+  <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;</code></pre></div>
+</div>
+<p>
+即使 n&gt; 5000000 的过滤仍然很快，不像 limit-offset 示例。
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  QUERY PLAN
+  <span style="color:#75715e">--------------------------------------------------------------------------------------------------------------------------------
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">Limit</span>  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">43</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">62</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">38</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">101</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">103</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  <span style="color:#f92672">-&gt;</span>  <span style="color:#66d9ef">Index</span> Scan <span style="color:#66d9ef">using</span> n_idx <span style="color:#66d9ef">on</span> medley  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">43</span>..<span style="color:#ae81ff">185579</span>.<span style="color:#ae81ff">42</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5013485</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">38</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">100</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">102</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  <span style="color:#66d9ef">Index</span> Cond: (n <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5000000</span>)
+  Planning time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">071</span> ms
+  Execution time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">119</span> ms
+  (<span style="color:#ae81ff">5</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+Keyset 分页速度很快，并且也是一致的。在当前页面之前的任何插入/删除操作都不会影响结果。
+这种方法的两个缺点是缺乏随机访问和客户端与服务器之间可能的耦合。一般来说，没有办法直接跳到给定的页面，而无需访问先前的页面来观察它们的最大元素。
+在特定条件下，我们可以做得更好。如果索引列中的值是均匀分布的（甚至更好，没有间隙的连续数字），客户端可以通过一些数学运算来查找所需的页面，因为索引可以便宜地找到最大值：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">EXPLAIN</span> <span style="color:#66d9ef">ANALYZE</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">max</span>(n) <span style="color:#66d9ef">FROM</span> medley;
+  QUERY PLAN
+  <span style="color:#75715e">------------------------------------------------------------------------------------------------------------
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">Result</span>  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">46</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">47</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">021</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">021</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  InitPlan <span style="color:#ae81ff">1</span> (<span style="color:#66d9ef">returns</span> <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>)
+  <span style="color:#f92672">-&gt;</span>  <span style="color:#66d9ef">Limit</span>  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">43</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">46</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">018</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">018</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  <span style="color:#f92672">-&gt;</span>  <span style="color:#66d9ef">Index</span> <span style="color:#66d9ef">Only</span> Scan <span style="color:#66d9ef">Backward</span> <span style="color:#66d9ef">using</span> n_idx <span style="color:#66d9ef">on</span> medley  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">43</span>..<span style="color:#ae81ff">284688</span>.<span style="color:#ae81ff">43</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">10000000</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">017</span>..<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">017</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  <span style="color:#66d9ef">Index</span> Cond: (n <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>)
+  Heap Fetches: <span style="color:#ae81ff">0</span>
+  Planning time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">087</span> ms
+  Execution time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">042</span> ms
+  (<span style="color:#ae81ff">8</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+Keyset 分页，另一个需要注意的问题客户端/服务器耦合，首先，客户端不知道哪些列被索引。服务器可能需要提供具有固定顺序的端点，而不是允许客户端自定义顺序。
+鉴于客户端代码可能不知道要哪一列排序，服务器必须提供如何请求下一页的提示。
+由于用户通常以线性方式访问信息页面，因此 Keyset 分页通常被认为是在高流量 Web 服务器中对有序记录进行分页的最佳选择。
+</p>
+<p>
+<strong>可扩展的应用程序从列索引的数据中顺序提供数据进行比较(支持过滤),适合 Keyset 分页.</strong>
+</p>
+<h1 id="headline-6">
+专业化异形分页
+</h1>
+<h2 id="headline-7">
+Clustered TID Scan
+</h2>
+<p>
+我们可以针对使用低级别 PostgreSQL 功能的特殊情况设计非标准分页技术。例如，如果我们可以实现对数据的真正的随机访问访问
+</p>
+<ol>
+<li>
+<p>
+不要求所有页面的长度完全相同。
+</p>
+</li>
+<li>
+<p>
+仅支持一个 order 的分页行。
+</p>
+</li>
+</ol>
+<p>
+诀窍是选择返回的页面，这些页面直接与磁盘上的数据库页面或这些磁盘页面的部分相对应。PostgreSQL 数据库中的每个表都包含一个名为 <strong>ctid</strong> 的秘密列，用于标识其行
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> ctid, <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> medley <span style="color:#66d9ef">WHERE</span> n <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">10</span>;
+  ctid  <span style="color:#f92672">|</span> n  <span style="color:#f92672">|</span>                         description
+  <span style="color:#75715e">--------+----+-------------------------------------------------------------
+</span><span style="color:#75715e"></span>  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">74</span>f70e009396
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">2</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">8</span>dac5a085eb670a29058d
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">3</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> fce303a32e89181bf5df1601487
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">4</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span> fddcced2c12e83516b3bd6cc94f23a012dfd
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">5</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">5</span> <span style="color:#f92672">|</span> f51ae548dd27f51147e53e839eeceb6b0c92922145276d668e73d4a6621
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">6</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">6</span> <span style="color:#f92672">|</span> eb9fe1dfe1e421903f96b3b5c5dfe1ee1253582d728c35b4ee7330b
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">7</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">7</span> <span style="color:#f92672">|</span> e95202d7f5c612f8523ae705d
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">8</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">8</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">6573</span>b64aff262a2b940326
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">9</span>)  <span style="color:#f92672">|</span>  <span style="color:#ae81ff">9</span> <span style="color:#f92672">|</span> a0a43
+  (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">10</span>) <span style="color:#f92672">|</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">82</span>cdc134bd249a612cfddd3088dd09e32de5f4fa33
+  (<span style="color:#ae81ff">10</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+每个 ctid 的形式（页面，行）。PostgreSQL 可以通过 ctid 非常快地检索行，实际上这是索引在内部如何工作的 - 它们将列值映射到 ctids。
+</p>
+<p>
+请注意，尽管 PostgreSQL 在 tid 类型上定义了一个顺序关系，但它不能通过不等式有效地检索 ctids
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">EXPLAIN</span> <span style="color:#66d9ef">ANALYZE</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">count</span>(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">FROM</span> medley <span style="color:#66d9ef">WHERE</span> ctid <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;(0,1)&#39;</span>::tid <span style="color:#66d9ef">AND</span> ctid <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;(1,0)&#39;</span>::tid;
+  QUERY PLAN
+  <span style="color:#75715e">----------------------------------------------------------------------------------------------------------------------
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">Aggregate</span>  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">235589</span>.<span style="color:#ae81ff">00</span>..<span style="color:#ae81ff">235589</span>.<span style="color:#ae81ff">01</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">1241</span>.<span style="color:#ae81ff">851</span>..<span style="color:#ae81ff">1241</span>.<span style="color:#ae81ff">852</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  <span style="color:#f92672">-&gt;</span>  Seq Scan <span style="color:#66d9ef">on</span> medley  (cost<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">00</span>..<span style="color:#ae81ff">235464</span>.<span style="color:#ae81ff">00</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">50000</span> width<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>) (actual time<span style="color:#f92672">=</span><span style="color:#ae81ff">477</span>.<span style="color:#ae81ff">933</span>..<span style="color:#ae81ff">1241</span>.<span style="color:#ae81ff">802</span> <span style="color:#66d9ef">rows</span><span style="color:#f92672">=</span><span style="color:#ae81ff">116</span> loops<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+  Filter: ((ctid <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;(0,1)&#39;</span>::tid) <span style="color:#66d9ef">AND</span> (ctid <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;(1,0)&#39;</span>::tid))
+  <span style="color:#66d9ef">Rows</span> Removed <span style="color:#66d9ef">by</span> Filter: <span style="color:#ae81ff">9999884</span>
+  Planning time: <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">047</span> ms
+  Execution time: <span style="color:#ae81ff">1241</span>.<span style="color:#ae81ff">889</span> ms
+  (<span style="color:#ae81ff">6</span> <span style="color:#66d9ef">rows</span>)</code></pre></div>
+</div>
+<p>
+请求范围不起作用，但仍有办法有效请求磁盘页面中的所有行,每个页面都包含 currentsetting（&#39;blocksize&#39;）字节数据（通常 8 k）。
+行由 32 位指针引用，因此每页最多有 block_size / 4 行。（事实上，行通常比最小尺寸宽，并且块大小的四分之一提供每页行数的上限。）
+以下序列将在第 j 页中生成所有可能的 ctids.
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> (<span style="color:#e6db74">&#39;(&#39;</span> <span style="color:#f92672">||</span> j <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;</span> <span style="color:#f92672">||</span> s.i <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;)&#39;</span>)::tid
+  <span style="color:#66d9ef">FROM</span> generate_series(<span style="color:#ae81ff">0</span>,current_setting(<span style="color:#e6db74">&#39;block_size&#39;</span>)::int<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#66d9ef">AS</span> s(i);</code></pre></div>
+</div>
+<p>
+让我们获取示例中第 0 页上的所有行
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> medley <span style="color:#66d9ef">WHERE</span> ctid <span style="color:#f92672">=</span> <span style="color:#66d9ef">ANY</span> (ARRAY
+  (<span style="color:#66d9ef">SELECT</span> (<span style="color:#e6db74">&#39;(0,&#39;</span> <span style="color:#f92672">||</span> s.i <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;)&#39;</span>)::tid
+  <span style="color:#66d9ef">FROM</span> generate_series(<span style="color:#ae81ff">0</span>,current_setting(<span style="color:#e6db74">&#39;block_size&#39;</span>)::int<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#66d9ef">AS</span> s(i)
+  )
+  );</code></pre></div>
+</div>
+<p>
+此查询成本为 25.03..65.12，运行时间为 2.765ms。
+请求页面 10,000 具有相似的成本。 所以我们得到真正的随机访问，什么是不喜欢？
+</p>
+<p>
+这里有三个缺点：
+</p>
+<ol>
+<li>
+<p>
+当行被删除时，它们会在页面中留下空洞。
+</p>
+</li>
+<li>
+<p>
+行的顺序可能没有意义。 数据库将新行插入到已删除行左侧的空洞中，这将导致行顺序无效。
+</p>
+</li>
+<li>
+<p>
+“Where”子句不受支持。
+</p>
+</li>
+</ol>
+<p>
+在某些情况下，这不是问题。一种情况是其自然顺序对应于插入顺序的数据，例如仅追加时间序列数据。另一个是不经常更改的数据。
+这是因为我们可以通过 CLUSTER 命令控制页面内行的位置。
+</p>
+<p>
+让我们回到之前的例子。它在磁盘上的行由 n 列升序排列，因为这是我们插入它们的顺序。如果我们想按描述列进行排序会怎样？
+答案是通过索引描述列和聚类对表进行物理重新排序。
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> description_idx <span style="color:#66d9ef">ON</span> medley <span style="color:#66d9ef">USING</span> btree (description);
+  <span style="color:#66d9ef">CLUSTER</span> medley <span style="color:#66d9ef">USING</span> description_idx;</code></pre></div>
+</div>
+<p>
+现在选择第一页中的所有行将按 description 按字母顺序排列。如果表更改，然后新的行将按字母顺序追加，但只要表不更改将很好的返回条目。
+它也可以在更改之后定期重新聚集，尽管此操作锁定了表并且在人们需要访问时无法完成。
+</p>
+<p>
+最后，可以使用其总字节大小来确定表的总页数。
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> pg_relation_size(<span style="color:#e6db74">&#39;medley&#39;</span>) <span style="color:#f92672">/</span> current_setting(<span style="color:#e6db74">&#39;block_size&#39;</span>)::int;</code></pre></div>
+</div>
+<p>
+<strong>当需要快速深度随机页面访问并且不需要过滤时， 特别具有低变异行宽度的仅追加时间序列数据，适用 Clustered TID Scan</strong> 。
+</p>
+<h2 id="headline-8">
+Keyset with Estimated Bookmarks
+</h2>
+<p>
+正如我们所看到的，除了通过客户端猜测之外，Keyset 分页不提供按百分比跳到结果。但是 PostgreSQL 统计收集器维护值分布的每列直方图。
+我们可以将这些估计值与极限值和小偏移值结合使用，通过混合方法获得快速的随机访问分页。
+</p>
+<p>
+首先让我们看看例子的统计数据：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">SELECT</span> array_length(histogram_bounds, <span style="color:#ae81ff">1</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">FROM</span> pg_stats
+  <span style="color:#66d9ef">WHERE</span> tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;medley&#39;</span>
+  <span style="color:#66d9ef">AND</span> attname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;n&#39;</span>;</code></pre></div>
+</div>
+<p>
+在我的数据库中，列 n 有 101 个绑定标记，即绑定标记之间的 100 个范围。
+这个值并不令人感到意外，因为我的数据是均匀分布的
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#ae81ff">719</span>,<span style="color:#ae81ff">103188</span>,<span style="color:#ae81ff">193973</span>,<span style="color:#ae81ff">288794</span>, <span style="color:#960050;background-color:#1e0010">…</span> ,<span style="color:#ae81ff">9690475</span>,<span style="color:#ae81ff">9791775</span>,<span style="color:#ae81ff">9905770</span>,<span style="color:#ae81ff">9999847</span><span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
+</div>
+<p>
+请注意，这些值是近似值。第一个数字不完全是零，最后一个数字不完全是一千万。
+这些范围将我们的信息分成块大小 B = 10,000,000 / 100 = 100,000 行。
+</p>
+<p>
+我们可以使用 PostgreSQL 状态收集器中的直方图范围来获得概率正确的页面。
+如果我们选择 W 宽度的客户端页面，我们如何请求第 i 个页面？它将驻留在块 iW / B 中，偏移量 iW％B 处。
+</p>
+<p>
+选择 W = 20 让我们从表中请求 270,000 页。请注意，PostgreSQL 数组是基数是一，所以我们必须调整数组查找中的值：
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">WITH</span> bookmark <span style="color:#66d9ef">AS</span> (
+  <span style="color:#66d9ef">SELECT</span> (histogram_bounds::text::int[])[((<span style="color:#ae81ff">270000</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">20</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100000</span>)<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">start</span>,
+  (histogram_bounds::text::int[])[((<span style="color:#ae81ff">270000</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">20</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100000</span>)<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>] <span style="color:#66d9ef">AS</span> stop
+  <span style="color:#66d9ef">FROM</span> pg_stats
+  <span style="color:#66d9ef">WHERE</span> tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;medley&#39;</span>
+  <span style="color:#66d9ef">AND</span> attname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;n&#39;</span>
+  <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">1</span>
+  )
+  <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span>
+  <span style="color:#66d9ef">FROM</span> medley
+  <span style="color:#66d9ef">WHERE</span> n <span style="color:#f92672">&gt;=</span> (<span style="color:#66d9ef">select</span> <span style="color:#66d9ef">start</span> <span style="color:#66d9ef">from</span> bookmark)
+  <span style="color:#66d9ef">AND</span> n <span style="color:#f92672">&lt;</span> (<span style="color:#66d9ef">select</span> stop <span style="color:#66d9ef">from</span> bookmark)
+  <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> n <span style="color:#66d9ef">ASC</span>
+  <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">20</span>
+  <span style="color:#66d9ef">OFFSET</span> ((<span style="color:#ae81ff">270000</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">20</span>) <span style="color:#f92672">%</span> <span style="color:#ae81ff">100000</span>);</code></pre></div>
+</div>
+<p>
+这表现得非常快（注意这里的偏移量恰好为零）。它返回 n = 5407259 到 5407278 的行。第 270000 页上的真值是 n = 5400001 到 5400020。
+这些值是 7239，或约 0.1％。
+</p>
+<p>
+我们很幸运，在我们的网页选择。 相比之下，74999 页需要 99980 的偏移量。
+我们确实知道我们的偏移量最多为 100,000。如果我们关心权衡，则上限在我们的控制范围内。
+通过调整 PostgreSQL 状态收集器，我们可以得到更精确的列直方图。
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> medley <span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">COLUMN</span> n <span style="color:#66d9ef">SET</span> <span style="color:#66d9ef">statistics</span> <span style="color:#ae81ff">1000</span>;
+  <span style="color:#66d9ef">VACUUM</span> <span style="color:#66d9ef">ANALYZE</span>;</code></pre></div>
+</div>
+<p>
+现在有 1000 个而不是 100 个直方图桶。数据库的值为
+</p>
+<div class="src src-sql">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">  <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">10230</span>,<span style="color:#ae81ff">20863</span>, <span style="color:#960050;background-color:#1e0010">…</span>, <span style="color:#ae81ff">9980444</span>,<span style="color:#ae81ff">9989948</span>,<span style="color:#ae81ff">9999995</span><span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
+</div>
+<p>
+有了这个桶的大小，我们的 offset 将会是最多 10,000。
+权衡查询分析查看更多的值，从而减慢查询速度。所以这是潜在偏移效率与查询规划器开销之间的折衷。
+</p>
+<p>
+这种混合 keyset/offset 方法可能不符合许多真正的分页用例。
+它不适用于 where 子句。 这是不准确的，并且当表更改并且最近没有运行状态收集器时，情况会更加糟糕。
+</p>
+<p>
+<strong>当客户端想要深度但近似的随机访问而不允许额外的过滤时，适用 Keyset with Bookmarks</strong> 。
+</p>
+<h1 id="headline-9">
+结论
+</h1>
+<p>
+像许多工程决定一样，选择分页技术涉及权衡。可以肯定地说，keyset 分页最适用于具有有序线性访问的普通网站。
+然而，limit-offset 也有其优势，而更奇特的技术为某些类型的数据提供了特殊的性能特征。
+你可以看到很多可能性。选择合适的工具，不要让分页成为封闭的书。
+</p>
+<h1 id="headline-10">
+参考：
+</h1>
+<p>
+<a href="https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/">https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/</a>
+</p>
+
+                        </div>
+
+                        
+
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/postgrespaginate">Postgres,Paginate</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

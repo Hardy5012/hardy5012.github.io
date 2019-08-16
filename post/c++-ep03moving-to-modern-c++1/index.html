@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1) | Learning Hardy</title>
+    <meta property="og:title" content="C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1) - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-12-22T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-12-22T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/c&#43;&#43;-ep03moving-to-modern-c&#43;&#43;1/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C&#43;&#43; Ep03:Moving to Modern C&#43;&#43;(1)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年12月22日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/modern">Modern</a></span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/c&#43;&#43;">C&#43;&#43;</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+item 7: 区别使用（）和{}创建对象
+</h1>
+<h2 id="headline-2">
+记住
+</h2>
+<ul>
+<li>
+<p>
+括号初始化是最广泛使用的初始化语法，它防止变窄转换（narrowing conversion，并且对于 C++最令人头疼的解析有天生的免疫性.
+</p>
+</li>
+</ul>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">double</span> x, y, z;
+  <span style="color:#66d9ef">int</span> sum1{ x <span style="color:#f92672">+</span> y <span style="color:#f92672">+</span> z }; <span style="color:#75715e">// error! sum of doubles may
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// not be expressible as int
+</span></code></pre></div>
+</div>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  Widget <span style="color:#a6e22e">w2</span>(); <span style="color:#75715e">// most vexing parse! declares a function
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// named w2 that returns a Widget!
+</span><span style="color:#75715e"></span>  Widget w3{}; <span style="color:#75715e">// calls Widget ctor with no args
+</span></code></pre></div>
+</div>
+<!-- more -->
+<ul>
+<li>
+<p>
+在构造函数重载决议中，括号初始化尽最大可能与 std::initializer_list 参数匹配，即便其他构造函数看起来是更好的选择.
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">bool</span> b); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">double</span> d); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>Widget(std<span style="color:#f92672">::</span>initializer_list<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">long</span> <span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> il); <span style="color:#75715e">// added
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+};
+
+Widget <span style="color:#a6e22e">w1</span>(<span style="color:#ae81ff">10</span>, true); <span style="color:#75715e">// uses parens and, as before,
+</span><span style="color:#75715e">// calls first ctor
+</span><span style="color:#75715e"></span>Widget w2{<span style="color:#ae81ff">10</span>, true}; <span style="color:#75715e">// uses braces, but now calls
+</span><span style="color:#75715e">// std::initializer_list ctor
+</span><span style="color:#75715e">// (10 and true convert to long double)
+</span><span style="color:#75715e"></span>Widget <span style="color:#a6e22e">w3</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5.0</span>); <span style="color:#75715e">// uses parens and, as before,
+</span><span style="color:#75715e">// calls second ctor
+</span><span style="color:#75715e"></span>Widget w4{<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5.0</span>}; <span style="color:#75715e">// uses braces, but now calls
+</span><span style="color:#75715e">// std::initializer_list ctor
+</span><span style="color:#75715e">// (10 and 5.0 convert to long double)
+</span></code></pre></div>
+</div>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">bool</span> b); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">double</span> d); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>Widget(std<span style="color:#f92672">::</span>initializer_list<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span> il); <span style="color:#75715e">// element type is
+</span><span style="color:#75715e">// now bool
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// no implicit
+</span><span style="color:#75715e"></span>}; <span style="color:#75715e">// conversion funcs
+</span><span style="color:#75715e"></span>Widget w{<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5.0</span>}; <span style="color:#75715e">// error! requires narrowing conversions
+</span></code></pre></div>
+</div>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">bool</span> b); <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>Widget(<span style="color:#66d9ef">int</span> i, <span style="color:#66d9ef">double</span> d); <span style="color:#75715e">// as before
+</span><span style="color:#75715e">// std::initializer_list element type is now std::string
+</span><span style="color:#75715e"></span>Widget(std<span style="color:#f92672">::</span>initializer_list<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> il);
+<span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// no implicit
+</span><span style="color:#75715e"></span>};
+
+Widget w4{<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5.0</span>}; <span style="color:#75715e">// uses braces, now calls second ctor
+</span></code></pre></div>
+</div>
+</li>
+<li>
+<p>
+对于数值类型的 std::vector 来说使用花括号初始化和小括号初始化会造成巨大的不同
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> v1(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>); <span style="color:#75715e">// use non-std::initializer_list
+</span><span style="color:#75715e">// ctor: create 10-element
+</span><span style="color:#75715e">// std::vector, all elements have
+</span><span style="color:#75715e">// value of 20
+</span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> v2{<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>}; <span style="color:#75715e">// use std::initializer_list ctor:
+</span><span style="color:#75715e">// create 2-element std::vector,
+</span><span style="color:#75715e">// element values are 10 and 20
+</span></code></pre></div>
+</div>
+</li>
+<li>
+<p>
+在模板类选择使用小括号初始化或使用花括号初始化创建对象是一个挑战
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#75715e">// type of object to create
+</span><span style="color:#75715e"></span>	 <span style="color:#66d9ef">typename</span>... Ts<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// types of arguments to use
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> doSomeWork(Ts<span style="color:#f92672">&amp;&amp;</span>... params)
+{
+create local T object from params...
+	<span style="color:#960050;background-color:#1e0010">…</span>
+	}
+std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> v;
+<span style="color:#960050;background-color:#1e0010">…</span>
+doSomeWork<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;&gt;</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>);
+</code></pre></div>
+</div>
+</li>
+</ul>
+<p>
+如果 doSomeWork 创建 localObject 时使用的是小括号，std::vector 就会包含 10 个元素。 如果 doSomeWork 创建 localObject 时使用的是花括号，std::vector 就会包含 2 个元素。
+</p>
+<h1 id="headline-3">
+item 8: 优先考虑 nullptr 而非 0 和 NULL
+</h1>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">f1</span>(std<span style="color:#f92672">::</span>shared_ptr<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span> spw); <span style="color:#75715e">// call these only when
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">double</span> <span style="color:#a6e22e">f2</span>(std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span> upw); <span style="color:#75715e">// the appropriate
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">f3</span>(Widget<span style="color:#f92672">*</span> pw); <span style="color:#75715e">// mutex is locked
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> FuncType,
+	 <span style="color:#66d9ef">typename</span> MuxType,
+	 <span style="color:#66d9ef">typename</span> PtrType<span style="color:#f92672">&gt;</span>
+<span style="color:#66d9ef">auto</span> lockAndCall(FuncType func,
+			 MuxType<span style="color:#f92672">&amp;</span> mutex,
+			 PtrType ptr) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">decltype</span>(func(ptr))
+{
+MuxGuard g(mutex);
+<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">func</span>(ptr);
+}
+
+<span style="color:#66d9ef">auto</span> result1 <span style="color:#f92672">=</span> lockAndCall(f1, f1m, <span style="color:#ae81ff">0</span>); <span style="color:#75715e">// error!
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+<span style="color:#66d9ef">auto</span> result2 <span style="color:#f92672">=</span> lockAndCall(f2, f2m, NULL); <span style="color:#75715e">// error!
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+Item <span style="color:#ae81ff">8</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">61</span>
+<span style="color:#66d9ef">auto</span> result3 <span style="color:#f92672">=</span> lockAndCall(f3, f3m, <span style="color:#66d9ef">nullptr</span>); <span style="color:#75715e">// fine
+</span></code></pre></div>
+</div>
+<p>
+在上面的代码中 0 和 NULL 实际传入的是 int or int-like type，而不是想象中的空指针。
+</p>
+<h2 id="headline-4">
+记住
+</h2>
+<ul>
+<li>
+<p>
+优先考虑 nullptr 而非 0 和 NUL
+</p>
+</li>
+<li>
+<p>
+避免重载指针和整型
+</p>
+</li>
+</ul>
+<h1 id="headline-5">
+item 9: 优先考虑别名声明而非 typedefs
+</h1>
+<p>
+特别的，别名声明可以被模板化但是 typedef 不能.
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// MyAllocList&lt;T&gt;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">using</span> MyAllocList <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>list<span style="color:#f92672">&lt;</span>T, MyAlloc<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span>; <span style="color:#75715e">// is synonym for
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// std::list&lt;T,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// MyAlloc&lt;T&gt;&gt;
+</span><span style="color:#75715e"></span>  MyAllocList<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;</span> lw; <span style="color:#75715e">// client code
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// MyAllocList&lt;T&gt;::type
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> MyAllocList { <span style="color:#75715e">// is synonym for
+</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">typedef</span> std<span style="color:#f92672">::</span>list<span style="color:#f92672">&lt;</span>T, MyAlloc<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span> type; <span style="color:#75715e">// std::list&lt;T,
+</span><span style="color:#75715e"></span>  }; <span style="color:#75715e">// MyAlloc&lt;T&gt;&gt;
+</span><span style="color:#75715e"></span>  MyAllocList<span style="color:#f92672">&lt;</span>Widget<span style="color:#f92672">&gt;::</span>type lw; <span style="color:#75715e">// client code
+</span></code></pre></div>
+</div>
+<p>
+它会变得很糟。如果你想使用在一个模板内使用 typedef 声明一个持有链表的对象，而这个对象又使用了模板参数，
+你就不得不在在 typedef 前面加上 typename.
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> { <span style="color:#75715e">// Widget&lt;T&gt; contains
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span> <span style="color:#75715e">// a MyAllocList&lt;T&gt;
+</span><span style="color:#75715e"></span>	  <span style="color:#66d9ef">typename</span> MyAllocList<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>type list; <span style="color:#75715e">// as a data member
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span>
+  };
+</code></pre></div>
+</div>
+<p>
+这里 MyAllocList&lt;T&gt;::type 是一个依赖于模板参数 T 的类型。 因此 MyAllocList&lt;T&gt;::typ 是一个 <strong>依赖类型</strong> ，
+在 C++提到必须要在依赖类型名前加上 typename。 
+如果使用别名声明定义一个 MyAllocList，就不需要使用 typename
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">using</span> MyAllocList <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>list<span style="color:#f92672">&lt;</span>T, MyAlloc<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span>; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Widget</span> {
+  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+	  MyAllocList<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> list; <span style="color:#75715e">// no &#34;typename&#34;,
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// no &#34;::type&#34;
+</span><span style="color:#75715e"></span>  };
+</code></pre></div>
+</div>
+<p>
+当编译器处理 Widget 模板时遇到 MyAllocList&lt;T&gt;（使用模板别名声明的版本），它们知道 MyAllocList&lt;T&gt; 是一个类型名称， 
+因为 MyAllocList 是一个别名模板:它一定是一个 <strong>类型名</strong> 。
+因此 MyAllocList&lt;T&gt; 就是一个非依赖类型，就不要求必须使用 typename。
+</p>
+<p>
+而编译器在 Widget 模板处理 MyAllocList&lt;T&gt;::type 时，并不知道它是类型名称，因为可能存在 MyAllocList 的一个特化版本没有 MyAllocList::type。
+如下代码：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Wine</span> { <span style="color:#960050;background-color:#1e0010">…</span> };
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span> <span style="color:#75715e">// MyAllocList specialization
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">MyAllocList</span><span style="color:#f92672">&lt;</span>Wine<span style="color:#f92672">&gt;</span> { <span style="color:#75715e">// for when T is Wine
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+	  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">WineType</span> <span style="color:#75715e">// see Item 10 for info on
+</span><span style="color:#75715e"></span>	  { White, Red, Rose }; <span style="color:#75715e">// &#34;enum class&#34;
+</span><span style="color:#75715e"></span>	  WineType type; <span style="color:#75715e">// in this class, type is
+</span><span style="color:#75715e"></span>	  <span style="color:#960050;background-color:#1e0010">…</span> <span style="color:#75715e">// a data member!
+</span><span style="color:#75715e"></span>  };
+</code></pre></div>
+</div>
+<p>
+正如你所见，MyAllocList&lt;Wine&gt;::type 不是一个类型名称，如果 Widget 使用 Wine 实例化，
+在 Widget 模板中的 MyAllocList&lt;T&gt;::type 将会是一个数据成员，不是一个类型。
+在 Widget 模板内，如果 MyAllocList&lt;T&gt;::type 表示的类型依赖于 T，所以编译器坚持要求你在前面加上 typename。
+</p>
+<p>
+对于 C++11 的类型转换 std::transformation::type 在 C++14 中变成了 std::transformation_t.
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  std<span style="color:#f92672">::</span>remove_const<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>type <span style="color:#75715e">// C++11: const T → T
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>remove_const_t<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14 equivalent
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>remove_reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>type <span style="color:#75715e">// C++11: T&amp;/T&amp;&amp; → T
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>remove_reference_t<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14 equivalent
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>add_lvalue_reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>type <span style="color:#75715e">// C++11: T → T&amp;
+</span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>add_lvalue_reference_t<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14 equivalent
+</span></code></pre></div>
+</div>
+<h2 id="headline-6">
+记住
+</h2>
+<ul>
+<li>
+<p>
+typedef 不支持模板化，但是别名声明支持。
+</p>
+</li>
+<li>
+<p>
+别名模板避免了使用&#34;::type&#34;后缀，而且在模板中使用 typedef 还需要在前面加上 typename
+</p>
+</li>
+<li>
+<p>
+C++14 提供了 C++11 所有类型转换的别名声明版本
+</p>
+</li>
+</ul>
+<h1 id="headline-7">
+item 10:Prefer scoped enums to unscoped enums
+</h1>
+<p>
+unscoped enums
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> Color { black, white, red }; <span style="color:#75715e">// black, white, red are
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// in same scope as Color
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> white <span style="color:#f92672">=</span> false; <span style="color:#75715e">// error! white already
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// declared in this scope
+</span></code></pre></div>
+</div>
+<p>
+因为 scoped enum 是通过 enum class 声明，所以它们有时候也被称为 <strong>枚举类</strong> (enum classes)。
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">Color</span> { black, white, red }; <span style="color:#75715e">// black, white, red
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// are scoped to Color
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> white <span style="color:#f92672">=</span> false; <span style="color:#75715e">// fine, no other,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// &#34;white&#34; in scope
+</span><span style="color:#75715e"></span>  Color c <span style="color:#f92672">=</span> white; <span style="color:#75715e">// error! no enumerator named
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// &#34;white&#34; is in this scope
+</span><span style="color:#75715e"></span>  Color c <span style="color:#f92672">=</span> Color<span style="color:#f92672">::</span>white; <span style="color:#75715e">// fine
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> c <span style="color:#f92672">=</span> Color<span style="color:#f92672">::</span>white; <span style="color:#75715e">// also fine (and in accord
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// with Item 5&#39;s advice)
+</span></code></pre></div>
+</div>
+<p>
+在下面场景中 uncoped enums 会有用：
+定义一个 std::tuple
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">using</span> UserInfo <span style="color:#f92672">=</span> <span style="color:#75715e">// type alias; see Item 9
+</span><span style="color:#75715e"></span>	  std<span style="color:#f92672">::</span>tuple<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string, <span style="color:#75715e">// name
+</span><span style="color:#75715e"></span>				 std<span style="color:#f92672">::</span>string, <span style="color:#75715e">// email
+</span><span style="color:#75715e"></span>				 std<span style="color:#f92672">::</span>size_t<span style="color:#f92672">&gt;</span> ; <span style="color:#75715e">// reputation
+</span><span style="color:#75715e"></span>
+  UserInfo uInfo; <span style="color:#75715e">// object of tuple type
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span>
+  <span style="color:#66d9ef">auto</span> val <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>get<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;</span>(uInfo); <span style="color:#75715e">// get value of field 1
+</span></code></pre></div>
+</div>
+<p>
+此时记住第 1 个字段是 email 并不合理，此时可用 unscoped enums 对应每个字段的名称
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> UserInfoFields { uiName, uiEmail, uiReputation };
+  UserInfo uInfo; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span>
+  <span style="color:#66d9ef">auto</span> val <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>get<span style="color:#f92672">&lt;</span>uiEmail<span style="color:#f92672">&gt;</span>(uInfo); <span style="color:#75715e">// ah, get value of
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// email field
+</span></code></pre></div>
+</div>
+<p>
+使用 UserInfoFields 隐式转换成 std::size_t，赋给 std::get。scoped enums 更繁琐：
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span><span style="color:#960050;background-color:#1e0010"> </span><span style="color:#a6e22e">UserInfoFields</span> { uiName, uiEmail, uiReputation };
+  UserInfo uInfo; <span style="color:#75715e">// as before
+</span><span style="color:#75715e"></span>  <span style="color:#960050;background-color:#1e0010">…</span>
+  <span style="color:#66d9ef">auto</span> val <span style="color:#f92672">=</span>
+	  std<span style="color:#f92672">::</span>get<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>size_t<span style="color:#f92672">&gt;</span>(UserInfoFields<span style="color:#f92672">::</span>uiEmail)<span style="color:#f92672">&gt;</span>
+	  (uInfo);
+</code></pre></div>
+</div>
+<p>
+使用 std::underlying_type 获取 enums 的底层类型。模板函数 toUType 接受一个任意的枚举常量，并且可以作为一个编译时常量返回它的值
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> E<span style="color:#f92672">&gt;</span>
+  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">typename</span> std<span style="color:#f92672">::</span>underlying_type<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;::</span>type
+  toUType(E enumerator) <span style="color:#66d9ef">noexcept</span>
+  {
+	  <span style="color:#66d9ef">return</span>
+		  <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>
+					  std<span style="color:#f92672">::</span>underlying_type<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;::</span>type<span style="color:#f92672">&gt;</span>(enumerator);
+  }
+</code></pre></div>
+</div>
+<p>
+在 C++14 中可简化
+</p>
+<div class="src src-c++">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> E<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> std<span style="color:#f92672">::</span>underlying_type_t<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
+  toUType(E enumerator) <span style="color:#66d9ef">noexcept</span>
+  {
+	  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>underlying_type_t<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;&gt;</span>(enumerator);
+  }
+
+  <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> E<span style="color:#f92672">&gt;</span> <span style="color:#75715e">// C++14
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constexpr</span> <span style="color:#66d9ef">auto</span>
+  toUType(E enumerator) <span style="color:#66d9ef">noexcept</span>
+  {
+	  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>underlying_type_t<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;&gt;</span>(enumerator);
+  }
+
+  <span style="color:#66d9ef">auto</span> val <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>get<span style="color:#f92672">&lt;</span>toUType(UserInfoFields<span style="color:#f92672">::</span>uiEmail)<span style="color:#f92672">&gt;</span>(uInfo);
+</code></pre></div>
+</div>
+<h2 id="headline-8">
+记住：
+</h2>
+<ul>
+<li>
+<p>
+scoped enums 的枚举常量只在本 enum 内可见，因为是强类型的，要转换成其它类型只能使用 cast.
+</p>
+</li>
+<li>
+<p>
+scoped enums 和 unscoped enums 都有底层类型。只是 scoped enums 的底层类型是 int,
+</p>
+</li>
+</ul>
+<p>
+unscoped enums 没有默认底层类型。
+</p>
+<ul>
+<li>
+<p>
+scoped enums 总是可向前声明，而 unscoped enums 只有声明底层类型时才可向前声明。
+</p>
+</li>
+</ul>
+<h1 id="headline-9">
+参考
+</h1>
+<p>
+effective-modern-c++
+</p>
+
+                        </div>
+
+                        
+
+
+                        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/c&#43;&#43;-ep02auto/">C&#43;&#43; Ep02:auto</a></li>
+        
+        <li><a href="/post/c&#43;&#43;-ep01%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC/">C&#43;&#43; Ep01:模板类型推导</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/c&#43;&#43;">C&#43;&#43;</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

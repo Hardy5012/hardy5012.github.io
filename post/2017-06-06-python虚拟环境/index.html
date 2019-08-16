@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.57.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Python 虚拟环境 | Learning Hardy</title>
+    <meta property="og:title" content="Python 虚拟环境 - Learning Hardy">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-06-06T00:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-06-06T00:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Python 虚拟环境">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/post/2017-06-06-python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        Learning Hardy
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://example.org/">首页</a>
+                    
+                    <a  href="http://example.org/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://example.org/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Python 虚拟环境</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年6月6日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="http://example.org/categories/summary">summary</a></span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="post-content">
+                            
+<h1 id="headline-1">
+Virtualenv
+</h1>
+<h2 id="headline-2">
+Introduction
+</h2>
+<p>
+virtualenv is a tool to create isolated Python environments.
+</p>
+<h2 id="headline-3">
+Installation
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  sudo pip install virtualenv</code></pre></div>
+</div>
+<p>
+{{{more}}}
+</p>
+<h2 id="headline-4">
+Usage
+</h2>
+<p>
+1.为一个工程创建一个虚拟环境：
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  cd my_project_folder
+  virtualenv venv</code></pre></div>
+</div>
+<p>
+virtualenv venv 将会在当前的目录中创建一个文件夹，包含了 Python 可执行文件，以及 pip 库的一份拷贝，这样就能安装其他包了。虚拟环境的名字（此例中是 venv）可以是任意的；若省略名字将会把文件均放在当前目录。
+</p>
+<p>
+在任何你运行命令的目录中，这会创建 Python 的拷贝，并将之放在叫做 venv 的文件中。
+</p>
+<p>
+你可以选择使用一个 Python 解释器：
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  virtualenv -p /usr/bin/python2.7 venv</code></pre></div>
+</div>
+<p>
+这将会使用 /usr/bin/python2.7 中的 Python 解释器。
+2.要开始使用虚拟环境，其需要被激活：
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  source venv/bin/activate</code></pre></div>
+</div>
+<p>
+从现在起，任何你使用 pip 安装的包将会放在 ``venv 文件夹中，与全局安装的 Python 隔绝开
+3.如果你在虚拟环境中暂时完成了工作，则可以停用它：
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  deactivate</code></pre></div>
+</div>
+<p>
+要删除一个虚拟环境，只需删除它的文件夹。（要这么做请执行 rm -rf venv）
+4.其他注意
+运行带 –no-site-packages 选项的 virtualenv 将不会包括全局安装的包。这可用于保持包列表干净，以防以后需要访问它。
+详细命令：<a href="https://virtualenv.pypa.io/en/latest/reference/">https://virtualenv.pypa.io/en/latest/reference/</a>
+</p>
+<h1 id="headline-5">
+virtualenvwrapper
+</h1>
+<p>
+virtualenvwrapper 提供了一系列命令使得和虚拟环境工作变得愉快许多。它把你所有的虚拟环境都放在一个地方。
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  pip install virtualenvwrapper
+  export WORKON_HOME<span style="color:#f92672">=</span>~/Envs
+  source /usr/local/bin/virtualenvwrapper.sh</code></pre></div>
+</div>
+<p>
+基本使用
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  mkvirtualenv venv
+  workon venv
+  deactivate
+  rmvirtualenv venv
+
+  mkproject myproject</code></pre></div>
+</div>
+<p>
+其他有用的命令
+lsvirtualenv
+列举所有的环境。
+cdvirtualenv
+导航到当前激活的虚拟环境的目录中，比如说这样你就能够浏览它的 site-packages。
+cdsitepackages
+和上面的类似，但是是直接进入到 site-packages 目录中。
+lssitepackages
+显示 site-packages 目录中的内容。
+</p>
+<h1 id="headline-6">
+autoenv
+</h1>
+<p>
+autoen 可自动加载环境变量
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  sudo pip install autoenv
+  source ~/.bashrc
+  touch .env</code></pre></div>
+</div>
+<h1 id="headline-7">
+Python3
+</h1>
+<h2 id="headline-8">
+pre install
+</h2>
+<ol>
+<li>
+<p>
+install sqlite to solve virtualenv: ImportError: No module named _sqlite3
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo yum install sqlite sqlite-devel  openssl-devel</code></pre></div>
+</div>
+<ol>
+<li>
+<p>
+install tkinter
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-<span style="color:#66d9ef">$(</span>rpm -E <span style="color:#e6db74">&#39;%{rhel}&#39;</span><span style="color:#66d9ef">)</span>.noarch.rpm
+yum -y install tkinter tcl-devel tk-devel
+wget https://centos7.iuscommunity.org/ius-release.rpm
+sudo rpm -Uvh ius-release*rpm
+sudo yum install python36u-tkinter</code></pre></div>
+</div>
+<h2 id="headline-9">
+Install pip for Python 3:
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz 
+  tar --xz -xvf Python-3.6.5.tar.xz
+  sudo ./configure --prefix<span style="color:#f92672">=</span>/usr/local/python3
+  sudo make <span style="color:#f92672">&amp;&amp;</span> sudo make install
+  sudo ln -s /usr/local/python3/bin/python3 /usr/bin/python3</code></pre></div>
+</div>
+<h2 id="headline-10">
+Install pip3
+</h2>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  wget --no-check-certificate https://github.com/pypa/pip/archive/9.0.1.tar.gz
+  tar -zvxf <span style="color:#ae81ff">9</span>.0.1.tar.gz
+  cd pip-9.0.1/
+  sudo python3  setup.py install
+  sudo ln -s /usr/local/python3/bin/pip /usr/bin/pip3</code></pre></div>
+</div>
+<h2 id="headline-11">
+virtualenv &amp;&amp; virtualenvwrapper
+</h2>
+<p>
+install autoenv
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo pip install autoenv
+echo <span style="color:#e6db74">&#34;source `which activate.sh`&#34;</span> &gt;&gt; ~/.bashrc</code></pre></div>
+</div>
+<p>
+install virtualenv and virtualenvwrapper
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  sudo pip3 install virtualenv
+  sudo pip3 install virtualenvwrapper</code></pre></div>
+</div>
+<p>
+Create a folder for your virtualenvs (~/.virtualenvs) and set it as WORKON_HOME:
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  mkdir ~/.virtualenvs</code></pre></div>
+</div>
+<p>
+Add the following lines to ~/.bashrc:
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  export WORKON_HOME<span style="color:#f92672">=</span>~/.virtualenvs
+  export VIRTUALENVWRAPPER_PYTHON<span style="color:#f92672">=</span>/usr/bin/python3 <span style="color:#75715e"># This needs to be placed before the virtualenvwrapper command</span>
+  export VIRTUALENVWRAPPER_VIRTUALENV<span style="color:#f92672">=</span>/usr/local/python3/bin/virtualenv
+  source /usr/local/python3/bin/virtualenvwrapper.sh</code></pre></div>
+</div>
+<p>
+Close and re-open your shell and you&#39;re ready to go. Here are the basic commands for using virtualenvwrapper:
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  mkvirtualenv virtualenv_name <span style="color:#75715e"># Create virtualenv</span>
+  workon virtualenv_name <span style="color:#75715e"># Activate/switch to a virtualenv</span>
+  deactivate virtualenv_name <span style="color:#75715e"># Deactivate virtualenv</span></code></pre></div>
+</div>
+<h2 id="headline-12">
+注意点
+</h2>
+<ol>
+<li>
+<p>
+在运行 workon 指定 python 版本时，如果是 2 与 3 版本之间的切换则需要修改/usr/bin/python
+</p>
+</li>
+<li>
+<p>
+yum 的功能依赖 Python2 更改 3 后需要做如下修改：
+</p>
+</li>
+</ol>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  vi /usr/bin/yum</code></pre></div>
+</div>
+<p>
+打开文件，修改第一行为：
+</p>
+<div class="src src-sh">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  <span style="color:#75715e">#!/usr/bin/python2.7</span></code></pre></div>
+</div>
+<ol>
+<li>
+<p>
+window 中使用 virtualenvwrapper-win 安装，同时可用 setprojectdir . 来设置项目的根目录，这样一运行 workon 直接跳到根目录
+</p>
+</li>
+</ol>
+
+                        </div>
+
+                        
+
+
+                        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2016-11-16-python-notes/">python notes</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="http://example.org/tags/python">python</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/post/%E4%B8%BA%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E6%8C%82%E8%BD%BD%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="为运行的容器挂载文件目录">为运行的容器挂载文件目录</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/super%E6%B2%A1%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/" title="super 没那么简单">super 没那么简单</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/postgres%E4%B8%AD%E7%9A%84%E4%BA%94%E7%A7%8D%E5%88%86%E9%A1%B5%E6%96%B9%E5%BC%8F/" title="Postgres 中的五种分页方式">Postgres 中的五种分页方式</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep23-if-constexpt/" title="C&#43;&#43; Ep23: constexpr if">C&#43;&#43; Ep23: constexpr if</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep22-fibonacci/" title="C&#43;&#43; Ep22: Fibonacci">C&#43;&#43; Ep22: Fibonacci</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep21-variadic-templates/" title="C&#43;&#43; Ep21: variadic Templates">C&#43;&#43; Ep21: variadic Templates</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep20-static-variable/" title="C&#43;&#43; Ep20: Static Variable">C&#43;&#43; Ep20: Static Variable</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks2/" title="Tweaks(2)">Tweaks(2)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/tweaks1/" title="Tweaks(1)">Tweaks(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/post/c&#43;&#43;-ep19the-concurrency-api4/" title="C&#43;&#43; Ep19:The Concurrency API(4)">C&#43;&#43; Ep19:The Concurrency API(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://example.org/categories/ai/">ai(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/c&#43;&#43;/">c&#43;&#43;(20)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/date/">date(1)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/modern/">modern(16)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/notes/">notes(10)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/summary/">summary(5)</a>
+    </li>
+    
+    <li>
+        <a href="http://example.org/categories/weekly/">weekly(4)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://example.org/tags/boost/">boost</a>
+    
+    <a href="http://example.org/tags/c&#43;&#43;/">c&#43;&#43;</a>
+    
+    <a href="http://example.org/tags/constexpr/">constexpr</a>
+    
+    <a href="http://example.org/tags/docker/">docker</a>
+    
+    <a href="http://example.org/tags/etf/">etf</a>
+    
+    <a href="http://example.org/tags/fibonacci/">fibonacci</a>
+    
+    <a href="http://example.org/tags/git/">git</a>
+    
+    <a href="http://example.org/tags/gprof/">gprof</a>
+    
+    <a href="http://example.org/tags/heroku/">heroku</a>
+    
+    <a href="http://example.org/tags/linear/">linear</a>
+    
+    <a href="http://example.org/tags/linux/">linux</a>
+    
+    <a href="http://example.org/tags/logistic/">logistic</a>
+    
+    <a href="http://example.org/tags/makefile/">makefile</a>
+    
+    <a href="http://example.org/tags/neural/">neural</a>
+    
+    <a href="http://example.org/tags/postgrespaginate/">postgrespaginate</a>
+    
+    <a href="http://example.org/tags/protobuf/">protobuf</a>
+    
+    <a href="http://example.org/tags/python/">python</a>
+    
+    <a href="http://example.org/tags/regression/">regression</a>
+    
+    <a href="http://example.org/tags/regularization/">regularization</a>
+    
+    <a href="http://example.org/tags/spacemacs/">spacemacs</a>
+    
+    <a href="http://example.org/tags/static/">static</a>
+    
+    <a href="http://example.org/tags/template/">template</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="http://example.org/">Learning Hardy By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+
+
+
+</body>
+</html>

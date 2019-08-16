@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fibonacci on Learning Hardy</title>
+    <link>http://example.org/tags/fibonacci/</link>
+    <description>Recent content in Fibonacci on Learning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 28 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/fibonacci/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>C&#43;&#43; Ep22: Fibonacci</title>
+      <link>http://example.org/post/c&#43;&#43;-ep22-fibonacci/</link>
+      <pubDate>Wed, 28 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/c&#43;&#43;-ep22-fibonacci/</guid>
+      <description>Fibonacci(斐波那契数)的特点是每一个数都是前二个数的和.以下测试都使用第 45 个值。 递归版本  int fib(const int i) { if(i == 0) return 0; if(i == 1) return 1; return fib(i - 1) + fib(i - 2); }      文件大小：8.7K    时间：7.4S   模板版本  template&amp;lt;int I&amp;gt; struct Fib { static const int val = Fib&amp;lt;I-1&amp;gt;::val + Fib&amp;lt;I-2&amp;gt;::val; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;0&amp;gt; { static const int val = 0; }; template&amp;lt;&amp;gt; struct Fib&amp;lt;1&amp;gt; { static const int val = 1; };      文件大小：8.</description>
+    </item>
+    
+  </channel>
+</rss>
