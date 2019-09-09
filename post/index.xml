@@ -39,6 +39,15 @@
     </item>
     
     <item>
+      <title>C&#43;&#43; Ep24: When noexcept Really Matters</title>
+      <link>https://hardy5012.github.io/2018/03/14/c-ep24-when-noexcept-really-matters/</link>
+      <pubDate>Wed, 14 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hardy5012.github.io/2018/03/14/c-ep24-when-noexcept-really-matters/</guid>
+      <description>对于用户及编译器来说，预先知道某个函数不会抛出异常显然大有裨益。首先，知道 函数不会抛出异常有助于简化调用该函数的代码；其次，如果编译器确认函</description>
+    </item>
+    
+    <item>
       <title>C&#43;&#43; Ep23: constexpr if</title>
       <link>https://hardy5012.github.io/2018/03/07/c-ep23-if-constexpt/</link>
       <pubDate>Wed, 07 Mar 2018 00:00:00 +0000</pubDate>
@@ -377,7 +386,7 @@
       <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/2016/11/28/2016-11-28-etf-notes/</guid>
-      <description>预估现金 预估现金为负时，表示 ETF 的市值要比篮子市值少，在做赎回时会先从资金账户中先扣除这部分钱 {{{more}}} 4A1B A1:期货与现货的价差 A2:A2 交易，也就是市场中很</description>
+      <description>预估现金 预估现金为负时，篮子清单市值偏多（高于 ETF 市值），在做赎回时会先从资金账户中先扣除这部分钱 {{{more}}} 4A1B A1:期货与现货的价差 A2:A2 交易，也就是市场</description>
     </item>
     
     <item>
