@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Hadoop HA env(1) - Leaning Hardy</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Hardy Li" /><meta name="description" content="整体架构 概述 从 Hadoop2.0 开始，HDFS NameNode 和 YARN ResourceManger(JobTracker 在 2.0 中已经被整合到 YARN ResourceManger 之中) 的单点问题都得到了解决。HDFS NameNode 和 YARN ResourceManger 的基本原理是一样的， HA 功能通过配置" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://hardy5012.github.io/2019/09/26/hadoop-env1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.b1b2fc82.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Hadoop HA env(1)" />
+<meta property="og:description" content="整体架构 概述 从 Hadoop2.0 开始，HDFS NameNode 和 YARN ResourceManger(JobTracker 在 2.0 中已经被整合到 YARN ResourceManger 之中) 的单点问题都得到了解决。HDFS NameNode 和 YARN ResourceManger 的基本原理是一样的， HA 功能通过配置" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hardy5012.github.io/2019/09/26/hadoop-env1/" />
+<meta property="article:published_time" content="2019-09-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-09-26T00:00:00+00:00" />
+<meta itemprop="name" content="Hadoop HA env(1)">
+<meta itemprop="description" content="整体架构 概述 从 Hadoop2.0 开始，HDFS NameNode 和 YARN ResourceManger(JobTracker 在 2.0 中已经被整合到 YARN ResourceManger 之中) 的单点问题都得到了解决。HDFS NameNode 和 YARN ResourceManger 的基本原理是一样的， HA 功能通过配置">
+
+
+<meta itemprop="datePublished" content="2019-09-26T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-09-26T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1448">
+
+
+
+<meta itemprop="keywords" content="Hadoop," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hadoop HA env(1)"/>
+<meta name="twitter:description" content="整体架构 概述 从 Hadoop2.0 开始，HDFS NameNode 和 YARN ResourceManger(JobTracker 在 2.0 中已经被整合到 YARN ResourceManger 之中) 的单点问题都得到了解决。HDFS NameNode 和 YARN ResourceManger 的基本原理是一样的， HA 功能通过配置"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Learning</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Learning</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Hadoop HA env(1)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-09-26 </span>
+        <div class="post-category">
+            <a href="/categories/data/"> data </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#headline-1">整体架构</a>
+<ul>
+<li><a href="#headline-2">概述</a>
+</li>
+<li><a href="#headline-3">规则</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-4">环境安装</a>
+<ul>
+<li><a href="#headline-5">配置文件说明</a>
+</li>
+<li><a href="#headline-6">配置 hosts 以及 SSH 免密登入</a>
+</li>
+<li><a href="#headline-7">安装 JDK</a>
+</li>
+<li><a href="#headline-8">zookeeper 安装配置</a>
+</li>
+<li><a href="#headline-9">hadoop 编译安装</a>
+</li>
+<li><a href="#headline-10">hadoop 配置</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-11">启动</a>
+</li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+<h1 id="headline-1">
+整体架构
+</h1>
+<h2 id="headline-2">
+概述
+</h2>
+<p>
+从 Hadoop2.0 开始，HDFS NameNode 和 YARN ResourceManger(JobTracker 在 2.0 中已经被整合到 YARN ResourceManger 之中)
+的单点问题都得到了解决。HDFS NameNode 和 YARN ResourceManger 的基本原理是一样的， 
+HA 功能通过配置 Active/Standby 两个节点 实现在集群中对 节点的的热备来解决上述问题。
+具体<a href="https://data-flair.training/blogs/hadoop-hdfs-namenode-high-availability/">https://data-flair.training/blogs/hadoop-hdfs-namenode-high-availability/</a>
+</p>
+<h2 id="headline-3">
+规则
+</h2>
+<p>
+本文只使用三台机器来测试
+</p>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>spark-master</th>
+<th>spark-slave1</th>
+<th>spark-slave2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NameNode</td>
+<td>active</td>
+<td>standby</td>
+<td></td>
+</tr>
+<tr>
+<td>DataNode</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>JournalNode</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Zookeeper</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>ZKFC</td>
+<td>Y</td>
+<td>Y</td>
+<td></td>
+</tr>
+<tr>
+<td>ResourceManager</td>
+<td></td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+<h1 id="headline-4">
+环境安装
+</h1>
+<h2 id="headline-5">
+配置文件说明
+</h2>
+<ol>
+<li>
+<p>
+修改 Hadoop 的核心配置文件 core-site.xml,主要是配置 HDFS 的地址和端口
+</p>
+</li>
+<li>
+<p>
+修改 Hadoop 的 HDFS 的配置文件 hdfs-sit.xml,主要是配置 replication
+</p>
+</li>
+<li>
+<p>
+修改 Hadoop 的 MapReduce 的配置文件 mapred-site.xml，主要是配置 JobTracker 的地址和端口
+</p>
+</li>
+</ol>
+<h2 id="headline-6">
+配置 hosts 以及 SSH 免密登入
+</h2>
+<h2 id="headline-7">
+安装 JDK
+</h2>
+<h2 id="headline-8">
+zookeeper 安装配置
+</h2>
+<h2 id="headline-9">
+hadoop 编译安装
+</h2>
+<h2 id="headline-10">
+hadoop 配置
+</h2>
+<ol>
+<li>
+<p>
+core-site.xml
+</p>
+<div class="src src-dot">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"> &lt;configuration&gt;
+ &lt;property&gt;
+ &lt;name&gt;fs.default.name&lt;/name&gt;
+ &lt;value&gt;hdfs://192.168.15.196:9000&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;fs.defaultFS&lt;/name&gt;
+ &lt;value&gt;hdfs://192.168.15.196:9000&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;io.file.buffer.size&lt;/name&gt;
+ &lt;value&gt;131072&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+ &lt;value&gt;file:/home/xntrader/hadoop/tmp&lt;/value&gt;
+ &lt;description&gt;Abase for other temporary directories.&lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;ha.zookeeper.quorum&lt;/name&gt;
+ &lt;value&gt;spark-master:2181,spark-slave1:2181,spark-slave2:2181&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;hadoop.proxyuser.hduser.hosts&lt;/name&gt;
+ &lt;value&gt;*&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;hadoop.proxyuser.hduser.groups&lt;/name&gt;
+ &lt;value&gt;*&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;/configuration&gt;</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+hfds-site.xml
+</p>
+<div class="src src-dot">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"> configuration&gt;
+	 &lt;!--property&gt;
+		&lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+		&lt;value&gt;192.168.15.196:9001&lt;/value&gt;
+	 &lt;/property --&gt;
+	 &lt;property&gt;
+		&lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+		&lt;value&gt;file:/home/xntrader/hadoop/name&lt;/value&gt;
+	 &lt;/property&gt;
+	 &lt;property&gt;
+		&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+		&lt;value&gt;file:/home/xntrader/hadoop/data&lt;/value&gt;
+	 &lt;/property&gt;
+	 &lt;!--指定 hdfs 的 nameservice 为 jed，需要和 core-site.xml 中保持一致--&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.nameservices&lt;/name&gt;
+				 &lt;value&gt;jed&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- jed 下面有两个 NameNode，分别是 nn1，nn2 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.ha.namenodes.jed&lt;/name&gt;
+				 &lt;value&gt;nn1,nn2&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- nn1 的 RPC 通信地址 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.namenode.rpc-address.jed.nn1&lt;/name&gt;
+				 &lt;value&gt;spark-master:9000&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;!-- nn1 的 http 通信地址 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.namenode.http-address.jed.nn1&lt;/name&gt;
+				 &lt;value&gt;spark-master:50070&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;!-- nn2 的 RPC 通信地址 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.namenode.rpc-address.jed.nn2&lt;/name&gt;
+				 &lt;value&gt;spark-slave1:9000&lt;/value&gt;
+		 &lt;/property&gt;
+	&lt;!-- nn2 的 http 通信地址 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.namenode.http-address.jed.nn1&lt;/name&gt;
+				 &lt;value&gt;spark-slave1:50070&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 指定 NameNode 的 edits 元数据在 JournalNode 上的存放位置 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.namenode.shared.edits.dir&lt;/name&gt;
+				 &lt;value&gt;qjournal://spark-master:8485;spark-slave1:8485;spark-slave2:8485/jed&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 指定 JournalNode 在本地磁盘存放数据的位置 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.journalnode.edits.dir&lt;/name&gt;
+				 &lt;value&gt;/home/xntrader/hadoop/journaldata&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 开启 NameNode 失败自动切换 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.ha.automatic-failover.enabled&lt;/name&gt;
+				 &lt;value&gt;true&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;!-- 配置失败自动切换实现方式 --&gt;
+		 &lt;!-- 此处配置较长，在安装的时候切记检查不要换行--&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.client.failover.proxy.provider.jed&lt;/name&gt;
+				 &lt;value&gt;org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 配置隔离机制方法，多个机制用换行分割，即每个机制占用一行--&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.ha.fencing.methods&lt;/name&gt;
+				 &lt;value&gt;
+				 sshfence
+				 shell(usr/bin)
+				 &lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 使用 sshfence 隔离机制时需要 ssh 免登陆 --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.ha.fencing.ssh.private-key-files&lt;/name&gt;
+				 &lt;value&gt;/root/.ssh/id_rsa&lt;/value&gt;
+		 &lt;/property&gt;
+
+		 &lt;!-- 配置 sshfence 隔离机制超时时间(30s) --&gt;
+		 &lt;property&gt;
+				 &lt;name&gt;dfs.ha.fencing.ssh.connect-timeout&lt;/name&gt;
+				 &lt;value&gt;30000&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;property&gt;
+		 &lt;name&gt;dfs.replication&lt;/name&gt;
+		 &lt;value&gt;2&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;property&gt;
+		 &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+		 &lt;value&gt;true&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;property&gt;
+		 &lt;name&gt;dfs.namenode.datanode.registration.ip-hostname-check&lt;/name&gt;
+		 &lt;value&gt;false&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;property&gt;
+		 &lt;name&gt;dfs.permissions.enabled&lt;/name&gt;
+		 &lt;value&gt;false&lt;/value&gt;
+		 &lt;/property&gt;
+		 &lt;/configuration&gt;</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+yarn-site.xml
+</p>
+<div class="src src-css">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-css" data-lang="css"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-css" data-lang="css"> <span class="o">&lt;</span><span class="nt">configuration</span><span class="o">&gt;</span>
+	 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">nodemanager</span><span class="p">.</span><span class="nc">aux-services</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">mapreduce_shuffle</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+	 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+	 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">nodemanager</span><span class="p">.</span><span class="nc">aux-services</span><span class="p">.</span><span class="nc">mapreduce</span><span class="p">.</span><span class="nc">shuffle</span><span class="p">.</span><span class="nc">class</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">hadoop</span><span class="p">.</span><span class="nc">mapred</span><span class="p">.</span><span class="nc">ShuffleHandler</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+	 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">开启</span> <span class="nt">RM</span> <span class="nt">高可用</span> <span class="nt">--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">ha</span><span class="p">.</span><span class="nc">enabled</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">true</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">指定</span> <span class="nt">RM</span> <span class="nt">的</span> <span class="nt">cluster</span> <span class="nt">id</span><span class="err">，</span><span class="nt">可以自定义--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">cluster-id</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">jyarn</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">指定</span> <span class="nt">RM</span> <span class="nt">的名字</span><span class="err">，</span><span class="nt">可以自定义</span> <span class="nt">--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">ha</span><span class="p">.</span><span class="nc">rm-ids</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">rm1</span><span class="o">,</span><span class="nt">rm2</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">分别指定</span> <span class="nt">RM</span> <span class="nt">的地址</span> <span class="nt">--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">hostname</span><span class="p">.</span><span class="nc">rm1</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">spark-slave1</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">hostname</span><span class="p">.</span><span class="nc">rm2</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">spark-slave2</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">指定</span> <span class="nt">zk</span> <span class="nt">集群地址</span> <span class="nt">--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">resourcemanager</span><span class="p">.</span><span class="nc">zk-address</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">spark-master</span><span class="p">:</span><span class="nd">2181</span><span class="o">,</span><span class="nt">spark-slave1</span><span class="p">:</span><span class="nd">2181</span><span class="o">,</span><span class="nt">spark-slave2</span><span class="p">:</span><span class="nd">2181</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span>
+
+		 <span class="o">&lt;!</span><span class="nt">--</span> <span class="nt">开启</span> <span class="nt">YARN</span> <span class="nt">集群的日志聚合功能</span> <span class="nt">--</span><span class="o">&gt;</span>
+		 <span class="o">&lt;</span><span class="nt">property</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">name</span><span class="o">&gt;</span><span class="nt">yarn</span><span class="p">.</span><span class="nc">log-aggregation-enable</span><span class="o">&lt;/</span><span class="nt">name</span><span class="o">&gt;</span>
+				 <span class="o">&lt;</span><span class="nt">value</span><span class="o">&gt;</span><span class="nt">true</span><span class="o">&lt;/</span><span class="nt">value</span><span class="o">&gt;</span>
+		 <span class="o">&lt;/</span><span class="nt">property</span><span class="o">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+mapred-site.xml
+</p>
+<div class="src src-dot">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dot" data-lang="dot"> &lt;configuration&gt;
+ &lt;property&gt;
+ &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+ &lt;value&gt;yarn&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+ &lt;value&gt;192.168.15.196:10020&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+ &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+ &lt;value&gt;192.168.15.196:19888&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;/configuration&gt;</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+slaves
+</p>
+</li>
+</ol>
+<h1 id="headline-11">
+启动
+</h1>
+<ol>
+<li>
+<p>
+启动 ZK
+</p>
+</li>
+</ol>
+<p>
+在各个配置 ZK 的节点运行 
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">	zkServer.sh start</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+可借助命令 zkServer.sh status  查看各个 ZK 的从属关系
+</p>
+<ol>
+<li>
+<p>
+格式化 ZK（仅第一次需要做）
+</p>
+</li>
+</ol>
+<p>
+任意 ZK 节点上执行：hdfs zkfc -formatZK
+</p>
+<ol>
+<li>
+<p>
+启动 ZKFC
+</p>
+</li>
+</ol>
+<p>
+ZKFC（zookeeperFailoverController）是用来监控 NN 状态，协助实现主备 NN 切换的，所以仅仅在主备 NN 节点上启动就行。
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">	hadoop-daemon.sh start zkfc</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<ol>
+<li>
+<p>
+格式化主 NN（仅第一次需要做，后面请忽操作）
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> hdfs namenode -format</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+在备 NN 上同步主 NN 的元数据信息
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> hdfs namenode -bootstrapStandby</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>
+启动 hdsf
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> start-dfs.sh</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+</ol>
+<p>
+也可以单独启动：
+6.1 启动 NN hadoop-daemon.sh start namenode
+6.2 设置和确认主 NN hdfs haadmin -getServiceState nn1
+如果是配置手动切换 NN 的，这一步是不可缺少的，因为系统还不知道谁是主 NN，两个节点的 NN 都是 Standby 状态。手动激活主 NN 的命令：hdfs haadmin -transitionToActive nn1
+6.3 启动 datanode hadoop-daemons.sh start datanode
+</p>
+<ol>
+<li>
+<p>
+启动 yarn
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> /start-yarn.sh</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+</li>
+</ol>
+<p>
+(spark-slave1 和 spark-slave2 的 resourcemanager 没有启动成功，需要后面单独启动)
+7.1 单独启动 ResourceManager yarn-daemon.sh start resourcemanager
+</p>
+<p>
+ResourceManager 也配置了 HA，根据命令查看节点状态：
+</p>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">	yarn rmadmin –getServiceState rm1</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+7.2 单独启动 nodemanager yarn-daemon.sh start nodemanager
+</p>
+<ol>
+<li>
+<p>
+启动 MR JobHistory Server mr-jobhistory-daemon.sh start historyserver
+</p>
+</li>
+<li>
+<p>
+JPS 查看名节点的进程运行情况
+</p>
+</li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Hardy Li</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-09-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/hadoop/">Hadoop</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/2019/09/26/spark-env1/">
+            <span class="next-text nav-default">spark env(1)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://hardy5012.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Hardy Li</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
