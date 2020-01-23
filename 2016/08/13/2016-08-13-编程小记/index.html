@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Hardy Li" /><meta name="description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}}" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Hardy Li" /><meta name="description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}} SVN 一次添加所有文件 svn st | awk &amp;#39;{if ( $1 == &amp;#34;?&amp;#34;) { print $2}}&amp;#39; | xargs svn add linux clean cache 仅清除页面缓存（PageCache） 1 sync; echo" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -39,25 +39,25 @@
 
 
 <meta property="og:title" content="编程小记" />
-<meta property="og:description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}}" />
+<meta property="og:description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}} SVN 一次添加所有文件 svn st | awk &#39;{if ( $1 == &#34;?&#34;) { print $2}}&#39; | xargs svn add linux clean cache 仅清除页面缓存（PageCache） 1 sync; echo" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2016/08/13/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/" />
 <meta property="article:published_time" content="2016-08-13T00:00:00+00:00" />
 <meta property="article:modified_time" content="2016-08-13T00:00:00+00:00" />
 <meta itemprop="name" content="编程小记">
-<meta itemprop="description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}}">
+<meta itemprop="description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}} SVN 一次添加所有文件 svn st | awk &#39;{if ( $1 == &#34;?&#34;) { print $2}}&#39; | xargs svn add linux clean cache 仅清除页面缓存（PageCache） 1 sync; echo">
 
 
 <meta itemprop="datePublished" content="2016-08-13T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2016-08-13T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="21">
+<meta itemprop="wordCount" content="354">
 
 
 
 <meta itemprop="keywords" content="protobuf," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="编程小记"/>
-<meta name="twitter:description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}}"/>
+<meta name="twitter:description" content="ProtoBuf c&#43;&#43; protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}} SVN 一次添加所有文件 svn st | awk &#39;{if ( $1 == &#34;?&#34;) { print $2}}&#39; | xargs svn add linux clean cache 仅清除页面缓存（PageCache） 1 sync; echo"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -142,6 +142,22 @@
 </li>
 </ul>
 </li>
+<li><a href="#headline-3">SVN</a>
+<ul>
+<li><a href="#headline-4">一次添加所有文件</a>
+</li>
+</ul>
+</li>
+<li><a href="#headline-5">linux clean cache</a>
+<ul>
+<li><a href="#headline-6">仅清除页面缓存（PageCache）</a>
+</li>
+<li><a href="#headline-7">清除目录项和 inode</a>
+</li>
+<li><a href="#headline-8">清除页面缓存，目录项和 inode</a>
+</li>
+</ul>
+</li>
 </ul>
 </nav>
   </div>
@@ -156,6 +172,66 @@ c++ protobuf 对 inner class 的修改，使用 mutable 来获取 inner class �
 </h2>
 <p>
 {{{more}}}
+</p>
+<h1 id="headline-3">
+SVN
+</h1>
+<h2 id="headline-4">
+一次添加所有文件
+</h2>
+<p>
+svn st | awk &#39;{if ( $1 == &#34;?&#34;) { print $2}}&#39; | xargs svn add
+</p>
+<h1 id="headline-5">
+linux clean cache
+</h1>
+<h2 id="headline-6">
+仅清除页面缓存（PageCache）
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> sync<span class="p">;</span> <span class="nb">echo</span> <span class="m">1</span> &gt; /proc/sys/vm/drop_caches</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-7">
+清除目录项和 inode
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> sync<span class="p">;</span> <span class="nb">echo</span> <span class="m">2</span> &gt; /proc/sys/vm/drop_caches</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<h2 id="headline-8">
+清除页面缓存，目录项和 inode
+</h2>
+<div class="src src-sh">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> sync<span class="p">;</span> <span class="nb">echo</span> <span class="m">3</span> &gt; /proc/sys/vm/drop_caches</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>
+述命令的说明：
+</p>
+<p>
+sync 将刷新文件系统缓冲区（buffer），命令通过“;”分隔，顺序执行，shell 在执行序列中的下一个命令之前会等待命令的终止。正如内核文档中提到的，写入到 drop_cache 将清空缓存而不会杀死任何应用程序/服务，echo 命令做写入文件的工作。
+</p>
+<p>
+如果你必须清除磁盘高速缓存，第一个命令在企业和生产环境中是最安全，&#34;…echo 1&gt; …&#34;只会清除页面缓存。 在生产环境中不建议使用上面的第三个选项&#34;…echo 3 &gt; …&#34; ，除非你明确自己在做什么，因为它会清除缓存页，目录项和 inodes。
 </p>
 
     </div>
@@ -238,7 +314,7 @@ c++ protobuf 对 inner class 的修改，使用 mutable 来获取 inner class �
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

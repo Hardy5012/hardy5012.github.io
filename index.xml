@@ -440,7 +440,7 @@
       <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/2016/08/13/2016-08-13-%E7%BC%96%E7%A8%8B%E5%B0%8F%E8%AE%B0/</guid>
-      <description>ProtoBuf c++ protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}}</description>
+      <description>ProtoBuf c++ protobuf 对 inner class 的修改，使用 mutable 来获取 inner class 指针 {{{more}}} SVN 一次添加所有文件 svn st | awk &amp;#39;{if ( $1 == &amp;#34;?&amp;#34;) { print $2}}&amp;#39; | xargs svn add linux clean cache 仅清除页面缓存（PageCache） 1 sync; echo</description>
     </item>
     
     <item>
