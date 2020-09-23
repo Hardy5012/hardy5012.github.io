@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2019-09-26T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-09-26T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1432">
+<meta itemprop="wordCount" content="1670">
 
 
 
@@ -162,6 +162,16 @@
 </li>
 <li><a href="#headline-11">启动</a>
 </li>
+<li><a href="#headline-12">扩展集群</a>
+<ul>
+<li><a href="#headline-13">问题 </a>
+<ul>
+<li><a href="#headline-14">Journal Storeage Directory not fomatted</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </nav>
   </div>
@@ -266,6 +276,13 @@ HA 功能通过配置 Active/Standby 两个节点 实现在集群中对 节点�
 <h2 id="headline-8">
 zookeeper 安装配置
 </h2>
+<ul>
+<li>
+<p>
+修改/data/app/zookeeper 目录的 myid 文件中的编号（重要）
+</p>
+</li>
+</ul>
 <h2 id="headline-9">
 hadoop 编译安装
 </h2>
@@ -509,7 +526,7 @@ hfds-site.xml
 		 &lt;/property&gt;
 	&lt;!-- nn2 的 http 通信地址 --&gt;
 		 &lt;property&gt;
-				 &lt;name&gt;dfs.namenode.http-address.jed.nn1&lt;/name&gt;
+				 &lt;name&gt;dfs.namenode.http-address.jed.nn2&lt;/name&gt;
 				 &lt;value&gt;spark-slave1:50070&lt;/value&gt;
 		 &lt;/property&gt;
 
@@ -742,6 +759,11 @@ slaves
 <ol>
 <li>
 <p>
+注意把防火墙先关了 systemctl stop firewalld
+</p>
+</li>
+<li>
+<p>
 启动 ZK
 </p>
 </li>
@@ -855,7 +877,8 @@ ResourceManager 也配置了 HA，根据命令查看节点状态：
 也可以单独启动：
 7.1 启动 NN hadoop-daemon.sh start namenode
 7.2 设置和确认主 NN hdfs haadmin -getServiceState nn1
-如果是配置手动切换 NN 的，这一步是不可缺少的，因为系统还不知道谁是主 NN，两个节点的 NN 都是 Standby 状态。手动激活主 NN 的命令：hdfs haadmin -transitionToActive nn1
+如果是配置手动切换 NN 的，这一步是不可缺少的，因为系统还不知道谁是主 NN，两个节点的 NN 都是 Standby 状态。
+手动激活主 NN 的命令：hdfs haadmin -transitionToActive nn1
 7.3 启动 datanode hadoop-daemons.sh start datanode
 7.4 单独启动 nodemanager yarn-daemon.sh start nodemanager
 </p>
@@ -871,6 +894,36 @@ JPS 查看名节点的进程运行情况
 </p>
 </li>
 </ol>
+<h1 id="headline-12">
+扩展集群
+</h1>
+<h2 id="headline-13">
+问题 
+</h2>
+<p>
+＋ dfs.namenode.shared.edits.dir
+URl 格式为 qjournal://host1:port1;host2:port2:host3:port3/journalId,注意* journalId * 放到最后一个就行了
+</p>
+<ul>
+<li>
+<p>
+zookeeper 修改/data/app/zookeeper 目录的 myid 文件中的编号（重要）
+</p>
+<ol>
+<li>
+<p>
+将原 journalnode 上的 edits 文件 scp 到新的 journalnode 节点
+</p>
+<h3 id="headline-14">
+Journal Storeage Directory not fomatted
+</h3>
+</li>
+</ol>
+<p>
+从 hdfs-site.xml 文件中的 dfs.journalnode.edits.dir 配置项得到 edits 文件存储路径，scp 到新节点的相同路径，注意权限和属主要相同，可以用 scp -rp 来复制
+</p>
+</li>
+</ul>
 
     </div>
 

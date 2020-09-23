@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2016-08-13T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2016-08-13T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="354">
+<meta itemprop="wordCount" content="532">
 
 
 
@@ -158,6 +158,12 @@
 </li>
 </ul>
 </li>
+<li><a href="#headline-9">http 压力测试 ab</a>
+<ul>
+<li><a href="#headline-10">压力测试的几个重要指标</a>
+</li>
+</ul>
+</li>
 </ul>
 </nav>
   </div>
@@ -232,6 +238,27 @@ sync 将刷新文件系统缓冲区（buffer），命令通过“;”分隔，�
 </p>
 <p>
 如果你必须清除磁盘高速缓存，第一个命令在企业和生产环境中是最安全，&#34;…echo 1&gt; …&#34;只会清除页面缓存。 在生产环境中不建议使用上面的第三个选项&#34;…echo 3 &gt; …&#34; ，除非你明确自己在做什么，因为它会清除缓存页，目录项和 inodes。
+</p>
+<h1 id="headline-9">
+http 压力测试 ab
+</h1>
+<p>
+输入命令： ab -n 100 -c 10 <a href="http://192.168.14.241:9081/api/v1/tick/sh510300/20200309">http://192.168.14.241:9081/api/v1/tick/sh510300/20200309</a>
+</p>
+<p>
+其中－n 表示请求数，－c 表示并发数
+</p>
+<h2 id="headline-10">
+压力测试的几个重要指标
+</h2>
+<p>
+Requests per second: 吞吐率，大家最关心的指标之一，相当于 LR 中的每秒事务数，后面括号中的 mean 表示这是一个平均值
+</p>
+<p>
+Time per request (mean): 用户平均请求等待时间，大家最关心的指标之二，相当于 LR 中的平均事务响应时间，后面括号中的 mean 表示这是一个平均值
+</p>
+<p>
+Time per request (mean, across all concurrent requests): 服务器平均请求处理时间，大家最关心的指标之三 
 </p>
 
     </div>
