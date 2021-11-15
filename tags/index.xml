@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 26 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 15 Nov 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pumpkin-book</title>
+      <link>https://hardy5012.github.io/tags/pumpkin-book/</link>
+      <pubDate>Mon, 15 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://hardy5012.github.io/tags/pumpkin-book/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Hadoop</title>

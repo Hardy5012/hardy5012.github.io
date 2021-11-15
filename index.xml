@@ -6,10 +6,19 @@
     <description>Recent content on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 26 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 15 Nov 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>西瓜＋南瓜书学习笔记(1)</title>
+      <link>https://hardy5012.github.io/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 15 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://hardy5012.github.io/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <description>绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。 训练学得的模型只是假设空间中</description>
+    </item>
     
     <item>
       <title>Hadoop HA env(1)</title>
@@ -404,7 +413,7 @@
       <pubDate>Mon, 28 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hardy5012.github.io/2016/11/28/2016-11-28-etf-notes/</guid>
-      <description>预估现金 预估现金为负时，篮子清单市值偏多（高于 ETF 市值），在做赎回时会先从资金账户中先扣除这部分钱 {{{more}}} 净值计算 净值计算时都是考虑抢单模式，所以使</description>
+      <description>预估现金 预估现金是每一个最小申购单位的资产值减去今天公布出来的清单中所有股票用前收价算出来的价值之间的差额 预估现金为负时，篮子清单市值偏多（</description>
     </item>
     
     <item>
