@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2021-11-15T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="597">
+<meta itemprop="wordCount" content="646">
 
 
 
@@ -174,11 +174,11 @@
 <p>
 过拟合表现为泛化误差（在新样本上的误差），可增加样本量，控制训练次数及模型训练参数来处理
 </p>
+</li>
+</ul>
 <p>
 样本数据通常化分为三个集合：训练集，验证集，测试集。验证集用于超参数的调整，测试集用于最后的模型评估。
 </p>
-</li>
-</ul>
 <h2 id="headline-3">
 错误率，精度，查准率，查全率，F1
 </h2>
@@ -225,6 +225,16 @@
 <li>
 <p>
 <strong>查全率(recall)</strong> R=TP/(TP+FN)
+</p>
+</li>
+<li>
+<p>
+<strong>F1</strong> = 2*P*R/(P+R)=(2*TP)/(样例总数+TP-TN)
+</p>
+</li>
+<li>
+<p>
+$F_β=(1+β<sup>2</sup>)*P*R$
 </p>
 </li>
 </ul>
