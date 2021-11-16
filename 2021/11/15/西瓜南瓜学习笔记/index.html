@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2021-11-15T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1008">
+<meta itemprop="wordCount" content="1024">
 
 
 
@@ -267,12 +267,11 @@ FPR=FP/(TN + FP)
 </li>
 </ul>
 <p>
-当分类阈值为最后一个样本时，些时真正例率为 1,假正例率也为 1,这是因为此时所有的样本的预测结果都是正例，即 FN 为 0,TN 为 0.
+当分类阈值为最后一个样本时，此时真正例率为 1,假正例率也为 1,这是因为此时所有的样本的预测结果都是正例，即 FN 为 0,TN 为 0.
 </p>
 <p>
-<img src="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" alt="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" title="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" />
 <strong>AUC</strong> （Area Under ROC Curve）定义为 ROC 曲线下的面积。
-$$ AUC＝\frac{1}{2} $$
+$$ AUC＝\frac{1}{2}∑<sub>i=1</sub><sup>m-1</sup>(χ<sub>i+1</sub> - χ<sub>i</sub>) $$
 </p>
 
     </div>
