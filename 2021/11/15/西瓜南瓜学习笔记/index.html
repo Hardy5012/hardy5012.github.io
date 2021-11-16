@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2021-11-15T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="690">
+<meta itemprop="wordCount" content="1008">
 
 
 
@@ -141,6 +141,8 @@
 <li><a href="#headline-2">模型评估与选择</a>
 <ul>
 <li><a href="#headline-3">错误率，精度，查准率，查全率，F1</a>
+</li>
+<li><a href="#headline-4">ROC 与 AUC</a>
 </li>
 </ul>
 </li>
@@ -241,71 +243,36 @@ F<sub>β</sub> = (1+β<sup>2</sup>)*P*R / (β<sup>2</sup>*P+R)
 <p>
 其中β &gt; 0 度量了查全率对查准率的相对重要性，β&gt;1 时查全率有更大的影响
 </p>
+<h2 id="headline-4">
+ROC 与 AUC
+</h2>
 <p>
-<del>————</del>———–<del>———-</del>———-<del>————-</del>
+<strong>ROC</strong> 全称是“受试者工作特征”(Receiver Operating Characteristic)曲线，ROC 曲线的纵轴是&#34;真正
+例率&#34; (True Positive Rate ，简称 TPR) ，横轴是&#34;假正例率&#34; (False Positive 
+Rate ，简称 FPR)。统计这两个值的过程为根据学习器的预测结果对样例按预测值从大到小排好序，接着将分类阈值设为一个不可能取到的最大值，
+显然这时候所有样本预测为正例的概率都一定小于分类阈值，那么预测为正例的样本个数为 0，相应的真正例率和假正例率也都为 0，
+所以此时我们可以在坐标(0,0)处打一个点。接下来我们需要把分类阈值从大到小依次设为每个样本的预测值，然后每次计算真正例率和假正例率，
+再在相应的坐标上打一个点，最后再将各个点用直线串连起来即可得到 ROC 曲线。
 </p>
-<table>
-<tbody>
-<tr>
-<td></td>
-<td>Singular</td>
-<td>Plural</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><del>———–</del>———-<del>———-</del>————-+</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td>Masculine</td>
-<td>Neuter</td>
-<td>Feminine</td>
-<td>All genders</td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>
 <p>
-<del>————</del>———–<del>———-</del>———-<del>————-</del>
+TPR=TP/(TP + FN)
 </p>
-<table>
-<tbody>
-<tr>
-<td>Nominative</td>
-<td><strong>der</strong></td>
-<td><strong>das</strong></td>
-<td><strong>die</strong></td>
-<td><strong>die</strong></td>
-</tr>
-<tr>
-<td>Accusative</td>
-<td><strong>den</strong></td>
-<td><strong>das</strong></td>
-<td><strong>die</strong></td>
-<td><strong>die</strong></td>
-</tr>
-<tr>
-<td>Dative</td>
-<td><strong>dem</strong></td>
-<td><strong>dem</strong></td>
-<td><strong>der</strong></td>
-<td><strong>denen</strong></td>
-</tr>
-<tr>
-<td>Genitive</td>
-<td><strong>dessen</strong></td>
-<td><strong>dessen</strong></td>
-<td><strong>deren</strong></td>
-<td><strong>deren</strong></td>
-</tr>
-</tbody>
-</table>
+</li>
+<li>
 <p>
-<del>————</del>———–<del>———-</del>———-<del>————-</del>
+FPR=FP/(TN + FP)
+</p>
+</li>
+</ul>
+<p>
+当分类阈值为最后一个样本时，些时真正例率为 1,假正例率也为 1,这是因为此时所有的样本的预测结果都是正例，即 FN 为 0,TN 为 0.
+</p>
+<p>
+<img src="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" alt="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" title="%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/screenshot_2021-11-16_17-45-19.png" />
+<strong>AUC</strong> （Area Under ROC Curve）定义为 ROC 曲线下的面积。
+$$ AUC＝\frac{1}{2} $$
 </p>
 
     </div>
