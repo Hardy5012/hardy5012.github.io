@@ -50,7 +50,7 @@
 
 <meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2021-11-15T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="324">
+<meta itemprop="wordCount" content="465">
 
 
 
@@ -139,6 +139,10 @@
 <li><a href="#headline-1">绪论</a>
 </li>
 <li><a href="#headline-2">模型评估与选择</a>
+<ul>
+<li><a href="#headline-3">错误率，精度，查准率，查全率，F1</a>
+</li>
+</ul>
 </li>
 </ul>
 </nav>
@@ -173,8 +177,43 @@
 <p>
 样本数据通常化分为三个集合：训练集，验证集，测试集。验证集用于超参数的调整，测试集用于最后的模型评估。
 </p>
+<h2 id="headline-3">
+错误率，精度，查准率，查全率，F1
+</h2>
+<p>
+首先将样例根据其真实类别与学习器预测类别的组合划分为 <strong>真正例(true positive)</strong>, <strong>假正例(false positive)</strong>, <strong>真反例(true negative)</strong>, <strong>假反例(false negative)</strong> 四种情形。
+</p>
 </li>
 </ul>
+<table>
+<tbody>
+<tr>
+<td>真实情况</td>
+<td>预测结果</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>—————–+———-</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>正例</td>
+<td>反例</td>
+</tr>
+<tr>
+<td>正例</td>
+<td>TP（真正例）</td>
+<td>FN（假反例）</td>
+</tr>
+<tr>
+<td>反例</td>
+<td>FP（假正例）</td>
+<td>TN（真反例）</td>
+</tr>
+</tbody>
+</table>
 
     </div>
 
