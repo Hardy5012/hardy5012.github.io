@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>model on Leaning Hardy</title>
+    <link>https://hardy5012.github.io/tags/model/</link>
+    <description>Recent content in model on Leaning Hardy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 15 Nov 2021 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://hardy5012.github.io/tags/model/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>西瓜＋南瓜书学习笔记(1)</title>
+      <link>https://hardy5012.github.io/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 15 Nov 2021 00:00:00 +0800</pubDate>
+      
+      <guid>https://hardy5012.github.io/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <description>绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中</description>
+    </item>
+    
+  </channel>
+</rss>
