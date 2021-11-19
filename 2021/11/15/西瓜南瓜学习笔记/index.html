@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>tttt - Leaning Hardy</title>
+  <title>西瓜＋南瓜书学习笔记(1) - Leaning Hardy</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Hardy Li" /><meta name="description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Hardy Li" /><meta name="description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。 训练学得的模型只是假设空间中" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -38,26 +38,26 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="tttt" />
-<meta property="og:description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中" />
+<meta property="og:title" content="西瓜＋南瓜书学习笔记(1)" />
+<meta property="og:description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。 训练学得的模型只是假设空间中" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
-<meta property="article:published_time" content="2021-11-15T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-19T10:43:37+08:00" />
-<meta itemprop="name" content="tttt">
-<meta itemprop="description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中">
+<meta property="article:published_time" content="2021-11-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-11-15T00:00:00+00:00" />
+<meta itemprop="name" content="西瓜＋南瓜书学习笔记(1)">
+<meta itemprop="description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。 训练学得的模型只是假设空间中">
 
 
-<meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-19T10:43:37&#43;08:00" />
-<meta itemprop="wordCount" content="992">
+<meta itemprop="datePublished" content="2021-11-15T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-11-15T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="995">
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="pumpkin-book," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="tttt"/>
-<meta name="twitter:description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中"/>
+<meta name="twitter:title" content="西瓜＋南瓜书学习笔记(1)"/>
+<meta name="twitter:description" content="绪论 机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。 训练学得的模型只是假设空间中"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -120,11 +120,13 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">tttt</h1>
+      <h1 class="post-title">西瓜＋南瓜书学习笔记(1)</h1>
 
       <div class="post-meta">
         <span class="post-time"> 2021-11-15 </span>
-        
+        <div class="post-category">
+            <a href="/categories/data/"> data </a>
+            </div>
         
       </div>
     </header>
@@ -134,46 +136,58 @@
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
 <ul>
-<li>
+<li><a href="#headline-1">绪论</a>
+</li>
+<li><a href="#headline-2">模型评估与选择</a>
 <ul>
-<li><a href="#绪论">绪论</a></li>
-<li><a href="#模型评估与选择">模型评估与选择</a>
-<ul>
-<li><a href="#错误率-精度-查准率-查全率-f1">错误率，精度，查准率，查全率，F1</a></li>
-<li><a href="#roc-与-auc">ROC 与 AUC</a></li>
-</ul></li>
-</ul></li>
+<li><a href="#headline-3">错误率，精度，查准率，查全率，F1</a>
+</li>
+<li><a href="#headline-4">ROC 与 AUC</a>
+</li>
+</ul>
+</li>
 </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
       
-
-<h2 id="绪论">绪论</h2>
-
-<p>机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。训练学得的模型只是假设空间中的一个，现实中可能存在多个假设和训练集一致。每个有效的机器学习算法都有归纳偏好，可用奥卡姆剃刀法则来引导。“没有免费的午餐”定理告诉我们，每个算法都有各自的优劣，只有根据实际的问题来评估。</p>
-
-<h2 id="模型评估与选择">模型评估与选择</h2>
-
-<p>在训练中经常会出现欠拟合和过拟合。</p>
-
+<h1 id="headline-1">
+绪论
+</h1>
+<p>
+机器学习是从大量样本中学得模型，这是一个归纳的过程，学到的模型能很好的适用新的样本，则这个模型具有泛化能力。
+训练学得的模型只是假设空间中的一个，现实中可能存在多个假设和训练集一致。每个有效的机器学习算法都有归纳偏好，
+可用奥卡姆剃刀法则来引导。“没有免费的午餐”定理告诉我们，每个算法都有各自的优劣，只有根据实际的问题来评估。
+</p>
+<h1 id="headline-2">
+模型评估与选择
+</h1>
+<p>
+在训练中经常会出现欠拟合和过拟合。
+</p>
 <ul>
-<li>欠拟合表现为训练集误差，说明模型学习能力差，可以增训练轮数，增加模型的复杂度来解决</li>
-<li>过拟合表现为泛化误差（在新样本上的误差），可增加样本量，控制训练次数及模型训练参数来处理</li>
+<li>
+<p>
+欠拟合表现为训练集误差，说明模型学习能力差，可以增训练轮数，增加模型的复杂度来解决
+</p>
+</li>
+<li>
+<p>
+过拟合表现为泛化误差（在新样本上的误差），可增加样本量，控制训练次数及模型训练参数来处理
+</p>
+</li>
 </ul>
-
-<p>样本数据通常化分为三个集合：训练集，验证集，测试集。验证集用于超参数的调整，测试集用于最后的模型评估。</p>
-
-<h3 id="错误率-精度-查准率-查全率-f1">错误率，精度，查准率，查全率，F1</h3>
-
-<p>首先将样例根据其真实类别与学习器预测类别的组合划分为 <strong>真正例(true positive)</strong>, <strong>假正例(false positive)</strong>, <strong>真反例(true negative)</strong>, <strong>假反例(false negative)</strong> 四种情形。</p>
-
-<div class="table-caption">
-  <span class="table-number">Table 1</span>:
-  分类结果混淆矩阵
-</div>
-
+<p>
+样本数据通常化分为三个集合：训练集，验证集，测试集。验证集用于超参数的调整，测试集用于最后的模型评估。
+</p>
+<h2 id="headline-3">
+错误率，精度，查准率，查全率，F1
+</h2>
+<p>
+首先将样例根据其真实类别与学习器预测类别的组合划分为 <strong>真正例(true positive)</strong>, <strong>假正例(false positive)</strong>, <strong>真反例(true negative)</strong>, <strong>假反例(false negative)</strong> 四种情形。
+</p>
+<figure>
 <table>
 <thead>
 <tr>
@@ -182,20 +196,17 @@
 <th></th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td></td>
 <td>正例</td>
 <td>反例</td>
 </tr>
-
 <tr>
 <td>正例</td>
 <td>TP（真正例）</td>
 <td>FN（假反例）</td>
 </tr>
-
 <tr>
 <td>反例</td>
 <td>FP（假正例）</td>
@@ -203,29 +214,64 @@
 </tr>
 </tbody>
 </table>
-
+<figcaption>
+分类结果混淆矩阵
+</figcaption>
+</figure>
 <ul>
-<li><strong>查准率(precision)</strong> P=TP/(TP+FP)</li>
-<li><strong>查全率(recall)</strong> R=TP/(TP+FN)</li>
-<li><strong>F1</strong> = 2*P*R/(P+R)=(2*TP)/(样例总数+TP-TN)</li>
-<li>\[ F_{\beta}=(1+\beta^2)*P*R/(\beta^2*P+R) \]</li>
+<li>
+<p>
+<strong>查准率(precision)</strong> P=TP/(TP+FP)
+</p>
+</li>
+<li>
+<p>
+<strong>查全率(recall)</strong> R=TP/(TP+FN)
+</p>
+</li>
+<li>
+<p>
+<strong>F1</strong> = 2*P*R/(P+R)=(2*TP)/(样例总数+TP-TN)
+</p>
+</li>
+<li>
+<p>
+$$ F<sub>β</sub>=(1+β^2)*P*R/(β^2*P+R) $$
+</p>
+</li>
 </ul>
-
-<p>其中&beta; &gt; 0 度量了查全率对查准率的相对重要性，&beta;&gt;1 时查全率有更大的影响</p>
-
-<h3 id="roc-与-auc">ROC 与 AUC</h3>
-
-<p><strong>ROC</strong> 全称是“受试者工作特征”(Receiver Operating Characteristic)曲线，ROC 曲线的纵轴是&rdquo;真正例率&rdquo; (True Positive Rate ，简称 TPR) ，横轴是&rdquo;假正例率&rdquo; (False Positive
-Rate ，简称 FPR)。统计这两个值的过程为根据学习器的预测结果对样例按预测值从大到小排好序，接着将分类阈值设为一个不可能取到的最大值，显然这时候所有样本预测为正例的概率都一定小于分类阈值，那么预测为正例的样本个数为 0，相应的真正例率和假正例率也都为 0，所以此时我们可以在坐标(0,0)处打一个点。接下来我们需要把分类阈值从大到小依次设为每个样本的预测值，然后每次计算真正例率和假正例率，再在相应的坐标上打一个点，最后再将各个点用直线串连起来即可得到 ROC 曲线。</p>
-
+<p>
+其中β &gt; 0 度量了查全率对查准率的相对重要性，β&gt;1 时查全率有更大的影响
+</p>
+<h2 id="headline-4">
+ROC 与 AUC
+</h2>
+<p>
+<strong>ROC</strong> 全称是“受试者工作特征”(Receiver Operating Characteristic)曲线，ROC 曲线的纵轴是&#34;真正
+例率&#34; (True Positive Rate ，简称 TPR) ，横轴是&#34;假正例率&#34; (False Positive 
+Rate ，简称 FPR)。统计这两个值的过程为根据学习器的预测结果对样例按预测值从大到小排好序，接着将分类阈值设为一个不可能取到的最大值，
+显然这时候所有样本预测为正例的概率都一定小于分类阈值，那么预测为正例的样本个数为 0，相应的真正例率和假正例率也都为 0，
+所以此时我们可以在坐标(0,0)处打一个点。接下来我们需要把分类阈值从大到小依次设为每个样本的预测值，然后每次计算真正例率和假正例率，
+再在相应的坐标上打一个点，最后再将各个点用直线串连起来即可得到 ROC 曲线。
+</p>
 <ul>
-<li>TPR=TP/(TP + FN)</li>
-<li>FPR=FP/(TN + FP)</li>
+<li>
+<p>
+TPR=TP/(TP + FN)
+</p>
+</li>
+<li>
+<p>
+FPR=FP/(TN + FP)
+</p>
+</li>
 </ul>
-
-<p>当分类阈值为最后一个样本时，此时真正例率为 1,假正例率也为 1,这是因为此时所有的样本的预测结果都是正例，即 FN 为 0,TN 为 0.</p>
-
-<p><strong>AUC</strong> （Area Under ROC Curve）定义为 ROC 曲线下的面积。</p>
+<p>
+当分类阈值为最后一个样本时，此时真正例率为 1,假正例率也为 1,这是因为此时所有的样本的预测结果都是正例，即 FN 为 0,TN 为 0.
+</p>
+<p>
+<strong>AUC</strong> （Area Under ROC Curve）定义为 ROC 曲线下的面积。
+</p>
 
     </div>
 
@@ -237,7 +283,7 @@ Rate ，简称 FPR)。统计这两个值的过程为根据学习器的预测结�
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2021-11-19
+        2021-11-15
         
     </span>
   </p>
@@ -245,15 +291,13 @@ Rate ，简称 FPR)。统计这两个值的过程为根据学习器的预测结�
   
 </div>
 <footer class="post-footer">
-      
+      <div class="post-tags">
+          <a href="/tags/pumpkin-book/">pumpkin-book</a>
+          </div>
       <nav class="post-nav">
-        <a class="prev" href="/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">西瓜＋南瓜书学习笔记(1)</span>
-            <span class="prev-text nav-mobile">上一篇</span>
-          </a>
-        <a class="next" href="/2019/09/26/hadoop-env1/">
-            <span class="next-text nav-default">Hadoop HA env(1)</span>
+        
+        <a class="next" href="/2021/11/15/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+            <span class="next-text nav-default">西瓜＋南瓜书学习笔记(1)</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>
