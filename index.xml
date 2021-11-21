@@ -17,7 +17,7 @@
       <pubDate>Fri, 19 Nov 2021 00:00:00 +0800</pubDate>
       
       <guid>https://hardy5012.github.io/2021/11/19/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02/</guid>
-      <description>模型形式 基本形式 给定由 d 个属性描述的示例 $ x=(x_1; x_2;&amp;hellip;; x_d) $ ，预测函数: \[ f(x)=w_1x_1+w_2x_2+&amp;hellip;+w_dx_d+b \] 一般的用向量形式写成 \[ fx(x) = w_Tx + b \] 机器学习三要素： 模型：根据具体问题，确</description>
+      <description>模型形式 基本形式 给定由 d 个属性描述的示例 $ x=(x_1; x_2;&amp;hellip;; x_d) $ ，预测函数: \[ f(x)=w_1x_1+w_2x_2+&amp;hellip;+w_dx_d+b \] 一般的用向量形式写成 \[ f(x) = w_Tx + b \] 机器学习三要素： 模型：根据具体问题，确</description>
     </item>
     
     <item>
