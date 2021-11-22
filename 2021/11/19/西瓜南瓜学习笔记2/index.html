@@ -43,14 +43,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/11/19/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02/" />
 <meta property="article:published_time" content="2021-11-19T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-22T19:43:59+08:00" />
+<meta property="article:modified_time" content="2021-11-22T20:10:24+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-线性模型">
 <meta itemprop="description" content="模型形式 基本形式 给定由 d 个属性描述的示例 $ x=(x_1; x_2;&hellip;; x_d) $ ，预测函数: \[ f(x)=w_1x_1&#43;w_2x_2&#43;&hellip;&#43;w_dx_d&#43;b \] 一般的用向量形式写成 \[ f(x) = w_Tx &#43; b \] 机器学习三要素： 模型：根据具体问题，确">
 
 
 <meta itemprop="datePublished" content="2021-11-19T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-22T19:43:59&#43;08:00" />
-<meta itemprop="wordCount" content="1236">
+<meta itemprop="dateModified" content="2021-11-22T20:10:24&#43;08:00" />
+<meta itemprop="wordCount" content="1291">
 
 
 
@@ -246,6 +246,8 @@
 </figure>
 
 
+<p>给定数据集 $ D={(x_i,y_i)}<sub>i=1</sub><sup>m</sup> , y_i &isin;{0,1} $,令 $ X_i,u_i,&Sigma;<sub>i</sub> $  分别表示第  $ i&isin;{0,1} $  类示例的集合，均值向量，协方差矩阵。</p>
+
 <h3 id="相关概念">相关概念</h3>
 
 <ul>
@@ -270,6 +272,10 @@
 
 <p>\[  \begin{align*} D_{KL}(p||q)=\sum_{x}p(x)log_{b}(\frac{p(x)}{q(x)}) \newline = \sum_{x}p(x)log_{b}p(x)-\sum_{x}p(x)log_{b}q(x) \end{align*} \]
 其中 \(-\sum_{x}p(x)log_{b}q(x)\) 称为交叉熵。可通过最小化相对熵来求出最优分布，由于前面部分是未知但固定，这样就等价于最小化交叉熵。</p>
+
+<ul>
+<li>拉格朗日乘子法,广义瑞利商</li>
+</ul>
 
     </div>
 
