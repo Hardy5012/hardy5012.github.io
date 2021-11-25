@@ -43,14 +43,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/11/25/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E5%86%B3%E7%AD%96%E6%A0%91/" />
 <meta property="article:published_time" content="2021-11-25T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-25T17:39:23+08:00" />
+<meta property="article:modified_time" content="2021-11-25T20:06:54+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-决策树">
 <meta itemprop="description" content="基本流程 决策树是基于树结构来进行决策的,一棵决策树包含一个根结点、若干个内部结点和若干个叶结点; 叶结点对应于决策结果,其他每个结点则对应于一">
 
 
 <meta itemprop="datePublished" content="2021-11-25T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-25T17:39:23&#43;08:00" />
-<meta itemprop="wordCount" content="497">
+<meta itemprop="dateModified" content="2021-11-25T20:06:54&#43;08:00" />
+<meta itemprop="wordCount" content="579">
 
 
 
@@ -176,14 +176,30 @@
 \[ Ent(D)=-\sum_{k=1}^{|y|}p_k\log_{2}p_{k} \]
 Ent(D)的值越小，则 D 的纯度越高。</p>
 
-<p>假定离散属性 a 布 V 个可能的取值 $\{a<sub>1</sub>,a<sub>2</sub>,&hellip;,a<sub>V</sub> \} $ , 若使用 a 来对样本集
+<p>假定离散属性 a 布 V 个可能的取值 $ \{a<sub>1</sub>,a<sub>2</sub>,&hellip;,a<sub>V</sub> \} $ , 若使用 a 来对样本集
 D 进行划分，则会产生 V 个分支结点。其中第 v 个分支结点包含了 D 中所有在属性 a 上取值为 \(a_{v}\) 的样本,记为 \(D_{v}\) .给分支结点赋予权重 \(\frac{|D_{v}|}{|D|}\) ，即样本数越多的分支结点的影响越大，于是可计算出用属性 a 对样本集 D 进行划分所获得的 <strong>信息增益(information gain)</strong>
 \[ Gain(D,a)=Ent(D)-\sum_{v=1}^{V}\frac{|D^{v}|}{D}Ent(D^{v}) \]</p>
 
-<figure>
-    <img src="/ox-hugo/screenshot_2021-11-25_17-34-22.png"/> 
-</figure>
+<p><img src="/ox-hugo/screenshot_2021-11-25_17-34-22.png" alt="" />
+以上表为例，该数据集包含 17 个训练样例，用以学习一棵能预测设剖开的是不是好瓜的决策树，此时</p>
 
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>y</td>
+<td><code>2. 在决策树学习开始时，根结点包含 D 中的所有样例，其中正例占 $ p_{1}</code>\frac{8}{17} $</td>
+</tr>
+</tbody>
+</table>
+
+<p>反例占 \(p_{2}=\frac{9}{17}\)</p>
 
 <figure>
     <img src="/ox-hugo/screenshot_2021-11-25_17-31-59.png"/> 
