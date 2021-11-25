@@ -43,14 +43,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/11/25/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E5%86%B3%E7%AD%96%E6%A0%91/" />
 <meta property="article:published_time" content="2021-11-25T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-25T21:28:25+08:00" />
+<meta property="article:modified_time" content="2021-11-25T22:19:54+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-决策树">
 <meta itemprop="description" content="基本流程 决策树是基于树结构来进行决策的,一棵决策树包含一个根结点、若干个内部结点和若干个叶结点; 叶结点对应于决策结果,其他每个结点则对应于一">
 
 
 <meta itemprop="datePublished" content="2021-11-25T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-25T21:28:25&#43;08:00" />
-<meta itemprop="wordCount" content="1498">
+<meta itemprop="dateModified" content="2021-11-25T22:19:54&#43;08:00" />
+<meta itemprop="wordCount" content="1633">
 
 
 
@@ -229,10 +229,8 @@ Gini(D) 反映了从数据集 D 中随机抽取两个样本，其类别标记不
 <p><img src="/ox-hugo/screenshot_2021-11-25_17-32-24.png" alt="" />
 预剪枝图</p>
 
-<figure>
-    <img src="/ox-hugo/screenshot_2021-11-25_17-33-34.png"/> 
-</figure>
-
+<p><img src="/ox-hugo/screenshot_2021-11-25_17-33-34.png" alt="" />
+后剪枝决策树通常比预剪枝决策树保留了更多的分支. 一般情形下?后剪枝决策树的欠拟合风险很小，泛化性能往往优于预剪枝决策树.但后剪枝过程是在生成完全决策树之后进行的， 并且要白底向上地对树中的所有非叶结点进行逐一考察，因此其训练时间开销比未剪枝决策树和预剪枝决策树都要大得多.</p>
 
     </div>
 
