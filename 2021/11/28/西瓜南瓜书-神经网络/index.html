@@ -43,14 +43,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" />
 <meta property="article:published_time" content="2021-11-28T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-28T16:52:30+08:00" />
+<meta property="article:modified_time" content="2021-11-28T18:59:58+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-神经网络">
 <meta itemprop="description" content="神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权">
 
 
 <meta itemprop="datePublished" content="2021-11-28T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-28T16:52:30&#43;08:00" />
-<meta itemprop="wordCount" content="350">
+<meta itemprop="dateModified" content="2021-11-28T18:59:58&#43;08:00" />
+<meta itemprop="wordCount" content="686">
 
 
 
@@ -140,6 +140,7 @@
 <ul>
 <li><a href="#神经元模型">神经元模型</a></li>
 <li><a href="#感知机与多层网络">感知机与多层网络</a></li>
+<li><a href="#误差逆传播算法">误差逆传播算法</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -158,7 +159,31 @@
   给定训练数据集，权重叫 $ w<sub>i</sub>(i=1,2,&hellip;,n) $ 以及阈值 \(\theta\) 可通过学习到。阑值 \(\theta\)  可看作一个固定输入为 -1 的&rdquo;哑结点&rdquo; (dummy node) 所对应的连接权重 \(w_{n+1}\) ,
 这样，权重和阑值的学习就可统一为权重的学习.感知机学习规则非常简单，对训练样例(x,y)，若当前感知机的输出为 \(\hat{y}\) ， 则感知机权重将这样调整:
 \[ w_{i} \leftarrow w_{i} + \Delta w_{i} \]
-\[ \Delta w_{i}=\eta(y-\hat{y})x_{i} \]</p>
+\[ \Delta w_{i}=\eta(y-\hat{y})x_{i} \]
+其中 \(\eta\in(0,1)\)  为学习率(learning rate)</p>
+
+<h2 id="误差逆传播算法">误差逆传播算法</h2>
+
+<p>误差逆传播(error BackPropagation，简称 BP)基于梯度下降(gradient descent)策略，以目标的负梯度方向对参数进行调整对训练例 \(（x_{k},y_{k})\) ， 假定神经网络的输山为 $\hat{y}<sub>k</sub>=(\hat{y}<sub>1</sub><sup>k</sup>,\hat{y}<sub>2</sub><sup>k</sup>,&hellip;,\hat{y}<sub>l</sub><sup>k</sup>)
+\[ \hat{y}_{j}^{k}=f(\beta_{j}-\theta_{j}) \]
+则网络在  \(（x_{k},y_{k})\) 上的均方误差为
+\[ E_{k}=\frac{1}{2}\sum_{j=1}^{l}(\hat{y}_{j}^{k}-y_{j}^{k})^{2} \]
+BP 是一个法代学习算法，在迭代的每一轮中采用广义的感知机学习规则对参数进行更新估计,任意参数υ 的更新估计式为
+\[ v \leftarrow v + \Delta v\]
+隐层到输出层的连接权 $ w<sub>hj</sub>$ 为例来进行推导,给定学习率η
+\[ \Delta w_{hj}=-\eta\frac{\partial E_{k}}{\partial w_{hj}} \]
+注意到 \(w_{hj}\) 先影响到第 j 个输出层神经元的输入值 \(\beta_{j}\) , 再影响到其输出值 \(\hat{y}_{j}^{k}\) ,
+然后影响到 \(E_{k}\) :
+\[ \frac{\partial E_{k}}{\partial w_{hj}}=\frac{\partial E_{k}}{\partial\hat{y}_{j}^{k}}*\frac{\partial\hat{y}_{j}^{k}}{\partial\beta_{j}}*\frac{\partial\beta_{j}}{\partial w_{hj}} \]
+Sigmoid 函数有一个很好的性质:
+\[ f^{\prime}(x)=f(x)(1-f(x))\]
+于是
+\[\begin{align*} g_{j}=-\frac{\partial E_{k}}{\partial\hat{y}_{j}^{k}}*\frac{\partial\hat{y}_{j}^{k}}{\partial\beta_{j}}
+\newline =-(\hat{y}_{j}^{k}-y_{j}^{k})f^{\prime}(\beta_{j}-\theta_{j})
+\newline = \hat{y}_{j}^{k}(1-\hat{y}_{j}^{k})(y_{j}^{k}-\hat{y}_{j}^{k})
+\end{align*} \]
+最后
+$$ &Delta; w<sub>hj</sub>=&eta; g<sub>j</sub>b<sub>k</sub></p>
 
     </div>
 
