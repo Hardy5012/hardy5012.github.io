@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 25 Nov 2021 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>西瓜＋南瓜书-神经网络</title>
+      <link>https://hardy5012.github.io/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Sun, 28 Nov 2021 00:00:00 +0800</pubDate>
+      
+      <guid>https://hardy5012.github.io/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</guid>
+      <description>神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权</description>
+    </item>
     
     <item>
       <title>西瓜＋南瓜书-决策树</title>
