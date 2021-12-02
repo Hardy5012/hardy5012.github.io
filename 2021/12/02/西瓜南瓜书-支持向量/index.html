@@ -43,14 +43,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/" />
 <meta property="article:published_time" content="2021-12-02T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-12-02T22:14:09+08:00" />
+<meta property="article:modified_time" content="2021-12-02T22:38:07+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-支持向量">
 <meta itemprop="description" content="间隔与支持向量 给定训练样本集 \[ D={(x_{1},y_{2}),(x_{2},y_{2}),&hellip;,(x_{m}, y_{m})}, y_{i} \in \{-1, &#43;1\} \] 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样本">
 
 
 <meta itemprop="datePublished" content="2021-12-02T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-12-02T22:14:09&#43;08:00" />
-<meta itemprop="wordCount" content="363">
+<meta itemprop="dateModified" content="2021-12-02T22:38:07&#43;08:00" />
+<meta itemprop="wordCount" content="594">
 
 
 
@@ -139,6 +139,8 @@
 <li>
 <ul>
 <li><a href="#间隔与支持向量">间隔与支持向量</a></li>
+<li><a href="#核函数">核函数</a></li>
+<li><a href="#软间隔与正则化">软间隔与正则化</a></li>
 <li><a href="#推荐阅读">推荐阅读</a></li>
 </ul></li>
 </ul>
@@ -166,20 +168,22 @@
 \[ \gamma=\frac{2}{||m||} \]</p>
 
 <p><img src="/ox-hugo/screenshot_2021-12-02_17-31-27.png" alt="" />
-要找到“最大间隔”的划分超平面，也就是要找约束参数 w 和b 使用&gamma; 最大，即</p>
+要找到“最大间隔”的划分超平面，也就是要找约束参数 w 和 b 使用&gamma; 最大，即
+\[ \begin{align*} max_{w,b}\frac{2}{||w||} \newline s.t. y_{i}(w^{T}x_{i}+b)\geq 1, i=1,2,&hellip;,m \end{align*}\]
+同时可重写为
+\[ \begin{align*} min_{w,b}\frac{1}{2}||w||^{2} \newline s.t. y_{i}(w^{T}x_{i}+b)\geq 1, i=1,2,&hellip;,m \end{align*}\]
+上面就是支持向量机(Supoort Vector Machine, SVM)的基本型</p>
 
-<figure>
-    <img src="/ox-hugo/screenshot_2021-12-02_17-32-07.png"/> 
-</figure>
+<h2 id="核函数">核函数</h2>
 
+<p>原始样本空间内也许并不存在一个能正确划分两类样本的超平面，对这样的问题，可将样本从原始空间映射到-个更高维的特征空间，使得样本在这个特征空间内线性可分.</p>
+
+<h2 id="软间隔与正则化">软间隔与正则化</h2>
+
+<p>在实际应用中，完全线性可分的样本是很少的，如果遇到了不能够完全线性可分的样本时，缓解该问题的一个办法是允许支持向量机在一些样本上出错，为此引入&rdquo;软间隔&rdquo; (80ft margin) 的概念，</p>
 
 <figure>
     <img src="/ox-hugo/screenshot_2021-12-02_17-32-28.png"/> 
-</figure>
-
-
-<figure>
-    <img src="/ox-hugo/screenshot_2021-12-02_17-32-45.png"/> 
 </figure>
 
 
