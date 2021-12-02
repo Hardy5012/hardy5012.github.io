@@ -17,7 +17,7 @@
       <pubDate>Thu, 02 Dec 2021 00:00:00 +0800</pubDate>
       
       <guid>https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/</guid>
-      <description>间隔与支持向量 1 给定训练样本集 \[ D={(x_{1},y_{2}),(x_{2},y_{2}),&amp;hellip;,(x_{m}, y_{m})}, y_{i} \in \{-1, +1\} \] 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样</description>
+      <description>间隔与支持向量 给定训练样本集 \[ D={(x_{1},y_{2}),(x_{2},y_{2}),&amp;hellip;,(x_{m}, y_{m})}, y_{i} \in \{-1, +1\} \] 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样本</description>
     </item>
     
     <item>
