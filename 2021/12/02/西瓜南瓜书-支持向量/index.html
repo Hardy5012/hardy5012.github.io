@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Hardy Li" /><meta name="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&amp;lt;sub&amp;gt;1&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),(x&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),...(x&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;, y&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;)\\}, y&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt; &amp;amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Hardy Li" /><meta name="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&amp;lt;sub&amp;gt;1&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),(x&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),...(x&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;, y&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;)\\}, y&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt; &amp;amp;isin; \\{-1, &#43;1\\} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -39,25 +39,25 @@
 
 
 <meta property="og:title" content="西瓜＋南瓜书-支持向量" />
-<meta property="og:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" />
+<meta property="og:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1\\} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/" />
 <meta property="article:published_time" content="2021-12-02T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-12-02T17:46:22+08:00" />
+<meta property="article:modified_time" content="2021-12-02T19:41:09+08:00" />
 <meta itemprop="name" content="西瓜＋南瓜书-支持向量">
-<meta itemprop="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样">
+<meta itemprop="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1\\} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样">
 
 
 <meta itemprop="datePublished" content="2021-12-02T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-12-02T17:46:22&#43;08:00" />
-<meta itemprop="wordCount" content="152">
+<meta itemprop="dateModified" content="2021-12-02T19:41:09&#43;08:00" />
+<meta itemprop="wordCount" content="186">
 
 
 
 <meta itemprop="keywords" content="SVM," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="西瓜＋南瓜书-支持向量"/>
-<meta name="twitter:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样"/>
+<meta name="twitter:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1\\} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -139,6 +139,7 @@
 <li>
 <ul>
 <li><a href="#间隔与支持向量">间隔与支持向量</a></li>
+<li><a href="#推荐阅读">推荐阅读</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -153,7 +154,7 @@
 <pre class="chroma"><span class="lnt">1
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, +1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样本空间中，划分超平面可通过如下线性方程来描述:</pre></td></tr></table>
+<pre class="chroma">给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, +1\\} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样本空间中，划分超平面可通过如下线性方程来描述:</pre></td></tr></table>
 </div>
 </div>
 <p>\[ w^{T}x+b=0\]
@@ -180,6 +181,12 @@
     <img src="/ox-hugo/screenshot_2021-12-02_17-32-45.png"/> 
 </figure>
 
+
+<h2 id="推荐阅读">推荐阅读</h2>
+
+<ul>
+<li>王书宁译 《凸优化》，王燕军《最优化基础理论与方法（第二版）》</li>
+</ul>
 
     </div>
 
