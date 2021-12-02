@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>西瓜＋南瓜书-神经网络 - Leaning Hardy</title>
+  <title>西瓜＋南瓜书-支持向量 - Leaning Hardy</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Hardy Li" /><meta name="description" content="神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Hardy Li" /><meta name="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&amp;lt;sub&amp;gt;1&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),(x&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),...(x&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;, y&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;)\\}, y&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt; &amp;amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -26,7 +26,7 @@
 <meta name="generator" content="Hugo 0.57.0 with even 4.0.0" />
 
 
-<link rel="canonical" href="https://hardy5012.github.io/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" />
+<link rel="canonical" href="https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -38,26 +38,26 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="西瓜＋南瓜书-神经网络" />
-<meta property="og:description" content="神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权" />
+<meta property="og:title" content="西瓜＋南瓜书-支持向量" />
+<meta property="og:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hardy5012.github.io/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" />
-<meta property="article:published_time" content="2021-11-28T00:00:00+08:00" />
-<meta property="article:modified_time" content="2021-11-28T19:05:04+08:00" />
-<meta itemprop="name" content="西瓜＋南瓜书-神经网络">
-<meta itemprop="description" content="神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权">
+<meta property="og:url" content="https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/" />
+<meta property="article:published_time" content="2021-12-02T00:00:00+08:00" />
+<meta property="article:modified_time" content="2021-12-02T17:46:22+08:00" />
+<meta itemprop="name" content="西瓜＋南瓜书-支持向量">
+<meta itemprop="description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样">
 
 
-<meta itemprop="datePublished" content="2021-11-28T00:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2021-11-28T19:05:04&#43;08:00" />
-<meta itemprop="wordCount" content="688">
+<meta itemprop="datePublished" content="2021-12-02T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2021-12-02T17:46:22&#43;08:00" />
+<meta itemprop="wordCount" content="152">
 
 
 
-<meta itemprop="keywords" content="algorithm," />
+<meta itemprop="keywords" content="SVM," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="西瓜＋南瓜书-神经网络"/>
-<meta name="twitter:description" content="神经元模型 神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权"/>
+<meta name="twitter:title" content="西瓜＋南瓜书-支持向量"/>
+<meta name="twitter:description" content="间隔与支持向量 1 给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, &#43;1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -120,10 +120,10 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">西瓜＋南瓜书-神经网络</h1>
+      <h1 class="post-title">西瓜＋南瓜书-支持向量</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2021-11-28 </span>
+        <span class="post-time"> 2021-12-02 </span>
         <div class="post-category">
             <a href="/categories/pumpkin-book/"> pumpkin-book </a>
             </div>
@@ -138,9 +138,7 @@
 <ul>
 <li>
 <ul>
-<li><a href="#神经元模型">神经元模型</a></li>
-<li><a href="#感知机与多层网络">感知机与多层网络</a></li>
-<li><a href="#误差逆传播算法">误差逆传播算法</a></li>
+<li><a href="#间隔与支持向量">间隔与支持向量</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -149,41 +147,39 @@
     <div class="post-content">
       
 
-<h2 id="神经元模型">神经元模型</h2>
+<h2 id="间隔与支持向量">间隔与支持向量</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">给定训练样本集 $D=\\{(x&lt;sub&gt;1&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),(x&lt;sub&gt;2&lt;/sub&gt;,y&lt;sub&gt;2&lt;/sub&gt;),...(x&lt;sub&gt;m&lt;/sub&gt;, y&lt;sub&gt;m&lt;/sub&gt;)\\}, y&lt;sub&gt;i&lt;/sub&gt; &amp;isin; \\{-1, +1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样本空间中，划分超平面可通过如下线性方程来描述:</pre></td></tr></table>
+</div>
+</div>
+<p>\[ w^{T}x+b=0\]
+其中 $ w=(w<sub>1</sub>;w<sub>2</sub>;&hellip;;w<sub>d</sub>)$  为法向量，决定了超平面的方向，b为位移项,决定了超平面与原点之间的距离,
+任意点 x 到超平面的距离可写:
+\[ r=\frac{|w_{T}x+b|}{|w|} \]</p>
 
-<p>神经元(neuron)模型是神经网络中最基本的成分，在模型中神经元接收到来自 n 个其他神经元传递过来的输入信号,这些输入信号通过带权重的连接( connection)进行传递，神经元接收到的总输入值将与神经元的阀值进行比较，然后通过&rdquo;激活函数&rdquo; (activation function) 处理以产生神经元的输出.</p>
+<figure>
+    <img src="/ox-hugo/screenshot_2021-12-02_17-31-27.png"/> 
+</figure>
 
-<h2 id="感知机与多层网络">感知机与多层网络</h2>
 
-<p>感知机(Perceptron) 由两层神经元组成，能容易地实现逻辑与、或、非运算.
-  给定训练数据集，权重叫 $ w<sub>i</sub>(i=1,2,&hellip;,n) $ 以及阈值 \(\theta\) 可通过学习到。阑值 \(\theta\)  可看作一个固定输入为 -1 的&rdquo;哑结点&rdquo; (dummy node) 所对应的连接权重 \(w_{n+1}\) ,
-这样，权重和阑值的学习就可统一为权重的学习.感知机学习规则非常简单，对训练样例(x,y)，若当前感知机的输出为 \(\hat{y}\) ， 则感知机权重将这样调整:
-\[ w_{i} \leftarrow w_{i} + \Delta w_{i} \]
-\[ \Delta w_{i}=\eta(y-\hat{y})x_{i} \]
-其中 \(\eta\in(0,1)\)  为学习率(learning rate)</p>
+<figure>
+    <img src="/ox-hugo/screenshot_2021-12-02_17-32-07.png"/> 
+</figure>
 
-<h2 id="误差逆传播算法">误差逆传播算法</h2>
 
-<p>误差逆传播(error BackPropagation，简称 BP)基于梯度下降(gradient descent)策略，以目标的负梯度方向对参数进行调整对训练例 \(（x_{k},y_{k})\) ， 假定神经网络的输山为 $\hat{y}<sub>k</sub>=(\hat{y}<sub>1</sub><sup>k</sup>,\hat{y}<sub>2</sub><sup>k</sup>,&hellip;,\hat{y}<sub>l</sub><sup>k</sup>)
-\[ \hat{y}_{j}^{k}=f(\beta_{j}-\theta_{j}) \]
-则网络在  \(（x_{k},y_{k})\) 上的均方误差为
-\[ E_{k}=\frac{1}{2}\sum_{j=1}^{l}(\hat{y}_{j}^{k}-y_{j}^{k})^{2} \]
-BP 是一个法代学习算法，在迭代的每一轮中采用广义的感知机学习规则对参数进行更新估计,任意参数υ 的更新估计式为
-\[ v \leftarrow v + \Delta v\]
-隐层到输出层的连接权 $ w<sub>hj</sub>$ 为例来进行推导,给定学习率 \(\eta\) ,
-\[ \Delta w_{hj}=-\eta\frac{\partial E_{k}}{\partial w_{hj}} \]
-注意到 \(w_{hj}\) 先影响到第 j 个输出层神经元的输入值 \(\beta_{j}\) , 再影响到其输出值 \(\hat{y}_{j}^{k}\) ,
-然后影响到 \(E_{k}\) :
-\[ \frac{\partial E_{k}}{\partial w_{hj}}=\frac{\partial E_{k}}{\partial\hat{y}_{j}^{k}}*\frac{\partial\hat{y}_{j}^{k}}{\partial\beta_{j}}*\frac{\partial\beta_{j}}{\partial w_{hj}} \]
-Sigmoid 函数有一个很好的性质:
-\[ f^{\prime}(x)=f(x)(1-f(x))\]
-于是
-\[\begin{align*} g_{j}=-\frac{\partial E_{k}}{\partial\hat{y}_{j}^{k}}*\frac{\partial\hat{y}_{j}^{k}}{\partial\beta_{j}}
-\newline =-(\hat{y}_{j}^{k}-y_{j}^{k})f^{\prime}(\beta_{j}-\theta_{j})
-\newline = \hat{y}_{j}^{k}(1-\hat{y}_{j}^{k})(y_{j}^{k}-\hat{y}_{j}^{k})
-\end{align*} \]
-最后
-\[ \Delta w_{hj}=\eta g_{j}b_{k} \]</p>
+<figure>
+    <img src="/ox-hugo/screenshot_2021-12-02_17-32-28.png"/> 
+</figure>
+
+
+<figure>
+    <img src="/ox-hugo/screenshot_2021-12-02_17-32-45.png"/> 
+</figure>
+
 
     </div>
 
@@ -195,7 +191,7 @@ Sigmoid 函数有一个很好的性质:
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2021-11-28
+        2021-12-02
         
     </span>
   </p>
@@ -204,16 +200,12 @@ Sigmoid 函数有一个很好的性质:
 </div>
 <footer class="post-footer">
       <div class="post-tags">
-          <a href="/tags/algorithm/">algorithm</a>
+          <a href="/tags/svm/">SVM</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">西瓜＋南瓜书-支持向量</span>
-            <span class="prev-text nav-mobile">上一篇</span>
-          </a>
-        <a class="next" href="/2021/11/25/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E5%86%B3%E7%AD%96%E6%A0%91/">
-            <span class="next-text nav-default">西瓜＋南瓜书-决策树</span>
+        
+        <a class="next" href="/2021/11/28/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+            <span class="next-text nav-default">西瓜＋南瓜书-神经网络</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>

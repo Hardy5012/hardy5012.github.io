@@ -6,10 +6,19 @@
     <description>Recent content on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 02 Dec 2021 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>西瓜＋南瓜书-支持向量</title>
+      <link>https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/</link>
+      <pubDate>Thu, 02 Dec 2021 00:00:00 +0800</pubDate>
+      
+      <guid>https://hardy5012.github.io/2021/12/02/%E8%A5%BF%E7%93%9C%E5%8D%97%E7%93%9C%E4%B9%A6-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F/</guid>
+      <description>间隔与支持向量 1 给定训练样本集 $D=\\{(x&amp;lt;sub&amp;gt;1&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),(x&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;,y&amp;lt;sub&amp;gt;2&amp;lt;/sub&amp;gt;),...(x&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;, y&amp;lt;sub&amp;gt;m&amp;lt;/sub&amp;gt;)\\}, y&amp;lt;sub&amp;gt;i&amp;lt;/sub&amp;gt; &amp;amp;isin; \\{-1, +1} $ , 分类学习最基本的想法就是基于训练集 D 在样本空间中找到一个划分超平面、将不同类别的样本分开。在样</description>
+    </item>
     
     <item>
       <title>西瓜＋南瓜书-神经网络</title>

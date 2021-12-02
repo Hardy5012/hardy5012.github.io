@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 28 Nov 2021 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 02 Dec 2021 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>SVM</title>
+      <link>https://hardy5012.github.io/tags/svm/</link>
+      <pubDate>Thu, 02 Dec 2021 00:00:00 +0800</pubDate>
+      
+      <guid>https://hardy5012.github.io/tags/svm/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>algorithm</title>
