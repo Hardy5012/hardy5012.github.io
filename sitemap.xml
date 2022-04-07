@@ -2,6 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hardy5012.github.io/categories/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/2022/03/11/centos%E4%B8%8B%E7%A3%81%E7%9B%98%E7%83%AD%E6%89%A9%E5%AE%B9/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/tags/linux/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/post/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/categories/summary/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://hardy5012.github.io/tags/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://hardy5012.github.io/categories/algorithm/</loc>
     <lastmod>2021-12-03T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -9,35 +58,7 @@
   </url>
   
   <url>
-    <loc>https://hardy5012.github.io/categories/</loc>
-    <lastmod>2021-12-03T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://hardy5012.github.io/tags/condition/</loc>
-    <lastmod>2021-12-03T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://hardy5012.github.io/</loc>
-    <lastmod>2021-12-03T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://hardy5012.github.io/post/</loc>
-    <lastmod>2021-12-03T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://hardy5012.github.io/tags/</loc>
     <lastmod>2021-12-03T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -157,13 +178,6 @@
   
   <url>
     <loc>https://hardy5012.github.io/tags/docker/</loc>
-    <lastmod>2018-11-22T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://hardy5012.github.io/categories/summary/</loc>
     <lastmod>2018-11-22T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -451,13 +465,6 @@
   
   <url>
     <loc>https://hardy5012.github.io/2017/12/07/centos7%E9%85%8D%E7%BD%AEservice/</loc>
-    <lastmod>2017-12-07T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://hardy5012.github.io/tags/linux/</loc>
     <lastmod>2017-12-07T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

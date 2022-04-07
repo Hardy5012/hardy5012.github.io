@@ -6,10 +6,19 @@
     <description>Recent content in linux on Leaning Hardy</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 07 Dec 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 11 Mar 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hardy5012.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>centos 下磁盘热扩容</title>
+      <link>https://hardy5012.github.io/2022/03/11/centos%E4%B8%8B%E7%A3%81%E7%9B%98%E7%83%AD%E6%89%A9%E5%AE%B9/</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://hardy5012.github.io/2022/03/11/centos%E4%B8%8B%E7%A3%81%E7%9B%98%E7%83%AD%E6%89%A9%E5%AE%B9/</guid>
+      <description>配置 yum 源,安装 growpart 工具 1 2 3 4 5 curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo sed -i -e &amp;#39;/mirrors.cloud.aliyuncs.com/d&amp;#39; -e &amp;#39;/mirrors.aliyuncs.com/d&amp;#39; /etc/yum.repos.d/CentOS-Base.repo yum search growpart yum install cloud-utils-growpart.x86_64 使用 growpart 进行硬盘分区表可用空间的扩展 1 2 lsblk -p growpart /dev/sda 2 LVM 分区与文件系统扩展</description>
+    </item>
     
     <item>
       <title>centos7 配置 service</title>
